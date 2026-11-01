@@ -1,5 +1,6 @@
 import type { AgentConfig, Extraction, ImportPlacement, ImportPlan } from './tableImportTypes'
 import type { DiagramScene } from './diagramTypes'
+import type { UpdateInfo, UpdateProgress } from './updateTypes'
 import type {
   Bootstrap,
   LanguagePreference,
@@ -20,6 +21,10 @@ import type {
 } from '../types'
 
 interface NativeAPI {
+  CheckUpdate(): Promise<UpdateInfo>
+  InstallUpdate(): Promise<void>
+  RestartUpdate(): Promise<void>
+  CancelUpdate(): Promise<void>
   RecognizeDiagram(data: string, instruction: string): Promise<DiagramScene>
   CancelDiagramRecognition(): Promise<void>
   AgentConfig(): Promise<AgentConfig>
@@ -111,6 +116,10 @@ export function onPrinterState(callback: (state: PrinterState) => void): () => v
 // The native menu runs on the Go side; it only sends the action name.
 export function onMenuAction(callback: (action: string) => void): () => void {
   return window.runtime?.EventsOn('menu:action', callback) ?? (() => {})
+}
+
+export function onUpdateProgress(callback: (progress: UpdateProgress) => void): () => void {
+  return window.runtime?.EventsOn('update:progress', callback) ?? (() => {})
 }
 
 export function setWindowTitle(title: string) {

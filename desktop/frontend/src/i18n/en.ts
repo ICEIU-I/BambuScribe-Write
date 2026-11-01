@@ -1,6 +1,24 @@
 // Interface wording. Keys mirror the backend table in internal/i18n so the two
 // sides name the same thing the same way; only the strings differ.
 export const en: Record<string, string> = {
+  'update.cancelled': 'Update cancelled. The current app is unchanged.',
+  'update.title': 'Software Update',
+  'update.check': 'Check for Updates',
+  'update.close': 'Close update window',
+  'update.currentVersion': 'Current version {version}',
+  'update.newVersion': 'New version {version}',
+  'update.checking': 'Checking for updates…',
+  'update.latest': 'You are up to date.',
+  'update.notes': 'Release notes',
+  'update.restartHint': 'Your project will be saved before the app updates and restarts.',
+  'update.saving': 'Saving your project…',
+  'update.downloading': 'Downloading update…',
+  'update.verifying': 'Verifying the update…',
+  'update.restarting': 'Restarting…',
+  'update.install': 'Update and Restart',
+  'update.cancel': 'Cancel Download',
+  'update.busy': 'Wait for the current operation to finish, then try again.',
+
   // Window title
   'app.untitled': 'Untitled',
   'app.modified': 'Edited',

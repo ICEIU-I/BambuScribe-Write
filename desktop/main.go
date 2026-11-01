@@ -3,7 +3,10 @@ package main
 import (
 	"bambuscribe/desktop/internal/application"
 	"bambuscribe/desktop/internal/appmenu"
+	"bambuscribe/desktop/internal/buildinfo"
+	"bambuscribe/desktop/internal/updater"
 	"embed"
+	"fmt"
 	"log"
 	"os"
 
@@ -17,6 +20,16 @@ import (
 var assets embed.FS
 
 func main() {
+	if handled, err := updater.HandleHelper(os.Args[1:]); handled {
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--version" {
+		fmt.Println(buildinfo.Version)
+		return
+	}
 	title := "A1 手写助手"
 	if os.Getenv("BAMBUSCRIBE_CONFIG_DIR") != "" {
 		title += " · 验证"

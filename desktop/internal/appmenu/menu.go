@@ -80,6 +80,7 @@ func Build(s State, send func(action string)) *menu.Menu {
 	)))
 	result.Append(menu.WindowMenu())
 	result.Append(menu.SubMenu(i18n.T("menu.help"), menu.NewMenuFromItems(
+		text("menu.checkUpdate", "", "checkUpdate"),
 		text("menu.guide", "", "guide"),
 	)))
 	return result

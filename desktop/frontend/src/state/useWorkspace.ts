@@ -324,5 +324,6 @@ export function useWorkspace() {
     upload,
     uploadSelected,
     cancelUpload,
+    flushPersistence: autosave.flush,
   }
 }

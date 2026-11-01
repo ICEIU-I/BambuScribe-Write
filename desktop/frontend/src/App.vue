@@ -17,12 +17,15 @@ import EditorToolbar from './components/editor/EditorToolbar.vue'
 import DevicePage from './components/device/DevicePage.vue'
 import JobBar from './components/JobBar.vue'
 import UploadDialog from './components/upload/UploadDialog.vue'
+import UpdateDialog from './components/update/UpdateDialog.vue'
+import { useUpdater } from './state/useUpdater'
 import { onMenuAction, setWindowTitle } from './services/bridge'
 import { t } from './i18n'
 import { flushEditors } from './state/editorCommands'
 import type { PageAction } from './state/documentPages'
 import type { EraseMode, ImageEditTool, TableInsertOptions } from './types'
 const w = useWorkspace()
+const updater = useUpdater(w)
 const {
   preferences,
   document,
@@ -47,6 +50,7 @@ const {
 // The native menu only sends an action name; every decision — including
 // whether the action is available, which the menu cannot show — is made here.
 function menuAction(action: string) {
+  if (updater.installing.value) return
   if (action === 'new') void w.newProject()
   else if (action === 'save') void w.saveProject()
   else if (action === 'saveAs') void w.saveProjectAs()
@@ -66,6 +70,7 @@ function menuAction(action: string) {
   else if (action.startsWith('lang:'))
     preferences.language = action.slice(5) as typeof preferences.language
   else if (action === 'guide') void w.revealProject('https://github.com/ICEIU-I/BambuScribe-Write')
+  else if (action === 'checkUpdate') void updater.check()
 }
 const editor = ref<InstanceType<typeof DocumentCanvas>>()
 const tableImport = useTableImport(w, editor)
@@ -184,6 +189,7 @@ watch(
       @new="w.newProject"
       @open="w.openProject"
       @save-as="w.saveProjectAs"
+      @check-update="updater.check"
       @page="jumpToPage"
       @delete-page="changePage($event, 'delete')"
       @copy-page="changePage($event, 'copy')"
@@ -191,6 +197,7 @@ watch(
       @move-page="(from, to) => changePage(from, 'move', to)"
     />
     <div class="workspace-main">
+      <UpdateDialog :updater="updater" />
       <AppHeader
         :tab="tab"
         :title="projectTitle"

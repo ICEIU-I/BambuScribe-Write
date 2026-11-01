@@ -32,6 +32,7 @@ type App struct {
 	closeAllowed  bool
 	diagrams      diagramImportState
 	imports       importState
+	updates       updateState
 	mu            sync.Mutex
 	ctx           context.Context
 	font          *engine.Font
@@ -100,6 +101,7 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) shutdown(context.Context) {
+	a.CancelUpdate()
 	a.CancelDiagramRecognition()
 	a.CancelTableRecognition()
 	if a.imports.server != nil {

@@ -210,7 +210,7 @@ test('saving a project sends the document without the workspace theme', async ({
   await expect.poll(() => title(page)).toBe('原始正文')
   await menu(page, 'saveAs')
   const call = await lastCall(page, 'saveAs')
-  expect(call.project.version).toBe(5)
+  expect(call.project.version).toBe(6)
   expect(call.project.text).toBe('原始正文')
   expect(call.project.theme).toBeUndefined()
   expect(call.project.writing.penDown).toBe(3.4)

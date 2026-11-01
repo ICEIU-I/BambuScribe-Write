@@ -3,6 +3,15 @@ package i18n
 // Chinese is the source language: every entry here matches the wording the
 // backend produced before the interface was translated.
 var zh = map[string]string{
+	"update.cancelled":       "更新已取消，原版本保留。",
+	"update.networkFailed":   "无法连接更新服务，请检查网络后重试。",
+	"update.invalidPackage":  "安装包校验失败，请重试或从 GitHub Releases 重新下载。",
+	"update.installLocation": "无法替换当前应用，请将 App 移到可写的 Applications 文件夹后重试。",
+	"update.unsupported":     "一键更新目前仅支持 macOS Apple Silicon。",
+	"update.busy":            "请等待当前上传或更新完成后重试。",
+	"update.installFailed":   "更新未完成，原版本保留。请重试或下载安装包。",
+	"menu.checkUpdate":       "检查更新",
+
 	// Menu bar
 	"menu.about":          "关于 A1 手写助手",
 	"menu.settings":       "设置…",

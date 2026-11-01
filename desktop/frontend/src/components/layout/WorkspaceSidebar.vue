@@ -26,6 +26,7 @@ const emit = defineEmits<{
   blankPage: [number]
   movePage: [number, number]
   collapse: []
+  checkUpdate: []
 }>()
 const tabs = computed(() => [
   { value: 'write', label: t('header.write'), icon: 'pen', controls: 'write-panel' },
@@ -100,6 +101,16 @@ const tabs = computed(() => [
       @move-page="(from, to) => emit('movePage', from, to)"
     />
     <div class="sidebar-footer">
+      <HoverHint v-slot="hint" :text="t('update.check')">
+        <button
+          class="sidebar-action"
+          :aria-label="t('update.check')"
+          :aria-describedby="hint.describedBy"
+          @click="emit('checkUpdate')"
+        >
+          <AppIcon name="download" :size="20" />
+        </button>
+      </HoverHint>
       <HoverHint
         v-slot="hint"
         :text="theme === 'light' ? t('header.themeToDark') : t('header.themeToLight')"

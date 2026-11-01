@@ -1,6 +1,24 @@
 // Interface wording. Keys mirror the backend table in internal/i18n so the two
 // sides name the same thing the same way; only the strings differ.
 export const zh: Record<string, string> = {
+  'update.cancelled': '更新已取消，原版本保留。',
+  'update.title': '软件更新',
+  'update.check': '检查更新',
+  'update.close': '关闭更新窗口',
+  'update.currentVersion': '当前版本 {version}',
+  'update.newVersion': '新版本 {version}',
+  'update.checking': '正在检查更新…',
+  'update.latest': '已是最新版本。',
+  'update.notes': '更新内容',
+  'update.restartHint': '更新完成后自动重启，当前项目会先保存。',
+  'update.saving': '正在保存当前项目…',
+  'update.downloading': '正在下载更新…',
+  'update.verifying': '正在校验安装包…',
+  'update.restarting': '正在重启…',
+  'update.install': '一键更新并重启',
+  'update.cancel': '取消下载',
+  'update.busy': '请等待当前操作完成后重试。',
+
   // Window title
   'app.untitled': '未命名',
   'app.modified': '已修改',

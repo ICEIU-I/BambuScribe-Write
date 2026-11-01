@@ -3,6 +3,15 @@ package i18n
 // English mirror of zh.go. Keys ending in "Prefix" end with the separator used
 // before a wrapped error, so call sites can keep fmt.Errorf("%s%w", ...).
 var en = map[string]string{
+	"update.cancelled":       "Update cancelled. The current app is unchanged.",
+	"update.networkFailed":   "Cannot reach the update service. Check your connection and try again.",
+	"update.invalidPackage":  "Update verification failed. Retry or download from GitHub Releases.",
+	"update.installLocation": "Cannot replace this app. Move it to a writable Applications folder and try again.",
+	"update.unsupported":     "In-app updates currently support macOS Apple Silicon.",
+	"update.busy":            "Wait for the current upload or update to finish, then try again.",
+	"update.installFailed":   "The update did not finish. Your current app is retained. Retry or download the installer.",
+	"menu.checkUpdate":       "Check for Updates",
+
 	// Menu bar
 	"menu.about":          "About A1 Handwriting Helper",
 	"menu.settings":       "Settings…",
