@@ -40,7 +40,7 @@ func (f *Font) fitTextFragment(runes []rune, offset int, available float64, s La
 	}
 	if end < len(runes) && end > offset {
 		candidate := end
-		for candidate > offset+1 && (noLineStart(runes[candidate]) || noLineEnd(runes[candidate-1])) {
+		for candidate > offset+1 && (noLineStart(f.bodyBase(runes[candidate])) || noLineEnd(f.bodyBase(runes[candidate-1]))) {
 			candidate--
 		}
 		end = candidate

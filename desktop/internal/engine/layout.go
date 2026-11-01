@@ -81,6 +81,9 @@ func noLineStart(r rune) bool {
 func noLineEnd(r rune) bool { return strings.ContainsRune("（《【〈“‘([{", r) }
 
 func (f *Font) advance(r rune, s LayoutSettings) float64 {
+	if script, ok := f.bodyScripts[r]; ok {
+		return script.advance
+	}
 	ratio := s.LetterSpacing / 100
 	if r == '\t' {
 		return tabCells * (s.FontSize*ratio + s.LetterGap)
@@ -130,7 +133,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v25-ink-overlap", occupied, f.ID})
+	}{text, s, "stroke-fonts-v26-body-subscripts", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {
@@ -175,7 +178,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 			}
 			continue
 		}
-		runes := []rune(paragraph)
+		bodyFont, runes := f.bodyRunes(paragraph, s)
 		if len(runes) == 0 {
 			reserveLine()
 			page := &doc.Pages[len(doc.Pages)-1]
@@ -202,12 +205,12 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 			if offset == 0 && !(pi == 0 && continuation) {
 				indent = s.Indent * (s.FontSize*s.LetterSpacing/100 + s.LetterGap)
 			}
-			if f.advance(runes[offset], s)-s.LetterGap > width-indent+1e-8 {
+			if bodyFont.advance(runes[offset], s)-s.LetterGap > width-indent+1e-8 {
 				return nil, fmt.Errorf("字符无法放入正文，请减小字号或页边距")
 			}
 			reserveLine()
 			page := &doc.Pages[len(doc.Pages)-1]
-			line := f.wrapTextLine(runes, offset, indent, s, y, page.LineHeight, occupied[len(doc.Pages)-1])
+			line := bodyFont.wrapTextLine(runes, offset, indent, s, y, page.LineHeight, occupied[len(doc.Pages)-1])
 			if line.inkBottom > bottom-s.MarginTop+1e-8 {
 				return nil, fmt.Errorf("笔画超过正文高度，请减小字号或页边距")
 			}
@@ -216,7 +219,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 				y = s.MarginTop
 				continue
 			}
-			drawY, fits := f.placeVariedTextLine(&ink, runes, line, s, y, page.LineHeight, occupied[len(doc.Pages)-1], s.variation("body").at(textOffset+textIndex))
+			drawY, fits := bodyFont.placeVariedTextLine(&ink, runes, line, s, y, page.LineHeight, occupied[len(doc.Pages)-1], s.variation("body").at(textOffset+textIndex))
 			if !fits && !slices.Contains(page.Issues, lineOverlapIssue) {
 				// Keep text, pagination and carets current while the writer fixes
 				// spacing. Page issues still block G-code generation and upload.
@@ -226,7 +229,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 				appendOverlapDiagnostics(page, ink.overlaps, diagnosticBounds)
 			}
 			for _, part := range line.parts {
-				f.appendTextFragment(page, runes[part.start:part.end], part, s, drawY, &textIndex, missingSet, doc, s.variation("body").at(textOffset))
+				bodyFont.appendTextFragment(page, runes[part.start:part.end], part, s, drawY, &textIndex, missingSet, doc, s.variation("body").at(textOffset))
 				offset = part.end
 			}
 			y += page.LineHeight

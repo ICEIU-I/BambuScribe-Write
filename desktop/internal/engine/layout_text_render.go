@@ -2,15 +2,18 @@ package engine
 
 import (
 	"strconv"
+	"strings"
 	"unicode"
 )
 
 func (f *Font) appendTextFragment(page *Page, runes []rune, part textFragment, s LayoutSettings, y float64, textIndex *int, missingSet map[rune]bool, doc *Document, variation handwritingVariation) {
 	x := textFragmentOrigin(part, s)
+	var text strings.Builder
 	page.Carets = append(page.Carets, CaretStop{*textIndex, x, y})
 	for _, r := range runes {
+		source, length := f.bodySource(r), f.bodyRuneWidth(r)
 		advance := f.advance(r, s)
-		page.Cells = append(page.Cells, GlyphCell{*textIndex, *textIndex + utf16Width(r), x, y, min(advance, part.right-x), min(s.FontSize, page.LineHeight, s.PaperHeight-s.MarginBottom-y)})
+		page.Cells = append(page.Cells, GlyphCell{*textIndex, *textIndex + length, x, y, min(advance, part.right-x), min(s.FontSize, page.LineHeight, s.PaperHeight-s.MarginBottom-y)})
 		if !unicode.IsSpace(r) {
 			g, ok := f.Glyphs[r]
 			if !ok {
@@ -30,12 +33,13 @@ func (f *Font) appendTextFragment(page *Page, runes []rune, part textFragment, s
 					}
 					page.Strokes = append(page.Strokes, out)
 				}
-				page.Ink = append(page.Ink, InkLayer{"", strconv.Itoa(*textIndex), inkSource([]string{f.ID, string(r)}), page.Strokes[start:]})
+				page.Ink = append(page.Ink, InkLayer{"", strconv.Itoa(*textIndex), inkSource([]string{f.ID, source}), page.Strokes[start:]})
 			}
 		}
 		x += advance
-		*textIndex += utf16Width(r)
+		*textIndex += length
 		page.Carets = append(page.Carets, CaretStop{*textIndex, min(x, part.right), y})
+		text.WriteString(source)
 	}
-	page.Text += string(runes)
+	page.Text += text.String()
 }

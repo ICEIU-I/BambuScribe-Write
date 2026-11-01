@@ -20,10 +20,11 @@ type Glyph struct {
 }
 
 type Font struct {
-	ID     string
-	Name   string
-	Glyphs map[rune]Glyph
-	Units  float64
+	ID          string
+	Name        string
+	Glyphs      map[rune]Glyph
+	Units       float64
+	bodyScripts map[rune]bodyScript
 }
 
 var fontOnce sync.Once

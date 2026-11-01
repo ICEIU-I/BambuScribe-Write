@@ -49,7 +49,7 @@ func (ink *textInk) addLine(f *Font, runes []rune, line wrappedTextLine, s Layou
 					left, right, top, bottom := tableGlyphBounds(g)
 					if !finite(left) {
 						x += advance
-						index += utf16Width(r)
+						index += f.bodyRuneWidth(r)
 						continue
 					}
 					scale := s.FontSize / f.Units
@@ -73,7 +73,7 @@ func (ink *textInk) addLine(f *Font, runes []rune, line wrappedTextLine, s Layou
 				current = append(current, glyph)
 			}
 			x += advance
-			index += utf16Width(r)
+			index += f.bodyRuneWidth(r)
 		}
 	}
 	ink.active = append(ink.active, current...)
