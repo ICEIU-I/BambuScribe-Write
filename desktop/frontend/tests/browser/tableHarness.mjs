@@ -21,7 +21,7 @@ export const test = base.extend({
     { scope: 'worker', auto: true },
   ],
 })
-export async function open(page) {
+export async function open(page, update = {}) {
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
   await page.route('**/__table-preview', async (route) => {
@@ -35,7 +35,7 @@ export async function open(page) {
       await route.fulfill({ status: 400, body: e.stderr?.toString() ?? e.message })
     }
   })
-  await page.addInitScript(() => {
+  await page.addInitScript((update) => {
     const layout = {
       templateName: '表格测试',
       lineMode: 'fixed',
@@ -98,6 +98,23 @@ export async function open(page) {
     window.go = {
       application: {
         App: {
+          CheckUpdate: async () => {
+            window.__tables.updateChecks = (window.__tables.updateChecks ?? 0) + 1
+            if (update.fail) throw new Error('无法连接更新服务，请检查网络后重试。')
+            const info = {
+              current: '0.1.3',
+              version: '0.1.3',
+              available: false,
+              notes: '',
+              url: '',
+              ...update,
+            }
+            if (update.defer)
+              return new Promise((resolve) => {
+                window.__tables.finishCheck = () => resolve(info)
+              })
+            return info
+          },
           Bootstrap: async () => ({
             preferences,
             printer: { ip: '', serial: '', hasAccessCode: false },
@@ -159,7 +176,7 @@ export async function open(page) {
         },
       },
     }
-  })
+  }, update)
   await page.goto('/')
   await expect(page.getByRole('button', { name: '表格', exact: true })).toBeEnabled()
   return errors

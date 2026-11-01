@@ -4,6 +4,7 @@ export const zh: Record<string, string> = {
   'update.cancelled': '更新已取消，原版本保留。',
   'update.title': '软件更新',
   'update.check': '检查更新',
+  'update.available': '有新版本 {version}，点击更新',
   'update.close': '关闭更新窗口',
   'update.currentVersion': '当前版本 {version}',
   'update.newVersion': '新版本 {version}',

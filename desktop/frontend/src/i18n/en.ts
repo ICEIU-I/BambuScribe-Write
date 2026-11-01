@@ -4,6 +4,7 @@ export const en: Record<string, string> = {
   'update.cancelled': 'Update cancelled. The current app is unchanged.',
   'update.title': 'Software Update',
   'update.check': 'Check for Updates',
+  'update.available': 'Version {version} available. Click to update.',
   'update.close': 'Close update window',
   'update.currentVersion': 'Current version {version}',
   'update.newVersion': 'New version {version}',

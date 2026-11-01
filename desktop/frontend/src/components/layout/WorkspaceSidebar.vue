@@ -6,14 +6,18 @@ import HoverHint from '../ui/HoverHint.vue'
 import PageRail from '../editor/PageRail.vue'
 import type { Page } from '../../types'
 import { t } from '../../i18n'
-defineProps<{
+const props = defineProps<{
   tab: 'write' | 'device'
   theme: 'light' | 'dark'
   pages: Page[]
   index: number
   disabled: boolean
   actionsDisabled: boolean
+  updateVersion: string
 }>()
+const updateHint = computed(() =>
+  props.updateVersion ? t('update.available', { version: props.updateVersion }) : t('update.check'),
+)
 const emit = defineEmits<{
   'update:tab': ['write' | 'device']
   'update:theme': ['light' | 'dark']
@@ -101,14 +105,15 @@ const tabs = computed(() => [
       @move-page="(from, to) => emit('movePage', from, to)"
     />
     <div class="sidebar-footer">
-      <HoverHint v-slot="hint" :text="t('update.check')">
+      <HoverHint v-slot="hint" :text="updateHint">
         <button
-          class="sidebar-action"
-          :aria-label="t('update.check')"
+          class="sidebar-action sidebar-update"
+          :aria-label="updateHint"
           :aria-describedby="hint.describedBy"
           @click="emit('checkUpdate')"
         >
           <AppIcon name="download" :size="20" />
+          <span v-if="updateVersion" class="update-badge" aria-hidden="true"></span>
         </button>
       </HoverHint>
       <HoverHint

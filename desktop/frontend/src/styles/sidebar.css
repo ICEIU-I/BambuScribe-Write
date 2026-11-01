@@ -50,6 +50,20 @@
   margin-top: 12px;
   border-top: 1px solid var(--border);
 }
+.sidebar-update {
+  position: relative;
+}
+.update-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 2px var(--sidebar);
+  pointer-events: none;
+}
 @media (max-width: 760px) {
   .sidebar-brand {
     height: 66px;

@@ -75,6 +75,9 @@ func (a *App) CheckUpdate() (updater.Info, error) {
 	checkCtx, cancel := context.WithTimeout(ctx, 25*time.Second)
 	defer cancel()
 	info, release, err := client.Check(checkCtx, buildinfo.Version)
+	if err != nil {
+		return info, updateError(err)
+	}
 	a.updates.mu.Lock()
 	if a.updates.prepared != nil {
 		a.updates.prepared.Cleanup()
@@ -82,9 +85,6 @@ func (a *App) CheckUpdate() (updater.Info, error) {
 	}
 	a.updates.release = release
 	a.updates.mu.Unlock()
-	if err != nil {
-		return info, updateError(err)
-	}
 	return info, nil
 }
 

@@ -151,3 +151,85 @@ test('cancellation racing with download completion still prevents restart', asyn
   expect(await page.evaluate(() => window.__update.order)).not.toContain('restart')
   expect(errors).toEqual([])
 })
+
+test('startup update badge stays after dismissal and in both themes without interrupting editing', async ({
+  page,
+}, info) => {
+  const errors = await open(page, { available: true, version: '0.1.4' })
+  const button = page.getByRole('button', { name: '有新版本 0.1.4，点击更新' })
+  await expect(button.locator('.update-badge')).toBeVisible()
+  await expect(page.getByRole('dialog', { name: '软件更新' })).not.toBeVisible()
+  await page.locator('textarea.paper-input').fill('更新提醒不打断编辑')
+  await button.hover()
+  await expect(page.getByRole('tooltip')).toContainText('有新版本 0.1.4')
+  await page.screenshot({ path: info.outputPath('update-badge-light.png') })
+  await page.locator('.theme-toggle').click()
+  await button.hover()
+  await expect(button.locator('.update-badge')).toBeVisible()
+  await page.screenshot({ path: info.outputPath('update-badge-dark.png') })
+  await button.click()
+  await expect(page.getByRole('dialog', { name: '软件更新' })).toContainText('新版本 0.1.4')
+  await page.getByRole('button', { name: '关闭更新窗口' }).click()
+  await expect(button.locator('.update-badge')).toBeVisible()
+  await expect(page.locator('textarea.paper-input')).toHaveValue('更新提醒不打断编辑')
+  expect(errors).toEqual([])
+})
+
+test('manual check joins a pending background check instead of starting another', async ({
+  page,
+}) => {
+  const errors = await open(page, { available: true, version: '0.1.4', defer: true })
+  await expect.poll(() => page.evaluate(() => window.__tables.updateChecks)).toBe(1)
+  await page.getByRole('button', { name: '检查更新', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: '软件更新' })).toContainText('正在检查更新')
+  expect(await page.evaluate(() => window.__tables.updateChecks)).toBe(1)
+  await page.evaluate(() => window.__tables.finishCheck())
+  await expect(page.getByRole('dialog', { name: '软件更新' })).toContainText('新版本 0.1.4')
+  expect(errors).toEqual([])
+})
+
+test('background failures are quiet, retry after cooldown, and retain a known badge', async ({
+  page,
+}) => {
+  await page.clock.install()
+  const errors = await open(page, { fail: true })
+  await expect.poll(() => page.evaluate(() => window.__tables.updateChecks)).toBe(1)
+  await expect(page.locator('.update-badge')).toHaveCount(0)
+  await expect(page.getByRole('dialog', { name: '软件更新' })).not.toBeVisible()
+  await page.evaluate(() => {
+    window.go.application.App.CheckUpdate = async () => {
+      window.__tables.updateChecks++
+      if (window.__tables.failUpdate) throw new Error('网络错误')
+      return { current: '0.1.3', version: '0.1.4', available: true, notes: '', url: '' }
+    }
+    for (let i = 0; i < 5; i++) window.dispatchEvent(new Event('focus'))
+  })
+  expect(await page.evaluate(() => window.__tables.updateChecks)).toBe(1)
+  await page.clock.fastForward(15 * 60 * 1000)
+  await expect(page.locator('.update-badge')).toBeVisible()
+  await page.evaluate(() => {
+    window.__tables.failUpdate = true
+  })
+  await page.clock.fastForward(6 * 60 * 60 * 1000)
+  await expect.poll(() => page.evaluate(() => window.__tables.updateChecks)).toBe(3)
+  await expect(page.locator('.update-badge')).toBeVisible()
+  await expect(page.getByRole('dialog', { name: '软件更新' })).not.toBeVisible()
+  await expect(page.getByRole('alert')).toHaveCount(0)
+  expect(errors).toEqual([])
+})
+
+test('current versions have no badge and resumed checks respect the successful cooldown', async ({
+  page,
+}) => {
+  await page.clock.install()
+  const errors = await open(page)
+  await expect.poll(() => page.evaluate(() => window.__tables.updateChecks)).toBe(1)
+  await expect(page.locator('.update-badge')).toHaveCount(0)
+  await page.evaluate(() => window.dispatchEvent(new Event('online')))
+  expect(await page.evaluate(() => window.__tables.updateChecks)).toBe(1)
+  await page.clock.setSystemTime(new Date(Date.now() + 6 * 60 * 60 * 1000))
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')))
+  await expect.poll(() => page.evaluate(() => window.__tables.updateChecks)).toBe(2)
+  await expect(page.locator('.update-badge')).toHaveCount(0)
+  expect(errors).toEqual([])
+})

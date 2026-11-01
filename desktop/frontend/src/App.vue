@@ -185,6 +185,7 @@ watch(
       :index="pageIndex"
       :disabled="!ready || busy"
       :actions-disabled="!ready || busy || dirty || loading"
+      :update-version="updater.availableVersion.value"
       @collapse="toggleSidebar(false)"
       @new="w.newProject"
       @open="w.openProject"
