@@ -185,6 +185,7 @@ watch(
       v-show="sidebarOpen"
       v-model:tab="tab"
       v-model:theme="preferences.theme"
+      :font-id="preferences.layout.fontId"
       :pages="document?.pages ?? []"
       :index="pageIndex"
       :disabled="!ready || busy"

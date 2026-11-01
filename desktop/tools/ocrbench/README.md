@@ -34,4 +34,4 @@ Vision 需要 macOS 的 Swift/Vision。其配置与桌面端一致，返回归�
 
 Paddle 模型默认保存在 `~/.cache/bambuscribe/ocr-eval/models`，可通过 `--model-cache` 修改；Pix2Text 使用其默认 `~/.pix2text`，CnOCR/CnSTD 使用各自缓存目录。依赖、模型及运行产物均不需要加入 Git。
 
-实测结论、原始结果和权重哈希见评估记录（本机评估不随源码发布）。
+评估结果保存在自行指定的输出目录，勿将本机路径、识别原图、模型配置或运行日志提交到仓库。

@@ -65,6 +65,12 @@ async function seed(page, options = {}) {
   }, options)
   await expect(rail(page)).toHaveCount(3)
   await page.getByLabel('页面缩放').selectOption('50')
+  // Opening a legacy erasure document schedules a second preview to freeze
+  // its stroke cuts. Page actions must wait for that normalization to finish.
+  await expect
+    .poll(async () => (await payload(page)).erasures.every((e) => Array.isArray(e.cuts)))
+    .toBe(true)
+  await expect(rail(page).nth(1)).toHaveAttribute('data-reorder-enabled', 'true')
   return errors
 }
 async function remove(page, index) {
@@ -88,7 +94,9 @@ test('right click deletes that page, shifts later content and restores everythin
   expect(after.text).toBe(preview.pages[0].text + preview.pages[2].text)
   expect(after.images).toEqual([{ ...before.images[1], page: 1 }])
   expect(after.tables).toEqual([{ ...before.tables[2], page: 1 }])
-  expect(after.erasures).toEqual([{ ...before.erasures[1], page: 1 }])
+  // These empty-area gestures are now frozen cut records. They retain their
+  // history while later page anchors shift, without erasing newly moved ink.
+  expect(after.erasures).toEqual(before.erasures.map((e) => ({ ...e, page: 1 })))
   await page.keyboard.press('Meta+z')
   await expect(rail(page)).toHaveCount(3)
   expect(await payload(page)).toEqual(before)

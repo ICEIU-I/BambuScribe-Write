@@ -1,0 +1,45 @@
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: desktop/go.mod
+          cache-dependency-path: desktop/go.sum
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: desktop/frontend/package-lock.json
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0
+      - name: Build
+        working-directory: desktop
+        run: wails build -trimpath
+      - name: Go checks
+        working-directory: desktop
+        run: |
+          go test -race ./internal/...
+          go vet ./...
+      - name: Frontend checks
+        working-directory: desktop/frontend
+        run: |
+          npm run check
+          node --test tests/*.test.mjs
+      - name: Browser checks
+        working-directory: desktop/frontend
+        run: |
+          npx playwright install chromium webkit
+          npm run test:browser

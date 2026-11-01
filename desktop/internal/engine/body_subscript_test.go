@@ -91,9 +91,9 @@ func TestBodySubscriptFallbackAndFontIsolation(t *testing.T) {
 	s := DefaultLayout()
 	s.FontSize = 5
 	before, _ := f.Layout("正文R_g", s)
-	for _, source := range []string{"R_{}", "R_{g", "R_{ }", "R_{x_{g}}"} {
+	for _, source := range []string{"R_{}", "R_{g", "R_{ }", "R_{g}_{s}"} {
 		font, runes := f.bodyRunes(source, s)
-		if font != f || string(runes) != source {
+		if string(runes) != source || len(font.bodyScripts) != 0 {
 			t.Fatal("invalid group was interpreted", source)
 		}
 	}

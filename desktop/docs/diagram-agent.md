@@ -18,5 +18,6 @@
 
 纸面粘贴已恢复原有自动 OCR：未配置本机模型时使用 macOS Vision，启用了 `image-ocr.json` 时使用本机 PaddleOCR/Pix2Text，识别规则、缓存、人工文本框和擦除记录沿用原实现。紧凑分式截图可由本机公式模型完整识别并按结构重绘，根式等不支持的结构保留原笔画；该流程不需要表格模型的 API Key。已经通过图像 Agent 重建并保存 `diagram` 的图片继续直接渲染矢量，不再进入 OCR，也不会自动重新调用模型。
 
+## 开发样例
 
-回归使用同目录内的结构化 JSON 样例。
+[开关结构](diagram-fit-2026-10-09/first.json)和[原理图结构](diagram-fit-2026-10-09/hall-effect.json)用于自动回归。复跑工具见 [diagramfit](../tools/diagramfit/README.md)。模型输出仍需对照原图核对，样例不保证任意图片的识别准确性。

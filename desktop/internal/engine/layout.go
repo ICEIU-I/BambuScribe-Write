@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 	"unicode"
@@ -133,7 +134,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v26-body-subscripts", occupied, f.ID})
+	}{text, s, "stroke-fonts-v31-inline-fractions", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {
@@ -168,7 +169,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 	}
 	for pi, paragraph := range paragraphs {
 		if source, ok := formulaSource(paragraph); ok {
-			if err := f.appendBodyFormula(doc, s, source, occupied, &ink, &y, &row, &textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+textIndex))); err != nil {
+			if err := f.appendBodyFormula(doc, s, source, paragraph[:2], paragraph[len(paragraph)-2:], occupied, &ink, &y, &row, &textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+textIndex))); err != nil {
 				return nil, err
 			}
 			if pi < len(paragraphs)-1 || followedByPage && strings.HasSuffix(text, "\n") {
@@ -178,7 +179,10 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 			}
 			continue
 		}
-		bodyFont, runes := f.bodyRunes(paragraph, s)
+		bodyFont, runes := f.bodyRunes(paragraph, s, s.variation("body").at(textOffset+textIndex))
+		if bodyFont != f {
+			bodyFont.bodyIssueOffset = textIndex
+		}
 		if len(runes) == 0 {
 			reserveLine()
 			page := &doc.Pages[len(doc.Pages)-1]
@@ -211,8 +215,25 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 			reserveLine()
 			page := &doc.Pages[len(doc.Pages)-1]
 			line := bodyFont.wrapTextLine(runes, offset, indent, s, y, page.LineHeight, occupied[len(doc.Pages)-1])
-			if line.inkBottom > bottom-s.MarginTop+1e-8 {
+			if line.inkBottom-min(0, line.inkTop) > bottom-s.MarginTop+1e-8 {
 				return nil, fmt.Errorf("笔画超过正文高度，请减小字号或页边距")
+			}
+			if line.hasInk && y+line.inkTop < s.MarginTop-1e-8 {
+				y += s.MarginTop - y - line.inkTop
+				continue
+			}
+			// Tall inline structures reserve whole ruled rows before and after their ink.
+			tall := line.inkTop < -1e-8 || line.inkBottom > s.FontSize+1e-8
+			if tall && len(ink.active) > 0 {
+				required := y
+				for _, old := range ink.active {
+					required = max(required, old.Y+old.Height+s.FontSize*.1-line.inkTop)
+				}
+				if required > y+1e-8 {
+					y += math.Ceil((required-y)/page.LineHeight) * page.LineHeight
+					row = int(math.Floor((y - s.MarginTop) / page.LineHeight))
+					continue
+				}
 			}
 			if y+line.inkBottom > bottom+1e-8 {
 				newPage()
@@ -232,8 +253,12 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 				bodyFont.appendTextFragment(page, runes[part.start:part.end], part, s, drawY, &textIndex, missingSet, doc, s.variation("body").at(textOffset))
 				offset = part.end
 			}
-			y += page.LineHeight
-			row++
+			step := 1
+			if tall {
+				step = max(1, int(math.Ceil((line.inkBottom+s.FontSize*.1)/page.LineHeight)))
+			}
+			y += float64(step) * page.LineHeight
+			row += step
 		}
 		if pi < len(paragraphs)-1 || followedByPage && strings.HasSuffix(text, "\n") {
 			doc.Pages[len(doc.Pages)-1].Text += "\n"

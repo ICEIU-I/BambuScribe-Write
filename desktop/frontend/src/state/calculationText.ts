@@ -11,10 +11,10 @@ export function calculationAt(text: string, records: CalculationRecord[], index:
   }
 }
 export function formulaRanges(text: string) {
-  return [...text.matchAll(/^\\\(([^\n\f]*)\\\)$/gm)].map((m) => ({
+  return [...text.matchAll(/^\\\(([^\n\f]*)\\\)$|^\\\[([^\n\f]*)\\\]$/gm)].map((m) => ({
     start: m.index!,
     end: m.index! + m[0].length,
-    source: m[1],
+    source: m[1] ?? m[2],
   }))
 }
 export function insertCalculation(text: string, from: number, to: number, generated: string) {

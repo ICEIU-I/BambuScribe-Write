@@ -189,7 +189,12 @@ const selectionClipboard = useSelectionClipboard(
   (message) => emit('notice', message),
 )
 function copy(event: ClipboardEvent) {
+  if ((event.target as Element | null)?.closest?.('dialog,[role="dialog"]')) return
   if (!selectionClipboard.copy(event)) editing.copy(event)
+}
+function cut(event: ClipboardEvent) {
+  if ((event.target as Element | null)?.closest?.('dialog,[role="dialog"]')) return
+  editing.cut(event)
 }
 function keydown(event: KeyboardEvent) {
   if (event.key === 'Escape') marquee.clear()
@@ -356,14 +361,14 @@ function scroll() {
 }
 onMounted(() => {
   window.addEventListener('copy', copy)
-  window.addEventListener('cut', editing.cut)
+  window.addEventListener('cut', cut)
   window.addEventListener('paste', paste)
   window.addEventListener('keydown', keydown, true)
 })
 onBeforeUnmount(() => {
   cancelAnimationFrame(scrollFrame)
   window.removeEventListener('copy', copy)
-  window.removeEventListener('cut', editing.cut)
+  window.removeEventListener('cut', cut)
   window.removeEventListener('paste', paste)
   window.removeEventListener('keydown', keydown, true)
 })
@@ -373,7 +378,9 @@ const formulaEdit = ref<{ source: string; start: number; end: number; original: 
 function saveFormula(source: string) {
   const current = formulaEdit.value
   if (current && current.original === props.modelValue) {
-    editing.replaceFormula(current.start, current.end, `\\(${source}\\)`)
+    const opening = current.original.slice(current.start, current.start + 2)
+    const closing = current.original.slice(current.end - 2, current.end)
+    editing.replaceFormula(current.start, current.end, `${opening}${source}${closing}`)
     formulaEdit.value = null
   } else {
     formulaEdit.value = null

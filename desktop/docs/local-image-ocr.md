@@ -22,7 +22,7 @@
 }
 ```
 
-Paddle 模型目录须有 `PP-OCRv6_det_medium.onnx`、`PP-OCRv6_rec_medium.onnx` 及 RapidOCR 所需的识别字典。公式目录使用完整 MFR ONNX 模型包（包括 encoder、decoder、配置及 tokenizer），不要只复制权重。依赖版本、模型来源和下载测试方法见 OCR 评估（本机评估不随源码发布） 与 [复跑工具](../tools/ocrbench/README.md)。两个 Python 环境分开安装，避免 Pix2Text 的 CnSTD 依赖与新版 RapidOCR 冲突。
+Paddle 模型目录须有 `PP-OCRv6_det_medium.onnx`、`PP-OCRv6_rec_medium.onnx` 及 RapidOCR 所需的识别字典。公式目录使用完整 MFR ONNX 模型包（包括 encoder、decoder、配置及 tokenizer），不要只复制权重。依赖安装和复跑方法见 [OCR 工具说明](../tools/ocrbench/README.md)。两个 Python 环境分开安装，避免 Pix2Text 的 CnSTD 依赖与新版 RapidOCR 冲突。
 
 运行期间只读取本机模型，禁用 Hugging Face 在线下载。图片不发送给外部服务。模型脚本随应用打包；模型权重与 Python 环境留在本机，不进入 `.ccf`。第一次识别会启动模型，本次 1062×812 样图约 10 秒；总超时为 75 秒，公式子进程为 45 秒。
 

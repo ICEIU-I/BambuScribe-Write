@@ -27,9 +27,8 @@ func (ink *textInk) addLine(f *Font, runes []rune, line wrappedTextLine, s Layou
 	index := 0
 	active := ink.active[:0]
 	for _, b := range ink.active {
-		// Glyph coordinates are nonnegative. Prune at the row origin rather
-		// than this line's top, since a later line can have a higher ascender.
-		if b.Y+b.Height+bodyInkWidth > y+1e-8 {
+		// Inline structures can rise above the ordinary writing cell.
+		if b.Y+b.Height+bodyInkWidth > y+min(0, line.inkTop)+1e-8 {
 			active = append(active, b)
 		}
 	}
@@ -58,6 +57,9 @@ func (ink *textInk) addLine(f *Font, runes []rune, line wrappedTextLine, s Layou
 					b = RegionBounds{x + bearing + left*scale, y + top*scale, (right - left) * scale, (bottom - top) * scale}
 					glyph = textInkGlyph{RegionBounds: b, source: g.Strokes, variation: variation, occurrence: index,
 						origin: Point{x + bearing, y}, units: f.Units, size: s.FontSize}
+					if f.bodyScripts[r].math {
+						glyph.variation = handwritingVariation{}
+					}
 				}
 				for i := range ink.active {
 					old := &ink.active[i]

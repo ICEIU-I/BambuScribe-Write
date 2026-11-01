@@ -25,7 +25,7 @@ test('icon rail stays narrow and exposes one hover or keyboard hint at a time', 
   // WebKit follows macOS's setting that skips buttons during plain Tab navigation.
   await rail.getByRole('button', { name: '另存为', exact: true }).focus()
   await expect(rail.getByRole('button', { name: '另存为', exact: true })).toBeFocused()
-  await expect(page.getByRole('tooltip')).toHaveText('另存为 · ⌘S')
+  await expect(page.getByRole('tooltip')).toHaveText('另存为 · ⌘⇧S')
   await rail.getByRole('tab', { name: '设备台' }).hover()
   await expect(page.getByRole('tooltip')).toHaveCount(1)
   await expect(page.getByRole('tooltip')).toHaveText('设备台')

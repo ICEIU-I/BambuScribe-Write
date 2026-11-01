@@ -39,7 +39,7 @@ const usage = `BambuScribe CLI
   bambuscribe preview --project note.ccf --format svg --page 1 --output page.svg
   bambuscribe check --project note.ccf
   bambuscribe export --project note.ccf --page 1|all --output page.gcode|pages.zip
-  bambuscribe device discover --ip 192.168.1.100
+  bambuscribe device discover --ip 192.0.2.10
   bambuscribe device connect|status|watch --config device.json [--timeout 30s]
   bambuscribe device upload --config device.json --project note.ccf --params '{"prefix":"31","pages":[1]}' [--timeout 10m]
   bambuscribe recognize-table --image table.png --output extraction.json

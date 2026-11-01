@@ -12,7 +12,7 @@ async function setup(page, available = true) {
       version: available ? '0.1.2' : '0.1.1',
       available,
       notes: '<script>never execute</script>',
-      url: 'https://github.com/ICEIU-I/BambuScribe-Write-Releases/releases',
+      url: 'https://github.com/ICEIU-I/BambuScribe-Write/releases',
     })
     api.SavePreferences = async (p, path) => {
       window.__update.order.push('save')

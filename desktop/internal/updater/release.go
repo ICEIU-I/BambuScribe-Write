@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const Repository = "ICEIU-I/BambuScribe-Write-Releases"
+const Repository = "ICEIU-I/BambuScribe-Write"
 const ReleasesURL = "https://github.com/" + Repository + "/releases"
 const maxPackageSize = 256 << 20
 

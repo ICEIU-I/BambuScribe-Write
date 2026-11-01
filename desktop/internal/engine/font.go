@@ -20,11 +20,13 @@ type Glyph struct {
 }
 
 type Font struct {
-	ID          string
-	Name        string
-	Glyphs      map[rune]Glyph
-	Units       float64
-	bodyScripts map[rune]bodyScript
+	ID              string
+	Name            string
+	Glyphs          map[rune]Glyph
+	Units           float64
+	bodyScripts     map[rune]bodyScript
+	bodyIssues      []bodySyntaxIssue
+	bodyIssueOffset int
 }
 
 var fontOnce sync.Once
@@ -121,10 +123,4 @@ func addPunctuation(f *Font) {
 	put("…", 5, Stroke{{0, 6}, {0.2, 6}}, Stroke{{2.4, 6}, {2.6, 6}}, Stroke{{4.8, 6}, {5, 6}})
 	put("·", 0.4, Stroke{{0, 5}, {0.3, 5}})
 	put("$¥￥＄", 4, Stroke{{0, 2}, {2, 4}, {4, 2}}, Stroke{{0, 4.7}, {4, 4.7}}, Stroke{{0, 6}, {4, 6}}, Stroke{{2, 4}, {2, 8}})
-	put("×", 4, Stroke{{0, 3}, {4, 7}}, Stroke{{0, 7}, {4, 3}})
-	put("÷", 4, Stroke{{0, 5}, {4, 5}}, Stroke{{1.9, 2.7}, {2.1, 2.7}}, Stroke{{1.9, 7.3}, {2.1, 7.3}})
-	put("±", 4, Stroke{{0, 4}, {4, 4}}, Stroke{{2, 2}, {2, 6}}, Stroke{{0, 8}, {4, 8}})
-	put("°", 1.4, Stroke{{0, 2}, {0.4, 1.5}, {1, 1.5}, {1.4, 2}, {1, 2.6}, {0.4, 2.6}, {0, 2}})
-	put("μµ", 4, Stroke{{0.5, 3.5}, {0, 9}}, Stroke{{0.5, 3.5}, {0.4, 6}, {1, 7.2}, {2.2, 7}, {3.3, 3.5}, {2.8, 6.8}, {3.3, 7.3}, {4, 6.8}})
-	put("℃", 5.5, Stroke{{0, 2}, {0.4, 1.5}, {1, 1.5}, {1.4, 2}, {1, 2.6}, {0.4, 2.6}, {0, 2}}, Stroke{{5.5, 3}, {4.6, 2.4}, {3.2, 2.6}, {2.4, 4.1}, {2.4, 6}, {3.3, 7.5}, {4.7, 7.8}, {5.5, 7.2}})
 }

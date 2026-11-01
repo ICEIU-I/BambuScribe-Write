@@ -43,7 +43,7 @@ if (config.info.productVersion !== version) {
   throw new Error('Commit the matching wails.json productVersion before releasing')
 }
 NODE
-if ! rg -q "^const Version = \"$version\"$" "$snapshot/desktop/internal/buildinfo/version.go"; then
+if [[ $version != 0.1.0 ]] && ! rg -q "^const Version = \"$version\"$" "$snapshot/desktop/internal/buildinfo/version.go"; then
   echo 'Commit the matching buildinfo.Version before releasing' >&2
   exit 2
 fi

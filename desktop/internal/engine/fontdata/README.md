@@ -1,7 +1,9 @@
 # 内置笔画字库
 
+“教案专用”和“DC体”由项目维护者 [ICEIU-I](https://github.com/ICEIU-I) 原创制作，作者已确认可随本项目公开分发。两套笔画数据及本项目补充字形按 [GPL-3.0](../../../../LICENSE) 分发，Copyright (C) 2026 ICEIU-I。
+
 - `handwriting.json.gz`：原“教案专用”字库。
-- `dc.json.gz`：由作者提供的 `15_DC体.json`，6,878 个原始字形，完整覆盖“教案专用”的 6,848 个原始字形。原文件 SHA-256：`8a426dc7d4e2ac864a55f3dddbf990b5273b424febb65e10eb6b9dfcdbf86904`。
+- `dc.json.gz`：由作者原始文件 `15_DC体.json` 打包，6,878 个原始字形，完整覆盖“教案专用”的 6,848 个原始字形。原文件 SHA-256：`8a426dc7d4e2ac864a55f3dddbf990b5273b424febb65e10eb6b9dfcdbf86904`。
 
 DC体另补充 285 个符号，共 7,163 个可书写字形，与现有教案专用运行时字库的字符集合一致。
 
@@ -19,5 +21,3 @@ DC体的“懈”“幛”“悻”原始纵坐标分别达到 11.333、11.022�
 python3 tools/fonts/pack.py /path/to/15_DC体.json internal/engine/fontdata/dc.json.gz
 go run ./tools/fonts --font dc --output /path/to/15_DC体_补全.json
 ```
-
-“教案专用”和“DC体”由 [ICEIU-I](https://github.com/ICEIU-I) 原创制作，Copyright (C) 2026 ICEIU-I，按 [GPL-3.0](../../../../LICENSE) 分发。

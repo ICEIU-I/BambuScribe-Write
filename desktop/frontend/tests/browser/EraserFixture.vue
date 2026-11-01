@@ -3,6 +3,8 @@ import { computed, reactive, ref, shallowRef, onMounted, onBeforeUnmount } from 
 import ImageOverlay from '../../src/components/editor/ImageOverlay.vue'
 import { defaultLayout } from '../../src/state/defaults'
 import { useDocumentEditing } from '../../src/state/useDocumentEditing'
+import type { CalculationRecord } from '../../src/services/calculationTypes'
+import type { PageErasure, PageLayout, TableAsset } from '../../src/types'
 import type { EraseMode, ImageAsset, ImageEditTool, ImagePlacement, Point } from '../../src/types'
 import '../../src/styles/base.css'
 import '../../src/styles/paper-editor.css'
@@ -13,6 +15,10 @@ const scale = ref(3),
   radius = ref(0.02)
 const state = reactive({
   modelValue: '',
+  calculations: [] as CalculationRecord[],
+  pageLayouts: undefined as PageLayout[] | undefined,
+  erasures: [] as PageErasure[],
+  tables: [] as TableAsset[],
   images: [] as ImageAsset[],
   document: null,
   disabled: false,
@@ -22,9 +28,13 @@ const input = ref<HTMLTextAreaElement>()
 const editing = useDocumentEditing(
   state,
   input,
-  (text, images) => {
+  (text, images, tables, erasures, pageLayouts, calculations) => {
     state.modelValue = text
     state.images = images
+    state.tables = tables
+    state.erasures = erasures
+    state.pageLayouts = pageLayouts
+    state.calculations = calculations ?? []
   },
   () => {},
 )

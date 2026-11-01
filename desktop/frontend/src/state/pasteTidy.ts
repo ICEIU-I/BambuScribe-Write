@@ -17,7 +17,9 @@ export interface TidyResult {
 
 export function tidySpacing(text: string): TidyResult {
   let count = 0
+  const protectedRanges = mathInputRanges(text)
   const tidied = text.replace(RUN, (run: string, offset: number) => {
+    if (protectedRanges.some(([start, end]) => offset >= start && offset < end)) return run
     // A run that opens or closes a line is indentation or trailing space the
     // writer meant to keep: only a run between two pieces of text marks the
     // boundary the clipboard turned a line break into.
@@ -28,6 +30,48 @@ export function tidySpacing(text: string): TidyResult {
     return '\n'
   })
   return { text: tidied, count }
+}
+
+// Scope delimiters are explicit: preserve spaces inside both complete and
+// unfinished math input so a paste never inserts a newline into an argument.
+function mathInputRanges(text: string): [number, number][] {
+  const ranges: [number, number][] = []
+  const starts = /\\(?:frac|sqrt|bar)\b|[_^](?=\{)|√(?=[(（{])|\\[([]/g
+  for (const match of text.matchAll(starts)) {
+    const start = match.index!
+    if (ranges.some(([a, b]) => start >= a && start < b)) continue
+    let i = start + match[0].length
+    if (match[0] === '\\(' || match[0] === '\\[') {
+      const close = match[0] === '\\(' ? '\\)' : '\\]'
+      const at = text.indexOf(close, i)
+      const newline = text.indexOf('\n', i)
+      ranges.push([
+        start,
+        at >= 0 && (newline < 0 || at < newline) ? at + 2 : newline >= 0 ? newline : text.length,
+      ])
+      continue
+    }
+    while (i < text.length && '{(（['.includes(text[i])) {
+      const stack: string[] = []
+      const pairs: Record<string, string> = { '{': '}', '(': ')', '（': '）', '[': ']' }
+      do {
+        const c = text[i++]
+        if (c === '\\' && i < text.length && '_^{}\\'.includes(text[i])) {
+          i++
+          continue
+        }
+        if (pairs[c]) stack.push(pairs[c])
+        else if (c === stack.at(-1)) stack.pop()
+        else if (c === '\n') {
+          i--
+          break
+        }
+      } while (i < text.length && stack.length)
+      if (stack.length) break
+    }
+    ranges.push([start, i])
+  }
+  return ranges
 }
 
 // The range an edit inserted, found by trimming the unchanged prefix and

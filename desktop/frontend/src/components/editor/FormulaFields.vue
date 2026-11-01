@@ -26,6 +26,12 @@ const emit = defineEmits<{ change: [] }>()
           @change="emit('change')"
       /></template>
       <template v-else
+        ><sup v-if="node.kind === 'sqrt' && node.degree"
+          ><FormulaFields
+            :nodes="node.degree"
+            label="根指数"
+            :disabled="disabled"
+            @change="emit('change')" /></sup
         ><span v-if="node.kind === 'sqrt'">√</span
         ><FormulaFields
           :nodes="node.children!"

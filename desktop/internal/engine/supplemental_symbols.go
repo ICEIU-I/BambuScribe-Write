@@ -24,6 +24,7 @@ func addSupplementalSymbols(f *Font) {
 		return out
 	}
 
+	addScienceSymbols(put)
 	addGreekSymbols(put, line, circle)
 	addPhysicsSymbols(put, line, circle)
 	addNotationSymbols(put, line, circle)
@@ -59,7 +60,6 @@ func addGreekSymbols(
 	put("Α", 7, Stroke{{1, 9}, {1, 2}, {6, 9}}, line(Point{2, 6}, Point{5.2, 6}))
 	put("Β", 7, Stroke{{1, 9}, {1, 1.5}, {4.8, 1.5}, {6, 2.5}, {6, 4.4}, {4.8, 5.3}, {1, 5.3}, {4.8, 5.3}, {6, 6.1}, {6, 8}, {4.8, 9}, {1, 9}})
 	put("Γ", 7, Stroke{{1, 9}, {1, 1.5}, {6.5, 1.5}})
-	put("Δ", 7, Stroke{{0.7, 9}, {3.5, 1.2}, {6.3, 9}, {0.7, 9}})
 	put("Ε", 7, Stroke{{6, 1.5}, {1, 1.5}, {1, 9}, {6, 9}}, line(Point{1, 5.3}, Point{5.3, 5.3}))
 	put("Ζ", 7, Stroke{{1, 1.5}, {6, 1.5}, {1, 9}, {6, 9}})
 	put("Η", 7, Stroke{{1, 1.5}, {1, 9}}, line(Point{6, 1.5}, Point{6, 9}), line(Point{1, 5.3}, Point{6, 5.3}))
@@ -79,13 +79,9 @@ func addGreekSymbols(
 	put("Φ", 7, circle(3.5, 5.5, 2.7, 3.8), line(Point{3.5, 1}, Point{3.5, 10}))
 	put("Χ", 7, line(Point{1, 1.5}, Point{6, 9}), line(Point{6, 1.5}, Point{1, 9}))
 	put("Ψ", 8, Stroke{{0.8, 1.5}, {3.8, 5.2}, {6.8, 1.5}}, line(Point{3.8, 5.2}, Point{3.8, 9}), line(Point{2.2, 1.5}, Point{5.4, 1.5}))
-	put("Ω", 8, Stroke{{0.7, 8.8}, {0.7, 5.3}, {1.4, 2.7}, {3.8, 1.2}, {6.2, 2.7}, {6.9, 5.3}, {6.9, 8.8}}, line(Point{0.7, 8.8}, Point{2.5, 8.8}), line(Point{5.1, 8.8}, Point{6.9, 8.8}))
-	put("Ω℧", 8, circle(3.8, 5.5, 2.7, 4), line(Point{1.1, 8.8}, Point{6.5, 2.2}))
+	put("℧", 8, circle(3.8, 5.5, 2.7, 4), line(Point{1.1, 8.8}, Point{6.5, 2.2}))
 
 	// Lowercase Greek used in formulas and lab reports.
-	put("α", 7, circle(3.2, 5.4, 2.3, 2.6), line(Point{5.3, 2.8}, Point{5.8, 8.8}))
-	put("β", 7, Stroke{{1.5, 9.5}, {1.5, 1.4}, {4.8, 1.4}, {5.8, 2.4}, {5.8, 4.2}, {4.8, 5.2}, {1.5, 5.2}, {4.8, 5.2}, {5.8, 6.1}, {5.8, 8}, {4.8, 9}, {1.5, 9}})
-	put("γ", 7, Stroke{{0.8, 2}, {2.7, 7.4}, {4.2, 2}, {6.4, 2}}, line(Point{2.7, 7.4}, Point{2.7, 9.5}))
 	put("δ", 7, Stroke{{5.4, 1.7}, {3.8, 1.1}, {2.1, 1.8}, {1.5, 3.3}}, circle(3.5, 6.3, 2.3, 2.6))
 	put("εϵ", 6, Stroke{{5.3, 3}, {4.3, 2}, {2, 2}, {1.2, 3.2}, {2.2, 4.7}, {4.8, 4.7}, {2.2, 4.7}, {1.2, 6.2}, {2, 8.3}, {4.7, 8.3}, {5.5, 7.2}})
 	put("ζ", 6, Stroke{{5.7, 2}, {1.2, 2}, {4.8, 6.1}, {4.2, 9.2}, {1.3, 9.2}})
@@ -111,7 +107,9 @@ func addGreekSymbols(
 	put("φϕ", 7, circle(3.5, 5.5, 2.5, 3.1), line(Point{3.5, 1}, Point{3.5, 10}))
 	put("χ", 7, line(Point{1, 2.5}, Point{5.8, 9}), line(Point{5.8, 2.5}, Point{1, 9}))
 	put("ψ", 8, Stroke{{0.8, 2.5}, {2.2, 7.3}, {3.8, 8.5}, {5.4, 7.3}, {6.8, 2.5}}, line(Point{3.8, 1.2}, Point{3.8, 10}))
-	put("ω", 8, Stroke{{0.7, 3}, {1.4, 8}, {2.8, 8.5}, {3.8, 4.8}, {4.8, 8.5}, {6.2, 8}, {6.9, 3}})
+	// Omega has two rounded bowls and a low central rise, with the same ink
+	// bounds and advance as before so formulas keep their spacing.
+	put("ω", 8, Stroke{{1.5, 3}, {1.18, 3.45}, {0.92, 4.1}, {0.75, 4.85}, {0.7, 5.65}, {0.78, 6.55}, {1, 7.35}, {1.36, 8}, {1.8, 8.37}, {2.3, 8.5}, {2.78, 8.37}, {3.15, 8.02}, {3.42, 7.5}, {3.57, 6.85}, {3.65, 6.15}, {3.75, 5.55}, {3.9, 5.3}, {4.03, 5.6}, {4.08, 6.2}, {4.12, 6.95}, {4.28, 7.6}, {4.6, 8.1}, {5.03, 8.4}, {5.5, 8.5}, {5.98, 8.34}, {6.4, 7.9}, {6.72, 7.15}, {6.88, 6.3}, {6.9, 5.4}, {6.8, 4.5}, {6.57, 3.7}, {6.3, 3.1}})
 }
 
 func addPhysicsSymbols(
@@ -120,18 +118,12 @@ func addPhysicsSymbols(
 	circle func(float64, float64, float64, float64) Stroke,
 ) {
 	put("ÅÅ", 7, Stroke{{0.6, 9}, {3.5, 1.4}, {6.4, 9}}, line(Point{1.8, 6.2}, Point{5.2, 6.2}), circle(3.5, 1.8, 1.3, 0.7))
-	put("∆", 7, Stroke{{0.7, 9}, {3.5, 1.2}, {6.3, 9}, {0.7, 9}})
 	put("∇", 7, Stroke{{0.7, 2}, {3.5, 9}, {6.3, 2}})
 	put("∂", 7, Stroke{{5.8, 2.2}, {4.8, 1.4}, {2.4, 1.7}, {1.2, 3.4}, {1.2, 6.6}, {2.4, 8.5}, {4.8, 8.8}, {5.8, 7.8}}, line(Point{1.2, 5.4}, Point{4.7, 5.4}))
 	put("∑", 8, Stroke{{6.8, 1.5}, {1, 1.5}, {5.5, 5.3}, {1, 9}, {6.8, 9}})
 	put("∏", 8, Stroke{{1, 1.5}, {1, 9}}, line(Point{1, 1.5}, Point{7, 1.5}), line(Point{7, 1.5}, Point{7, 9}))
 	put("∫", 5, Stroke{{3.4, 1}, {2.1, 1.8}, {2.1, 3.5}, {3.5, 5.4}, {3.5, 7.2}, {2.1, 9.3}, {1, 10}})
 	put("√", 8, Stroke{{0.6, 6.2}, {1.8, 8.7}, {3.1, 1.8}, {7, 1.8}})
-	put("∞", 8, Stroke{{0.8, 5.5}, {1.7, 3.3}, {3.1, 3.3}, {4, 5.5}, {4.9, 7.7}, {6.3, 7.7}, {7.2, 5.5}, {6.3, 3.3}, {4.9, 3.3}, {4, 5.5}, {3.1, 7.7}, {1.7, 7.7}, {0.8, 5.5}})
-	put("≈", 8, Stroke{{0.8, 4.1}, {2, 3.1}, {4.2, 4.1}, {6.2, 3.1}, {7.2, 4.1}}, Stroke{{0.8, 6.2}, {2, 5.2}, {4.2, 6.2}, {6.2, 5.2}, {7.2, 6.2}})
-	put("≠", 7, line(Point{0.7, 5}, Point{6.3, 5}), line(Point{0.9, 8.2}, Point{6.1, 1.8}))
-	put("≤", 7, Stroke{{6.2, 2.5}, {1, 5.5}, {6.2, 8.5}}, line(Point{1, 5.5}, Point{6.4, 5.5}))
-	put("≥", 7, Stroke{{0.8, 2.5}, {6, 5.5}, {0.8, 8.5}}, line(Point{0.8, 5.5}, Point{6.4, 5.5}))
 	put("≡", 7, line(Point{0.8, 3}, Point{6.2, 3}), line(Point{0.8, 5.5}, Point{6.2, 5.5}), line(Point{0.8, 8}, Point{6.2, 8}))
 	put("∝", 8, Stroke{{1, 3}, {2, 2.2}, {3.6, 3.1}, {5, 5.5}, {6.1, 7.9}, {7, 7}}, Stroke{{1, 8}, {2, 8.8}, {3.6, 7.9}, {5, 5.5}, {6.1, 3.1}, {7, 4}})
 	put("∀", 7, Stroke{{0.8, 2}, {3.5, 9}, {6.2, 2}}, line(Point{1.8, 5.8}, Point{5.2, 5.8}))
@@ -175,7 +167,6 @@ func addNotationSymbols(
 	line func(Point, Point) Stroke,
 	circle func(float64, float64, float64, float64) Stroke,
 ) {
-	put("−－", 5, line(Point{0.8, 5.5}, Point{5.2, 5.5}))
 	put("＋", 5, line(Point{0.8, 5.5}, Point{5.2, 5.5}), line(Point{3, 2.8}, Point{3, 8.2}))
 	put("＝", 5, line(Point{0.8, 4}, Point{5.2, 4}), line(Point{0.8, 7}, Point{5.2, 7}))
 	put("＜", 5, Stroke{{5.1, 2.8}, {1, 5.5}, {5.1, 8.2}})
@@ -183,8 +174,6 @@ func addNotationSymbols(
 	put("／", 5, line(Point{4.8, 1.5}, Point{0.8, 9.5}))
 	put("＼", 5, line(Point{0.8, 1.5}, Point{4.8, 9.5}))
 	put("～", 7, Stroke{{0.8, 5.8}, {2, 4.2}, {3.5, 5.8}, {5, 7.4}, {6.2, 5.8}})
-	put("′", 2, line(Point{1, 2}, Point{1, 5.5}))
-	put("″", 3.5, line(Point{0.8, 2}, Point{0.8, 5.5}), line(Point{2.3, 2}, Point{2.3, 5.5}))
 	put("‰", 8, line(Point{0.8, 2}, Point{2.4, 4}), line(Point{3.5, 7.5}, Point{3.7, 7.5}), line(Point{5.2, 2}, Point{7.6, 4}), line(Point{6, 7.5}, Point{6.2, 7.5}))
 	put("‱", 9, line(Point{0.8, 2}, Point{2.4, 4}), line(Point{3.3, 7.5}, Point{3.5, 7.5}), line(Point{4.8, 2}, Point{6.4, 4}), line(Point{7.8, 7.5}, Point{8, 7.5}))
 	put("©", 7, circle(3.5, 5.5, 3, 4), Stroke{{2, 7.5}, {2, 3.8}, {5.2, 3.8}, {5.2, 7.5}})
@@ -208,7 +197,7 @@ func addArrowSymbols(put func(string, float64, ...Stroke), line func(Point, Poin
 		return []Stroke{line(start, end), line(Point{end.X - dx*0.28 + perp.X, end.Y - dy*0.28 + perp.Y}, end), line(Point{end.X - dx*0.28 - perp.X, end.Y - dy*0.28 - perp.Y}, end)}
 	}
 	for chars, vector := range map[string][2]float64{
-		"→": {2.8, 0}, "←": {-2.8, 0}, "↑": {0, -3.7}, "↓": {0, 3.7},
+		"←": {-2.8, 0}, "↑": {0, -3.7}, "↓": {0, 3.7},
 		"↗": {2.5, -3}, "↘": {2.5, 3}, "↙": {-2.5, 3}, "↖": {-2.5, -3},
 	} {
 		dx, dy := vector[0], vector[1]

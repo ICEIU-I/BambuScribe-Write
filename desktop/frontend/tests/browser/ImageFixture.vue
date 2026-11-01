@@ -2,6 +2,8 @@
 import { computed, reactive, ref, shallowRef } from 'vue'
 import DocumentCanvas from '../../src/components/editor/DocumentCanvas.vue'
 import { defaultLayout } from '../../src/state/defaults'
+import type { CalculationRecord } from '../../src/services/calculationTypes'
+import type { PageErasure, PageLayout, TableAsset } from '../../src/types'
 import type { Document, ImageAsset, ImagePlacement } from '../../src/types'
 import '../../src/styles/base.css'
 import '../../src/styles/paper-editor.css'
@@ -9,6 +11,10 @@ import '../../src/styles/paper-editor.css'
 const canvas = ref<InstanceType<typeof DocumentCanvas>>()
 const state = reactive({
   text: '正文保持不变',
+  calculations: [] as CalculationRecord[],
+  pageLayouts: undefined as PageLayout[] | undefined,
+  erasures: [] as PageErasure[],
+  tables: [] as TableAsset[],
   index: 2,
   zoom: 65,
   disabled: false,
@@ -114,6 +120,10 @@ Object.assign(window, {
       ref="canvas"
       v-model="state.text"
       v-model:images="state.images"
+      v-model:calculations="state.calculations"
+      v-model:page-layouts="state.pageLayouts"
+      v-model:erasures="state.erasures"
+      v-model:tables="state.tables"
       v-model:index="state.index"
       v-model:zoom="state.zoom"
       :document="held ?? preview"

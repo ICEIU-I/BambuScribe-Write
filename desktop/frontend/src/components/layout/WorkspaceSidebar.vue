@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import WritingRulesDialog from '../editor/WritingRulesDialog.vue'
 import AppIcon from '../AppIcon.vue'
 import PixelTabs from '../ui/PixelTabs.vue'
 import HoverHint from '../ui/HoverHint.vue'
@@ -7,6 +8,7 @@ import PageRail from '../editor/PageRail.vue'
 import type { Page } from '../../types'
 import { t } from '../../i18n'
 const props = defineProps<{
+  fontId?: string
   tab: 'write' | 'device'
   theme: 'light' | 'dark'
   pages: Page[]
@@ -15,6 +17,8 @@ const props = defineProps<{
   actionsDisabled: boolean
   updateVersion: string
 }>()
+const rulesOpen = ref(false),
+  rulesButton = ref<HTMLButtonElement>()
 const updateHint = computed(() =>
   props.updateVersion ? t('update.available', { version: props.updateVersion }) : t('update.check'),
 )
@@ -105,6 +109,21 @@ const tabs = computed(() => [
       @move-page="(from, to) => emit('movePage', from, to)"
     />
     <div class="sidebar-footer">
+      <HoverHint v-slot="hint" text="输入规则">
+        <button
+          ref="rulesButton"
+          class="sidebar-action input-rules-button"
+          type="button"
+          title="输入规则"
+          aria-label="输入规则"
+          :aria-describedby="hint.describedBy"
+          aria-haspopup="dialog"
+          :aria-expanded="rulesOpen"
+          @click="rulesOpen = true"
+        >
+          <AppIcon name="input-rules" :size="20" />
+        </button>
+      </HoverHint>
       <HoverHint v-slot="hint" :text="updateHint">
         <button
           class="sidebar-action sidebar-update"
@@ -130,5 +149,11 @@ const tabs = computed(() => [
         </button>
       </HoverHint>
     </div>
+    <WritingRulesDialog
+      :open="rulesOpen"
+      :font-id="fontId"
+      :return-focus="rulesButton"
+      @close="rulesOpen = false"
+    />
   </aside>
 </template>

@@ -136,6 +136,27 @@ export async function open(page, update = {}, compact = false) {
             state,
             warning: '',
           }),
+          PreviewWritingRule: async (text, fontId) => {
+            const settings = {
+              ...layout,
+              fontId,
+              paperWidth: 160,
+              paperHeight: 80,
+              lineCount: 5,
+              marginTop: 3,
+              marginRight: 3,
+              marginBottom: 3,
+              marginLeft: 3,
+            }
+            const r = await fetch('/__table-preview', {
+              method: 'POST',
+              body: JSON.stringify({ text, settings }),
+            })
+            if (!r.ok) throw new Error(await r.text())
+            const doc = await r.json()
+            window.__rulePreview = doc
+            return doc
+          },
           Preview: preview,
           PreviewWithImages: preview,
           PreviewWithObjects: preview,

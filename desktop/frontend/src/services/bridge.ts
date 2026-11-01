@@ -53,6 +53,7 @@ interface NativeAPI {
   CompleteEditorRequest(id: string, reply: { result?: unknown; error?: string }): Promise<void>
   Bootstrap(): Promise<Bootstrap>
   Preview(text: string, settings: LayoutSettings): Promise<Document>
+  PreviewWritingRule(text: string, fontId: string): Promise<Document>
   PreviewWithImages(text: string, settings: LayoutSettings, images: ImageAsset[]): Promise<Document>
   PreviewWithObjects(
     text: string,
