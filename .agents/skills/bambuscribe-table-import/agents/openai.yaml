@@ -1,0 +1,4 @@
+interface:
+  display_name: "BambuScribe 表格导入"
+  short_description: "从截图识别实验表格，保留公式与空白格，自动摆放到当前纸面并可继续编辑"
+  default_prompt: "使用 $bambuscribe-table-import 将这张表格截图导入当前 BambuScribe 文档，自动安排位置。"

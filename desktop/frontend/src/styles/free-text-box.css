@@ -1,0 +1,75 @@
+.free-text-box {
+  z-index: 6;
+}
+.free-text-box.is-selected,
+.free-text-box.is-editing {
+  z-index: 7;
+}
+.free-text-ink {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.free-text-box.text-box-invalid {
+  outline: 2px solid var(--danger);
+}
+.free-text-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  resize: none;
+  border: 1px solid var(--focus);
+  border-radius: 0;
+  background: white;
+  color: var(--paper-ink);
+  white-space: pre;
+  overflow: auto;
+  line-height: 1.25;
+  font-family: system-ui, sans-serif;
+  user-select: text;
+  cursor: text;
+}
+.free-text-controls {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  white-space: nowrap;
+  cursor: default;
+}
+.free-text-controls button,
+.free-text-controls input,
+.free-text-controls select {
+  height: 24px;
+  min-height: 24px;
+  padding: 0 5px;
+  font-size: 11px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+}
+.free-text-controls label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-soft);
+  font-size: 11px;
+}
+.free-text-controls input {
+  width: 54px;
+}
+.free-text-controls button:first-child {
+  cursor: move;
+  font-size: 18px;
+}

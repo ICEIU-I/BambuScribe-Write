@@ -1,0 +1,1739 @@
+{
+  "circles": [
+    {
+      "cx": 613,
+      "cy": 226,
+      "dashed": false,
+      "id": "upper-carrier",
+      "r": 13
+    },
+    {
+      "cx": 822,
+      "cy": 173,
+      "dashed": false,
+      "id": "upper-field-circle",
+      "r": 13
+    },
+    {
+      "cx": 822,
+      "cy": 173,
+      "dashed": false,
+      "id": "upper-field-dot",
+      "r": 4.5
+    },
+    {
+      "cx": 613,
+      "cy": 539,
+      "dashed": false,
+      "id": "lower-carrier",
+      "r": 13
+    },
+    {
+      "cx": 822,
+      "cy": 486,
+      "dashed": false,
+      "id": "lower-field-circle",
+      "r": 13
+    },
+    {
+      "cx": 822,
+      "cy": 486,
+      "dashed": false,
+      "id": "lower-field-dot",
+      "r": 4.5
+    }
+  ],
+  "height": 812,
+  "labels": [
+    {
+      "height": 25,
+      "text": "y",
+      "width": 19,
+      "x": 108,
+      "y": 270
+    },
+    {
+      "height": 22,
+      "text": "x",
+      "width": 19,
+      "x": 221,
+      "y": 387
+    },
+    {
+      "height": 21,
+      "text": "z",
+      "width": 18,
+      "x": 62,
+      "y": 442
+    },
+    {
+      "height": 31,
+      "text": "I_{S}",
+      "width": 29,
+      "x": 272,
+      "y": 187
+    },
+    {
+      "height": 26,
+      "text": "d",
+      "width": 20,
+      "x": 341,
+      "y": 107
+    },
+    {
+      "height": 25,
+      "text": "h",
+      "width": 18,
+      "x": 347,
+      "y": 192
+    },
+    {
+      "height": 28,
+      "text": "A'",
+      "width": 29,
+      "x": 576,
+      "y": 64
+    },
+    {
+      "height": 31,
+      "text": "E_{H}",
+      "width": 36,
+      "x": 419,
+      "y": 214
+    },
+    {
+      "height": 32,
+      "text": "F_{E}",
+      "width": 35,
+      "x": 572,
+      "y": 152
+    },
+    {
+      "height": 32,
+      "text": "F_{B}",
+      "width": 35,
+      "x": 572,
+      "y": 265
+    },
+    {
+      "height": 21,
+      "text": "v",
+      "width": 19,
+      "x": 519,
+      "y": 215
+    },
+    {
+      "height": 22,
+      "text": "−e",
+      "width": 31,
+      "x": 633,
+      "y": 215
+    },
+    {
+      "height": 20,
+      "text": "−",
+      "width": 18,
+      "x": 604,
+      "y": 216
+    },
+    {
+      "height": 26,
+      "text": "B",
+      "width": 22,
+      "x": 776,
+      "y": 161
+    },
+    {
+      "height": 28,
+      "text": "(a)",
+      "width": 36,
+      "x": 998,
+      "y": 210
+    },
+    {
+      "height": 24,
+      "text": "A",
+      "width": 21,
+      "x": 577,
+      "y": 342
+    },
+    {
+      "height": 27,
+      "text": "A'",
+      "width": 29,
+      "x": 577,
+      "y": 376
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 435,
+      "y": 114
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 510,
+      "y": 114
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 585,
+      "y": 114
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 660,
+      "y": 113
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 735,
+      "y": 113
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 810,
+      "y": 113
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 423,
+      "y": 312
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 501,
+      "y": 312
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 578,
+      "y": 312
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 656,
+      "y": 311
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 734,
+      "y": 311
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 811,
+      "y": 311
+    },
+    {
+      "height": 31,
+      "text": "I_{S}",
+      "width": 29,
+      "x": 272,
+      "y": 499
+    },
+    {
+      "height": 26,
+      "text": "d",
+      "width": 20,
+      "x": 341,
+      "y": 419
+    },
+    {
+      "height": 25,
+      "text": "h",
+      "width": 18,
+      "x": 347,
+      "y": 505
+    },
+    {
+      "height": 31,
+      "text": "E_{H}",
+      "width": 36,
+      "x": 419,
+      "y": 528
+    },
+    {
+      "height": 32,
+      "text": "F_{E}",
+      "width": 35,
+      "x": 572,
+      "y": 466
+    },
+    {
+      "height": 32,
+      "text": "F_{B}",
+      "width": 35,
+      "x": 572,
+      "y": 575
+    },
+    {
+      "height": 22,
+      "text": "+e",
+      "width": 32,
+      "x": 558,
+      "y": 527
+    },
+    {
+      "height": 21,
+      "text": "+",
+      "width": 18,
+      "x": 604,
+      "y": 528
+    },
+    {
+      "height": 21,
+      "text": "v",
+      "width": 19,
+      "x": 689,
+      "y": 528
+    },
+    {
+      "height": 26,
+      "text": "B",
+      "width": 22,
+      "x": 776,
+      "y": 474
+    },
+    {
+      "height": 28,
+      "text": "(b)",
+      "width": 37,
+      "x": 998,
+      "y": 524
+    },
+    {
+      "height": 25,
+      "text": "A",
+      "width": 21,
+      "x": 577,
+      "y": 654
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 423,
+      "y": 432
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 501,
+      "y": 432
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 578,
+      "y": 432
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 656,
+      "y": 431
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 734,
+      "y": 431
+    },
+    {
+      "height": 7,
+      "text": "−",
+      "width": 18,
+      "x": 811,
+      "y": 431
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 435,
+      "y": 612
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 510,
+      "y": 612
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 585,
+      "y": 612
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 660,
+      "y": 612
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 735,
+      "y": 612
+    },
+    {
+      "height": 20,
+      "text": "+",
+      "width": 17,
+      "x": 810,
+      "y": 612
+    },
+    {
+      "height": 29,
+      "text": "图 1 霍尔效应原理图",
+      "width": 313,
+      "x": 385,
+      "y": 773
+    }
+  ],
+  "strokes": [
+    {
+      "dashed": false,
+      "id": "upper-front-outline",
+      "points": [
+        {
+          "x": 379,
+          "y": 136
+        },
+        {
+          "x": 863,
+          "y": 134
+        },
+        {
+          "x": 864,
+          "y": 325
+        },
+        {
+          "x": 379,
+          "y": 327
+        },
+        {
+          "x": 379,
+          "y": 136
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "upper-back-outline",
+      "points": [
+        {
+          "x": 379,
+          "y": 136
+        },
+        {
+          "x": 406,
+          "y": 111
+        },
+        {
+          "x": 891,
+          "y": 109
+        },
+        {
+          "x": 891,
+          "y": 301
+        },
+        {
+          "x": 864,
+          "y": 325
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "upper-top-right-edge",
+      "points": [
+        {
+          "x": 863,
+          "y": 134
+        },
+        {
+          "x": 891,
+          "y": 109
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "lower-front-outline",
+      "points": [
+        {
+          "x": 379,
+          "y": 448
+        },
+        {
+          "x": 864,
+          "y": 447
+        },
+        {
+          "x": 864,
+          "y": 638
+        },
+        {
+          "x": 379,
+          "y": 640
+        },
+        {
+          "x": 379,
+          "y": 448
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "lower-back-outline",
+      "points": [
+        {
+          "x": 379,
+          "y": 448
+        },
+        {
+          "x": 406,
+          "y": 424
+        },
+        {
+          "x": 891,
+          "y": 422
+        },
+        {
+          "x": 891,
+          "y": 614
+        },
+        {
+          "x": 864,
+          "y": 638
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "lower-top-right-edge",
+      "points": [
+        {
+          "x": 864,
+          "y": 447
+        },
+        {
+          "x": 891,
+          "y": 422
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "upper-top-lead",
+      "points": [
+        {
+          "x": 612,
+          "y": 20
+        },
+        {
+          "x": 613,
+          "y": 123
+        }
+      ],
+      "role": "lead"
+    },
+    {
+      "dashed": false,
+      "id": "middle-lead",
+      "points": [
+        {
+          "x": 613,
+          "y": 327
+        },
+        {
+          "x": 613,
+          "y": 436
+        }
+      ],
+      "role": "lead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-bottom-lead",
+      "points": [
+        {
+          "x": 613,
+          "y": 640
+        },
+        {
+          "x": 613,
+          "y": 740
+        }
+      ],
+      "role": "lead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-left-current",
+      "points": [
+        {
+          "x": 273,
+          "y": 228
+        },
+        {
+          "x": 379,
+          "y": 228
+        }
+      ],
+      "role": "lead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-left-current",
+      "points": [
+        {
+          "x": 273,
+          "y": 540
+        },
+        {
+          "x": 379,
+          "y": 540
+        }
+      ],
+      "role": "lead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-right-current",
+      "points": [
+        {
+          "x": 877,
+          "y": 225
+        },
+        {
+          "x": 981,
+          "y": 225
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "upper-right-current-head-1",
+      "points": [
+        {
+          "x": 967,
+          "y": 221
+        },
+        {
+          "x": 981,
+          "y": 225
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-right-current-head-2",
+      "points": [
+        {
+          "x": 967,
+          "y": 229
+        },
+        {
+          "x": 981,
+          "y": 225
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-right-current",
+      "points": [
+        {
+          "x": 877,
+          "y": 538
+        },
+        {
+          "x": 981,
+          "y": 538
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "lower-right-current-head-1",
+      "points": [
+        {
+          "x": 967,
+          "y": 534
+        },
+        {
+          "x": 981,
+          "y": 538
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-right-current-head-2",
+      "points": [
+        {
+          "x": 967,
+          "y": 542
+        },
+        {
+          "x": 981,
+          "y": 538
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "axis-y",
+      "points": [
+        {
+          "x": 129,
+          "y": 382
+        },
+        {
+          "x": 129,
+          "y": 273
+        }
+      ],
+      "role": "axis"
+    },
+    {
+      "dashed": false,
+      "id": "axis-y-head-1",
+      "points": [
+        {
+          "x": 125,
+          "y": 288
+        },
+        {
+          "x": 129,
+          "y": 273
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "axis-y-head-2",
+      "points": [
+        {
+          "x": 133,
+          "y": 288
+        },
+        {
+          "x": 129,
+          "y": 273
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "axis-x",
+      "points": [
+        {
+          "x": 129,
+          "y": 382
+        },
+        {
+          "x": 240,
+          "y": 382
+        }
+      ],
+      "role": "axis"
+    },
+    {
+      "dashed": false,
+      "id": "axis-x-head-1",
+      "points": [
+        {
+          "x": 225,
+          "y": 378
+        },
+        {
+          "x": 240,
+          "y": 382
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "axis-x-head-2",
+      "points": [
+        {
+          "x": 225,
+          "y": 386
+        },
+        {
+          "x": 240,
+          "y": 382
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "axis-z",
+      "points": [
+        {
+          "x": 129,
+          "y": 382
+        },
+        {
+          "x": 52,
+          "y": 450
+        }
+      ],
+      "role": "axis"
+    },
+    {
+      "dashed": false,
+      "id": "axis-z-head-1",
+      "points": [
+        {
+          "x": 60,
+          "y": 436
+        },
+        {
+          "x": 52,
+          "y": 450
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "axis-z-head-2",
+      "points": [
+        {
+          "x": 67,
+          "y": 443
+        },
+        {
+          "x": 52,
+          "y": 450
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-top-extension",
+      "points": [
+        {
+          "x": 340,
+          "y": 136
+        },
+        {
+          "x": 374,
+          "y": 136
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-bottom-extension",
+      "points": [
+        {
+          "x": 340,
+          "y": 328
+        },
+        {
+          "x": 374,
+          "y": 328
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-top-shaft",
+      "points": [
+        {
+          "x": 357,
+          "y": 140
+        },
+        {
+          "x": 357,
+          "y": 190
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-top-head-1",
+      "points": [
+        {
+          "x": 353,
+          "y": 155
+        },
+        {
+          "x": 357,
+          "y": 140
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-top-head-2",
+      "points": [
+        {
+          "x": 361,
+          "y": 155
+        },
+        {
+          "x": 357,
+          "y": 140
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-bottom-shaft",
+      "points": [
+        {
+          "x": 357,
+          "y": 221
+        },
+        {
+          "x": 357,
+          "y": 324
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-bottom-head-1",
+      "points": [
+        {
+          "x": 353,
+          "y": 308
+        },
+        {
+          "x": 357,
+          "y": 324
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-h-bottom-head-2",
+      "points": [
+        {
+          "x": 361,
+          "y": 308
+        },
+        {
+          "x": 357,
+          "y": 324
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-d-extension",
+      "points": [
+        {
+          "x": 367,
+          "y": 111
+        },
+        {
+          "x": 399,
+          "y": 111
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "upper-d-shaft",
+      "points": [
+        {
+          "x": 357,
+          "y": 135
+        },
+        {
+          "x": 385,
+          "y": 113
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "upper-d-left-head-1",
+      "points": [
+        {
+          "x": 362,
+          "y": 124
+        },
+        {
+          "x": 357,
+          "y": 135
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-d-left-head-2",
+      "points": [
+        {
+          "x": 369,
+          "y": 131
+        },
+        {
+          "x": 357,
+          "y": 135
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-d-right-head-1",
+      "points": [
+        {
+          "x": 373,
+          "y": 117
+        },
+        {
+          "x": 385,
+          "y": 113
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-d-right-head-2",
+      "points": [
+        {
+          "x": 380,
+          "y": 124
+        },
+        {
+          "x": 385,
+          "y": 113
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-top-extension",
+      "points": [
+        {
+          "x": 340,
+          "y": 448
+        },
+        {
+          "x": 374,
+          "y": 448
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-bottom-extension",
+      "points": [
+        {
+          "x": 340,
+          "y": 640
+        },
+        {
+          "x": 374,
+          "y": 640
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-top-shaft",
+      "points": [
+        {
+          "x": 357,
+          "y": 452
+        },
+        {
+          "x": 357,
+          "y": 503
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-top-head-1",
+      "points": [
+        {
+          "x": 353,
+          "y": 467
+        },
+        {
+          "x": 357,
+          "y": 452
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-top-head-2",
+      "points": [
+        {
+          "x": 361,
+          "y": 467
+        },
+        {
+          "x": 357,
+          "y": 452
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-bottom-shaft",
+      "points": [
+        {
+          "x": 357,
+          "y": 533
+        },
+        {
+          "x": 357,
+          "y": 636
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-bottom-head-1",
+      "points": [
+        {
+          "x": 353,
+          "y": 621
+        },
+        {
+          "x": 357,
+          "y": 636
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-h-bottom-head-2",
+      "points": [
+        {
+          "x": 361,
+          "y": 621
+        },
+        {
+          "x": 357,
+          "y": 636
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-d-extension",
+      "points": [
+        {
+          "x": 367,
+          "y": 424
+        },
+        {
+          "x": 399,
+          "y": 424
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "lower-d-shaft",
+      "points": [
+        {
+          "x": 357,
+          "y": 447
+        },
+        {
+          "x": 385,
+          "y": 425
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "lower-d-left-head-1",
+      "points": [
+        {
+          "x": 362,
+          "y": 436
+        },
+        {
+          "x": 357,
+          "y": 447
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-d-left-head-2",
+      "points": [
+        {
+          "x": 369,
+          "y": 443
+        },
+        {
+          "x": 357,
+          "y": 447
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-d-right-head-1",
+      "points": [
+        {
+          "x": 373,
+          "y": 429
+        },
+        {
+          "x": 385,
+          "y": 425
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-d-right-head-2",
+      "points": [
+        {
+          "x": 380,
+          "y": 436
+        },
+        {
+          "x": 385,
+          "y": 425
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-hall-field",
+      "points": [
+        {
+          "x": 463,
+          "y": 175
+        },
+        {
+          "x": 463,
+          "y": 283
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "upper-hall-field-head-1",
+      "points": [
+        {
+          "x": 459,
+          "y": 268
+        },
+        {
+          "x": 463,
+          "y": 283
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-hall-field-head-2",
+      "points": [
+        {
+          "x": 467,
+          "y": 268
+        },
+        {
+          "x": 463,
+          "y": 283
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-hall-field",
+      "points": [
+        {
+          "x": 463,
+          "y": 600
+        },
+        {
+          "x": 463,
+          "y": 491
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "lower-hall-field-head-1",
+      "points": [
+        {
+          "x": 459,
+          "y": 507
+        },
+        {
+          "x": 463,
+          "y": 491
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-hall-field-head-2",
+      "points": [
+        {
+          "x": 467,
+          "y": 507
+        },
+        {
+          "x": 463,
+          "y": 491
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-electric-force",
+      "points": [
+        {
+          "x": 613,
+          "y": 213
+        },
+        {
+          "x": 613,
+          "y": 159
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "upper-electric-force-head-1",
+      "points": [
+        {
+          "x": 609,
+          "y": 175
+        },
+        {
+          "x": 613,
+          "y": 159
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-electric-force-head-2",
+      "points": [
+        {
+          "x": 617,
+          "y": 175
+        },
+        {
+          "x": 613,
+          "y": 159
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-magnetic-force",
+      "points": [
+        {
+          "x": 613,
+          "y": 239
+        },
+        {
+          "x": 613,
+          "y": 291
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "upper-magnetic-force-head-1",
+      "points": [
+        {
+          "x": 609,
+          "y": 276
+        },
+        {
+          "x": 613,
+          "y": 291
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-magnetic-force-head-2",
+      "points": [
+        {
+          "x": 617,
+          "y": 276
+        },
+        {
+          "x": 613,
+          "y": 291
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-velocity",
+      "points": [
+        {
+          "x": 600,
+          "y": 226
+        },
+        {
+          "x": 545,
+          "y": 226
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "upper-velocity-head-1",
+      "points": [
+        {
+          "x": 561,
+          "y": 222
+        },
+        {
+          "x": 545,
+          "y": 226
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-velocity-head-2",
+      "points": [
+        {
+          "x": 561,
+          "y": 230
+        },
+        {
+          "x": 545,
+          "y": 226
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-electric-force",
+      "points": [
+        {
+          "x": 613,
+          "y": 526
+        },
+        {
+          "x": 613,
+          "y": 472
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "lower-electric-force-head-1",
+      "points": [
+        {
+          "x": 609,
+          "y": 488
+        },
+        {
+          "x": 613,
+          "y": 472
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-electric-force-head-2",
+      "points": [
+        {
+          "x": 617,
+          "y": 488
+        },
+        {
+          "x": 613,
+          "y": 472
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-magnetic-force",
+      "points": [
+        {
+          "x": 613,
+          "y": 552
+        },
+        {
+          "x": 613,
+          "y": 606
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "lower-magnetic-force-head-1",
+      "points": [
+        {
+          "x": 609,
+          "y": 590
+        },
+        {
+          "x": 613,
+          "y": 606
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-magnetic-force-head-2",
+      "points": [
+        {
+          "x": 617,
+          "y": 590
+        },
+        {
+          "x": 613,
+          "y": 606
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-velocity",
+      "points": [
+        {
+          "x": 626,
+          "y": 539
+        },
+        {
+          "x": 682,
+          "y": 539
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "lower-velocity-head-1",
+      "points": [
+        {
+          "x": 666,
+          "y": 535
+        },
+        {
+          "x": 682,
+          "y": 539
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-velocity-head-2",
+      "points": [
+        {
+          "x": 666,
+          "y": 543
+        },
+        {
+          "x": 682,
+          "y": 539
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-magnetic-field",
+      "points": [
+        {
+          "x": 822,
+          "y": 173
+        },
+        {
+          "x": 741,
+          "y": 242
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "upper-magnetic-field-head-1",
+      "points": [
+        {
+          "x": 749,
+          "y": 228
+        },
+        {
+          "x": 741,
+          "y": 242
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "upper-magnetic-field-head-2",
+      "points": [
+        {
+          "x": 756,
+          "y": 234
+        },
+        {
+          "x": 741,
+          "y": 242
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-magnetic-field",
+      "points": [
+        {
+          "x": 822,
+          "y": 486
+        },
+        {
+          "x": 741,
+          "y": 554
+        }
+      ],
+      "role": "arrow"
+    },
+    {
+      "dashed": false,
+      "id": "lower-magnetic-field-head-1",
+      "points": [
+        {
+          "x": 749,
+          "y": 540
+        },
+        {
+          "x": 741,
+          "y": 554
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "lower-magnetic-field-head-2",
+      "points": [
+        {
+          "x": 756,
+          "y": 546
+        },
+        {
+          "x": 741,
+          "y": 554
+        }
+      ],
+      "role": "arrowhead"
+    }
+  ],
+  "uncertainties": [],
+  "width": 1062
+}

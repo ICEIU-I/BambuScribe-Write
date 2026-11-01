@@ -1,0 +1,47 @@
+.manual-text-box {
+  position: absolute;
+  cursor: move;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+.manual-text-box:hover {
+  outline: 1px dashed var(--focus);
+}
+.manual-text-box.is-selected,
+.manual-text-box.is-editing {
+  outline: 1.5px solid var(--focus);
+}
+.text-box-delete,
+.text-box-resize {
+  position: absolute;
+  padding: 0;
+  background: white;
+  cursor: pointer;
+}
+.text-box-delete {
+  right: -9px;
+  top: -10px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: var(--danger);
+  color: white;
+  line-height: 14px;
+  font-size: 14px;
+}
+.text-box-resize {
+  right: -5px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--focus);
+  cursor: nwse-resize;
+}
+.manual-text-box .image-inline-editor {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}

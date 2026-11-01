@@ -1,0 +1,57 @@
+.workspace-sidebar {
+  width: 60px;
+  flex: 0 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding: 0 8px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border-soft);
+}
+.sidebar-brand {
+  display: grid;
+  place-items: center;
+  height: 76px;
+  flex-shrink: 0;
+}
+.sidebar-file-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-action,
+.workspace-sidebar .app-tabs button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  color: var(--text-soft);
+  background: transparent;
+}
+.sidebar-action:hover:not(:disabled),
+.workspace-sidebar .app-tabs button:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+.workspace-sidebar .app-tabs button.active {
+  color: var(--text);
+  background: var(--surface-selected);
+}
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 12px 0;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 760px) {
+  .sidebar-brand {
+    height: 66px;
+  }
+}

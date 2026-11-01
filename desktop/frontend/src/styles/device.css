@@ -1,0 +1,84 @@
+.device-page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 42px 42px 48px;
+  background: var(--bg);
+}
+.device-page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  max-width: 960px;
+  margin: 0 auto 28px;
+}
+.device-page-heading h1 {
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+.device-summary {
+  display: flex;
+  gap: 8px;
+}
+.device-settings-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+  align-items: start;
+}
+.connection-only,
+.writing-settings-card {
+  width: 100%;
+}
+.device-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+}
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.card-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.card-heading h2 svg {
+  color: var(--muted);
+  width: 17px;
+}
+.writing-settings-card .settings-grid {
+  margin-bottom: 0;
+}
+.writing-settings-card .form-label {
+  margin-bottom: 0;
+  font-size: 11px;
+}
+@media (max-width: 1100px) {
+  .device-page {
+    padding: 30px 24px;
+  }
+  .device-card {
+    padding: 20px;
+  }
+  .device-page-heading {
+    align-items: flex-start;
+  }
+  .device-summary .pixel-badge:last-child {
+    display: none;
+  }
+}
+@media (max-width: 950px) {
+  .device-settings-grid {
+    grid-template-columns: 1fr;
+  }
+}

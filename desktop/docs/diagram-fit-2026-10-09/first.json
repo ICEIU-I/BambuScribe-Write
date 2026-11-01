@@ -1,0 +1,829 @@
+{
+  "circles": [
+    {
+      "cx": 85.5,
+      "cy": 75.8,
+      "dashed": false,
+      "id": "package_mark",
+      "r": 9.8
+    },
+    {
+      "cx": 397,
+      "cy": 60.5,
+      "dashed": true,
+      "id": "internal_package_mark",
+      "r": 17.5
+    },
+    {
+      "cx": 746.8,
+      "cy": 243.3,
+      "dashed": false,
+      "id": "terminal_upper_left",
+      "r": 8.2
+    },
+    {
+      "cx": 746.8,
+      "cy": 334,
+      "dashed": false,
+      "id": "terminal_lower_left",
+      "r": 8.2
+    },
+    {
+      "cx": 1121.5,
+      "cy": 241.5,
+      "dashed": false,
+      "id": "terminal_upper_right",
+      "r": 8.2
+    },
+    {
+      "cx": 1121.5,
+      "cy": 332.5,
+      "dashed": false,
+      "id": "terminal_lower_right",
+      "r": 8.2
+    },
+    {
+      "cx": 878.3,
+      "cy": 170.8,
+      "dashed": false,
+      "id": "contact_left_top",
+      "r": 6.3
+    },
+    {
+      "cx": 878.3,
+      "cy": 245,
+      "dashed": false,
+      "id": "contact_left_middle",
+      "r": 6.3
+    },
+    {
+      "cx": 878.5,
+      "cy": 319.2,
+      "dashed": false,
+      "id": "contact_left_bottom",
+      "r": 6.3
+    },
+    {
+      "cx": 997.5,
+      "cy": 170.3,
+      "dashed": false,
+      "id": "contact_right_top",
+      "r": 6.3
+    },
+    {
+      "cx": 997.8,
+      "cy": 244.3,
+      "dashed": false,
+      "id": "contact_right_middle",
+      "r": 6.3
+    },
+    {
+      "cx": 998.5,
+      "cy": 318.5,
+      "dashed": false,
+      "id": "contact_right_bottom",
+      "r": 6.3
+    }
+  ],
+  "height": 526,
+  "labels": [
+    {
+      "height": 22,
+      "text": "1",
+      "width": 12,
+      "x": 89,
+      "y": 365
+    },
+    {
+      "height": 22,
+      "text": "3",
+      "width": 13,
+      "x": 121,
+      "y": 365
+    },
+    {
+      "height": 22,
+      "text": "2",
+      "width": 14,
+      "x": 153,
+      "y": 365
+    },
+    {
+      "height": 22,
+      "text": "4",
+      "width": 15,
+      "x": 185,
+      "y": 365
+    },
+    {
+      "height": 26,
+      "text": "(a)",
+      "width": 34,
+      "x": 48,
+      "y": 408
+    },
+    {
+      "height": 27,
+      "text": "封装外形图",
+      "width": 143,
+      "x": 92,
+      "y": 408
+    },
+    {
+      "height": 22,
+      "text": "H",
+      "width": 20,
+      "x": 477,
+      "y": 88
+    },
+    {
+      "height": 23,
+      "text": "1",
+      "width": 13,
+      "x": 422,
+      "y": 364
+    },
+    {
+      "height": 23,
+      "text": "3",
+      "width": 14,
+      "x": 483,
+      "y": 364
+    },
+    {
+      "height": 23,
+      "text": "2",
+      "width": 14,
+      "x": 542,
+      "y": 364
+    },
+    {
+      "height": 23,
+      "text": "4",
+      "width": 15,
+      "x": 602,
+      "y": 364
+    },
+    {
+      "height": 27,
+      "text": "(b)",
+      "width": 36,
+      "x": 426,
+      "y": 406
+    },
+    {
+      "height": 28,
+      "text": "内部示意图",
+      "width": 143,
+      "x": 470,
+      "y": 405
+    },
+    {
+      "height": 28,
+      "text": "图 2",
+      "width": 56,
+      "x": 248,
+      "y": 468
+    },
+    {
+      "height": 29,
+      "text": "霍尔元件",
+      "width": 130,
+      "x": 336,
+      "y": 467
+    },
+    {
+      "height": 28,
+      "text": "接霍尔元件",
+      "width": 144,
+      "x": 1035,
+      "y": 98
+    },
+    {
+      "height": 27,
+      "text": "红",
+      "width": 29,
+      "x": 699,
+      "y": 231
+    },
+    {
+      "height": 27,
+      "text": "黑",
+      "width": 28,
+      "x": 700,
+      "y": 321
+    },
+    {
+      "height": 27,
+      "text": "黑",
+      "width": 28,
+      "x": 1143,
+      "y": 228
+    },
+    {
+      "height": 28,
+      "text": "红",
+      "width": 28,
+      "x": 1142,
+      "y": 319
+    },
+    {
+      "height": 28,
+      "text": "接测试仪",
+      "width": 115,
+      "x": 877,
+      "y": 402
+    },
+    {
+      "height": 29,
+      "text": "图 3",
+      "width": 57,
+      "x": 815,
+      "y": 465
+    },
+    {
+      "height": 30,
+      "text": "双刀双掷开关示意图",
+      "width": 290,
+      "x": 902,
+      "y": 464
+    }
+  ],
+  "strokes": [
+    {
+      "dashed": false,
+      "id": "package_outline",
+      "points": [
+        {
+          "x": 71.5,
+          "y": 60.5
+        },
+        {
+          "x": 214,
+          "y": 59.8
+        },
+        {
+          "x": 214,
+          "y": 125
+        },
+        {
+          "x": 71.5,
+          "y": 125.5
+        },
+        {
+          "x": 71.5,
+          "y": 60.5
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "package_pin_1",
+      "points": [
+        {
+          "x": 89.5,
+          "y": 125.4
+        },
+        {
+          "x": 89.5,
+          "y": 356.5
+        },
+        {
+          "x": 99.3,
+          "y": 356.5
+        },
+        {
+          "x": 99.3,
+          "y": 125.4
+        }
+      ],
+      "role": "pin"
+    },
+    {
+      "dashed": false,
+      "id": "package_pin_3",
+      "points": [
+        {
+          "x": 122.5,
+          "y": 125.3
+        },
+        {
+          "x": 122.5,
+          "y": 356.5
+        },
+        {
+          "x": 132.2,
+          "y": 356.5
+        },
+        {
+          "x": 132.2,
+          "y": 125.3
+        }
+      ],
+      "role": "pin"
+    },
+    {
+      "dashed": false,
+      "id": "package_pin_2",
+      "points": [
+        {
+          "x": 155.3,
+          "y": 125.2
+        },
+        {
+          "x": 155.3,
+          "y": 356.2
+        },
+        {
+          "x": 165.1,
+          "y": 356.2
+        },
+        {
+          "x": 165.1,
+          "y": 125.2
+        }
+      ],
+      "role": "pin"
+    },
+    {
+      "dashed": false,
+      "id": "package_pin_4",
+      "points": [
+        {
+          "x": 187.5,
+          "y": 125.1
+        },
+        {
+          "x": 187.5,
+          "y": 356.2
+        },
+        {
+          "x": 197.3,
+          "y": 356.2
+        },
+        {
+          "x": 197.3,
+          "y": 125.1
+        }
+      ],
+      "role": "pin"
+    },
+    {
+      "dashed": true,
+      "id": "internal_package_enclosure",
+      "points": [
+        {
+          "x": 369,
+          "y": 31.5
+        },
+        {
+          "x": 659.5,
+          "y": 30.5
+        },
+        {
+          "x": 659.5,
+          "y": 152
+        },
+        {
+          "x": 369,
+          "y": 153
+        },
+        {
+          "x": 369,
+          "y": 31.5
+        }
+      ],
+      "role": "enclosure"
+    },
+    {
+      "dashed": false,
+      "id": "hall_block",
+      "points": [
+        {
+          "x": 456,
+          "y": 76
+        },
+        {
+          "x": 519.5,
+          "y": 76
+        },
+        {
+          "x": 519.5,
+          "y": 124
+        },
+        {
+          "x": 456,
+          "y": 124
+        },
+        {
+          "x": 456,
+          "y": 76
+        }
+      ],
+      "role": "outline"
+    },
+    {
+      "dashed": false,
+      "id": "internal_pin_1",
+      "points": [
+        {
+          "x": 456,
+          "y": 99
+        },
+        {
+          "x": 426.5,
+          "y": 99
+        },
+        {
+          "x": 426.5,
+          "y": 354.5
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "internal_pin_3",
+      "points": [
+        {
+          "x": 488,
+          "y": 124
+        },
+        {
+          "x": 488,
+          "y": 354.5
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "internal_pin_2",
+      "points": [
+        {
+          "x": 519.5,
+          "y": 99
+        },
+        {
+          "x": 549.5,
+          "y": 99
+        },
+        {
+          "x": 549.5,
+          "y": 354.5
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "internal_pin_4",
+      "points": [
+        {
+          "x": 487.5,
+          "y": 76
+        },
+        {
+          "x": 487.5,
+          "y": 49
+        },
+        {
+          "x": 610.5,
+          "y": 49
+        },
+        {
+          "x": 610.5,
+          "y": 354.5
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "upper_left_terminal_wire",
+      "points": [
+        {
+          "x": 746.8,
+          "y": 251.5
+        },
+        {
+          "x": 878.3,
+          "y": 251.3
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "upper_right_terminal_wire",
+      "points": [
+        {
+          "x": 997.8,
+          "y": 250.6
+        },
+        {
+          "x": 1121.5,
+          "y": 249.7
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "lower_left_terminal_wire",
+      "points": [
+        {
+          "x": 737.8,
+          "y": 435
+        },
+        {
+          "x": 737.8,
+          "y": 325.5
+        },
+        {
+          "x": 878.5,
+          "y": 325.5
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "lower_right_terminal_wire",
+      "points": [
+        {
+          "x": 998.5,
+          "y": 324.8
+        },
+        {
+          "x": 1131,
+          "y": 324.8
+        },
+        {
+          "x": 1131,
+          "y": 433.5
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "cross_wire_left_top_to_right_bottom",
+      "points": [
+        {
+          "x": 882.4,
+          "y": 175.6
+        },
+        {
+          "x": 994.4,
+          "y": 313.7
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "cross_wire_left_bottom_to_right_top",
+      "points": [
+        {
+          "x": 882.5,
+          "y": 314.4
+        },
+        {
+          "x": 993.5,
+          "y": 175.2
+        }
+      ],
+      "role": "wire"
+    },
+    {
+      "dashed": false,
+      "id": "switch_blade_left",
+      "points": [
+        {
+          "x": 882.2,
+          "y": 240.1
+        },
+        {
+          "x": 953.5,
+          "y": 151
+        }
+      ],
+      "role": "switch_blade"
+    },
+    {
+      "dashed": false,
+      "id": "switch_blade_right",
+      "points": [
+        {
+          "x": 1001.7,
+          "y": 239.4
+        },
+        {
+          "x": 1073.5,
+          "y": 151
+        }
+      ],
+      "role": "switch_blade"
+    },
+    {
+      "dashed": false,
+      "id": "switch_link_upper",
+      "points": [
+        {
+          "x": 915.6,
+          "y": 198.5
+        },
+        {
+          "x": 1035.5,
+          "y": 198.5
+        }
+      ],
+      "role": "mechanical_link"
+    },
+    {
+      "dashed": false,
+      "id": "switch_link_lower",
+      "points": [
+        {
+          "x": 902.4,
+          "y": 215
+        },
+        {
+          "x": 1022.2,
+          "y": 215
+        }
+      ],
+      "role": "mechanical_link"
+    },
+    {
+      "dashed": false,
+      "id": "upper_left_extension",
+      "points": [
+        {
+          "x": 753.4,
+          "y": 238.4
+        },
+        {
+          "x": 938,
+          "y": 101.5
+        }
+      ],
+      "role": "annotation_extension"
+    },
+    {
+      "dashed": false,
+      "id": "upper_right_extension",
+      "points": [
+        {
+          "x": 1128,
+          "y": 236.5
+        },
+        {
+          "x": 1307,
+          "y": 100
+        }
+      ],
+      "role": "annotation_extension"
+    },
+    {
+      "dashed": false,
+      "id": "top_dimension_left",
+      "points": [
+        {
+          "x": 924,
+          "y": 111.5
+        },
+        {
+          "x": 1026.5,
+          "y": 111.5
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "top_dimension_left_arrow",
+      "points": [
+        {
+          "x": 938,
+          "y": 107.5
+        },
+        {
+          "x": 924,
+          "y": 111.5
+        },
+        {
+          "x": 938,
+          "y": 115.5
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "top_dimension_right",
+      "points": [
+        {
+          "x": 1185.5,
+          "y": 111
+        },
+        {
+          "x": 1289.5,
+          "y": 111
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "top_dimension_right_arrow",
+      "points": [
+        {
+          "x": 1275,
+          "y": 107
+        },
+        {
+          "x": 1289.5,
+          "y": 111
+        },
+        {
+          "x": 1275,
+          "y": 115
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "bottom_dimension_left",
+      "points": [
+        {
+          "x": 740,
+          "y": 416.5
+        },
+        {
+          "x": 869.5,
+          "y": 416.5
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "bottom_dimension_left_arrow",
+      "points": [
+        {
+          "x": 754,
+          "y": 412.5
+        },
+        {
+          "x": 740,
+          "y": 416.5
+        },
+        {
+          "x": 754,
+          "y": 420.5
+        }
+      ],
+      "role": "arrowhead"
+    },
+    {
+      "dashed": false,
+      "id": "bottom_dimension_right",
+      "points": [
+        {
+          "x": 1000.5,
+          "y": 415.5
+        },
+        {
+          "x": 1128.5,
+          "y": 415.5
+        }
+      ],
+      "role": "dimension"
+    },
+    {
+      "dashed": false,
+      "id": "bottom_dimension_right_arrow",
+      "points": [
+        {
+          "x": 1114,
+          "y": 411.5
+        },
+        {
+          "x": 1128.5,
+          "y": 415.5
+        },
+        {
+          "x": 1114,
+          "y": 419.5
+        }
+      ],
+      "role": "arrowhead"
+    }
+  ],
+  "uncertainties": [],
+  "width": 1354
+}

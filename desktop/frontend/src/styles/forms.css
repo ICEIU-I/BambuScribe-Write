@@ -1,0 +1,237 @@
+.button,
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+}
+.button {
+  min-height: 36px;
+  padding: 8px 13px;
+}
+.button:hover:not(:disabled),
+.icon-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.button.primary {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.button.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.button.danger-quiet {
+  color: var(--danger-text);
+}
+.button.danger-quiet:hover:not(:disabled) {
+  background: var(--danger-soft);
+}
+.button.compact {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.button.full {
+  width: 100%;
+}
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 16px;
+}
+.icon-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-soft);
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  color: var(--text-soft);
+  background: none;
+  border: 0;
+  font-size: 11px;
+  font-weight: 500;
+}
+.text-button:hover {
+  color: var(--text);
+}
+.badge,
+.pixel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  padding: 3px 8px;
+  color: var(--text-soft);
+  background: var(--surface-soft);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge.info,
+.pixel-badge.info {
+  color: var(--info);
+  background: var(--info-soft);
+}
+.badge.warn,
+.pixel-badge.warn {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+.badge.error,
+.pixel-badge.error {
+  color: var(--danger-text);
+  background: var(--danger-soft);
+}
+.badge.neutral,
+.pixel-badge.neutral {
+  color: var(--text-soft);
+  background: var(--surface-soft);
+}
+.fields-grid,
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+}
+.fields-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.number-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.number-field > span {
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 500;
+}
+.number-control {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 7px;
+}
+.number-control:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.number-control input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 2px 8px 10px;
+  color: var(--text);
+  background: none;
+  border: 0;
+  outline: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.number-control input:focus-visible {
+  outline: none;
+}
+.number-control small {
+  padding-right: 9px;
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+  user-select: none;
+}
+input::-webkit-inner-spin-button {
+  opacity: 0.45;
+  width: 11px;
+}
+select,
+.form-label input,
+.import-field input,
+.table-form input[type='number'] {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 10px;
+  color: var(--text);
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 7px;
+  font-size: 12px;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-soft);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.checkbox-row input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 17px;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+.form-label input::placeholder {
+  color: var(--muted);
+}
+.input-action {
+  display: flex;
+  gap: 8px;
+}
+.input-action input {
+  flex: 1;
+}
+.hint {
+  margin: 12px 0 18px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.8;
+}
+.hint.important {
+  padding: 10px 12px;
+  color: var(--warning);
+  background: var(--warning-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+}
+
+.badge.online {
+  color: var(--success);
+  background: var(--success-soft);
+}

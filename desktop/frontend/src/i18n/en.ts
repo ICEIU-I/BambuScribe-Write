@@ -1,0 +1,96 @@
+// Interface wording. Keys mirror the backend table in internal/i18n so the two
+// sides name the same thing the same way; only the strings differ.
+export const en: Record<string, string> = {
+  // Window title
+  'app.untitled': 'Untitled',
+  'app.modified': 'Edited',
+
+  // Header
+  'header.newProject': 'New Blank Project',
+  'header.write': 'Writing',
+  'header.device': 'Device',
+  'header.themeToDark': 'Dark theme',
+  'header.themeToLight': 'Light theme',
+  'header.upload': 'Upload',
+  'header.uploading': 'Uploading…',
+  'header.uploadHint': 'Set the filename and select pages to upload',
+  'header.uploadHintOffline': 'Connect the printer before uploading',
+  'header.closeNotice': 'Dismiss notice',
+
+  // Toolbar
+  'tool.select': 'Select',
+  'tool.text': 'Text Box',
+  'tool.erase': 'Erase',
+  'tool.selectHint': 'Select, move and resize images or text boxes',
+  'tool.textHint': 'Click anywhere on the paper to add handwriting',
+  'tool.eraseHint': 'Remove strokes anywhere on the paper',
+  'tool.needsImage': 'No image on this page',
+  'tool.modeBox': 'Box',
+  'tool.modeFree': 'Free',
+  'tool.modeBoxHint': 'Drag a rectangle to remove the strokes inside it',
+  'tool.modeFreeHint': 'Drag along a stroke to remove only what the brush covers',
+  'tool.brushSize': 'Size',
+  'tool.brushThin': 'Thin',
+  'tool.brushMedium': 'Medium',
+  'tool.brushThick': 'Thick',
+  'tool.brushExtraThick': 'Extra',
+  'tool.undo': 'Undo',
+  'tool.redo': 'Redo',
+  'tool.ruled': 'Lines',
+  'tool.zoomOut': 'Zoom out',
+  'tool.zoomIn': 'Zoom in',
+  'tool.zoom': 'Page zoom',
+  'tool.zoomHint': 'Pinch on the trackpad, or Ctrl/⌘ + scroll',
+  'tool.layout': 'Layout',
+  'tool.pageOf': 'Page {index} / {total}',
+  'tool.pageNumber': 'Page {number} · {count} characters',
+  'tool.pageNumberMissing': 'Page {number} · {count} characters · missing glyphs',
+  'tool.pageLabel': 'Page {number}, {count} characters',
+  'tool.pageLabelMissing': 'Page {number}, {count} characters, missing glyphs',
+
+  // Job bar
+  'job.connected': 'Connected',
+  'job.disconnected': 'Not connected',
+  'job.cancelUpload': 'Cancel Upload',
+  'job.phaseDisconnected': 'Offline editing',
+  'job.phaseIdle': 'Idle',
+  'job.phaseConnecting': 'Connecting',
+  'job.phaseUploading': 'Uploading',
+  'job.phaseUploaded': 'Uploaded',
+  'job.phaseFailed': 'Job failed',
+  'job.phaseExternal': 'Device busy',
+  'job.phaseConnected': 'Connected',
+  'job.phaseNotConnected': 'Not connected',
+
+  // Editor
+  'editor.tidyPaste':
+    'The pasted text had {count} runs of spaces; they are line breaks now. ⌘Z undoes it.',
+
+  // Status
+  'status.typesetting': 'Typesetting…',
+  'status.unsaved': 'Unsaved',
+  'status.saving': 'Saving',
+  'status.saved': 'Saved',
+  'status.draftSaved': 'Draft saved',
+
+  'job.batchProgress': 'Page {page} · {ordinal}/{total} · {progress}%',
+  'job.uploadProgress': 'All pages upload progress',
+  'upload.title': 'Upload to A1',
+  'upload.close': 'Close upload dialog',
+  'upload.filename': 'Filename',
+  'upload.prefix': 'Filename prefix',
+  'upload.invalidName': 'Use 1–64 characters without / \\ : * ? " < > |.',
+  'upload.page': 'Specific page',
+  'upload.pageNumber': 'Page {page}',
+  'upload.all': 'Upload All',
+  'upload.specific': 'Upload Specific Page',
+  'upload.currentPage': 'Page {page} · {ordinal}/{total}',
+  'upload.uploadedCount': '{count}/{total} pages uploaded',
+  'upload.preparing': 'Preparing upload files…',
+  'upload.originRange': 'Start range: X {x} mm, Y {y} mm (all pages)',
+  'upload.done': 'Upload complete',
+  'upload.controlOnA1':
+    'Select a file on the A1 screen to start writing and control the job there.',
+  'upload.finish': 'Done',
+  'job.uploadedPages': '{count} pages uploaded',
+}

@@ -1,0 +1,21 @@
+.hint-trigger {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.hover-hint {
+  position: fixed;
+  z-index: 200;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 8px 11px;
+  color: #ffffff;
+  background: #1a1c1f;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 14%);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  user-select: none;
+  -webkit-user-select: none;
+}

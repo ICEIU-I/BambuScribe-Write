@@ -1,0 +1,13 @@
+/build/bin/
+/build/releases/
+/frontend/node_modules/
+/frontend/dist/
+/frontend/wailsjs/
+/.cache/
+*.log
+.DS_Store
+
+/build/diagnostics/
+/.symbol-preview/
+/test-results/
+/playwright-report/

@@ -1,0 +1,8 @@
+/.idea/
+/projects/
+/output/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example

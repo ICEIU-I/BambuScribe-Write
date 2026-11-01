@@ -1,0 +1,132 @@
+{
+  "type": "object",
+  "properties": {
+    "tables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rows": {
+            "type": "integer"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "grid",
+              "three-line",
+              "horizontal",
+              "none"
+            ]
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "row": {
+                  "type": "integer"
+                },
+                "col": {
+                  "type": "integer"
+                },
+                "rowSpan": {
+                  "type": "integer"
+                },
+                "colSpan": {
+                  "type": "integer"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "uncertain": {
+                  "type": "boolean"
+                },
+                "borders": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "top": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "right": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "bottom": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "left": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "top",
+                        "right",
+                        "bottom",
+                        "left"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "row",
+                "col",
+                "rowSpan",
+                "colSpan",
+                "text",
+                "uncertain",
+                "borders"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "title",
+          "notes",
+          "rows",
+          "columns",
+          "style",
+          "cells"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "tables"
+  ],
+  "additionalProperties": false
+}

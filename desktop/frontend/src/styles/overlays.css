@@ -1,0 +1,96 @@
+.pixel-popover {
+  position: fixed;
+  z-index: 80;
+  inset: auto;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  color: var(--text);
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.pixel-popover::backdrop {
+  background: rgb(0 0 0 / 12%);
+}
+.popup-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pixel-popover > .popup-heading {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 48px;
+  padding: 8px 12px 8px 16px;
+  background: var(--elevated);
+  border-bottom: 1px solid var(--border-soft);
+}
+.pixel-popover > .popup-heading strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.pixel-popover > .popup-heading .icon-button {
+  width: 28px;
+  height: 28px;
+}
+.export-options {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+.export-option {
+  display: grid;
+  gap: 7px;
+}
+.export-option button {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 40px;
+  padding: 10px 12px;
+  color: var(--text);
+  text-align: left;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.export-option button small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.export-option button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.export-option p {
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--danger-text);
+  overflow-wrap: anywhere;
+}
+.pixel-popover .option-group {
+  display: grid;
+  gap: 8px;
+}
+.pixel-popover .option-group + .option-group {
+  padding-top: 14px;
+  border-top: 1px solid var(--border-soft);
+}
+.pixel-popover .option-group h3 {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.pixel-popover .option-note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}

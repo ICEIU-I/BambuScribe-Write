@@ -1,0 +1,26 @@
+BambuScribe Write · macOS 版
+
+适用：Apple Silicon（M 系列）Mac，macOS 13 或更新版本。
+本次仅在开发机验证；Intel Mac、Windows 和 Linux 未提供安装包。
+
+安装：
+1. 打开 DMG，将 BambuScribe Write.app 拖到 Applications。
+   如使用 ZIP，解压后将应用移到 Applications。
+2. 从 Applications 打开应用。
+3. 此版本采用临时签名，尚未经过 Apple 公证。
+   若系统提示无法验证开发者，先尝试打开一次，再到
+   “系统设置 → 隐私与安全性”选择“仍要打开”。
+   请核对下载来源和 SHA256SUMS，不需要关闭系统安全保护。
+
+字库、排版、线稿提取和 macOS 系统 OCR 随应用可用，无需安装 Go、Node.js 或 Python。
+可选 Python OCR 环境和模型不包含在安装包内；智能导入需自行填写模型服务和 API Key。
+项目、草稿、打印机访问码、API Key 及模型配置均由使用者在本机保存。
+
+连接 A1 时，电脑与打印机需处于可互通的局域网。
+请先安装笔架并完成归零、笔尖定位及抬落笔高度校准，再以短句试写。
+客户端负责编辑、导出和上传；书写启动、暂停及停止在 A1 屏幕操作。
+
+下载与反馈：https://github.com/ICEIU-I/BambuScribe-Write
+原项目：https://github.com/Animesh-Varma/BambuScribe
+许可证：GPL-3.0，见 LICENSE.txt。完整对应源码可从同版本发布页下载。
+内置“教案专用”和“DC体”字库由 ICEIU-I 制作，同样按 GPL-3.0 分发。
