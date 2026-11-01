@@ -13,6 +13,10 @@ jobs:
   macos:
     runs-on: macos-latest
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
@@ -43,4 +47,4 @@ jobs:
         working-directory: desktop/frontend
         run: |
           npx playwright install chromium webkit
-          npm run test:browser
+          npm run test:browser -- --project=${{ matrix.browser }}

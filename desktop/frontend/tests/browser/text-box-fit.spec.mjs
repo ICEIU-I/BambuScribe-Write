@@ -79,7 +79,10 @@ test('legacy overflowing caption scales both ways with its frame and survives ca
   await page.evaluate(() => window.__tables.menu['menu:action']('open'))
   await reopened
   await expect.poll(source).toEqual(large)
-  await page.evaluate(() => window.__tables.menu['menu:action']('exportPage'))
+  // A response arriving does not mean the editor has finished applying it.
+  // Use the enabled export action so the normal layout guard has cleared.
+  await page.getByRole('button', { name: '导出', exact: true }).click()
+  await page.getByRole('button', { name: /导出当前页/ }).click()
   await expect
     .poll(() => page.evaluate(() => window.__tables.exported?.gcode))
     .toContain('A1 handwriting')
