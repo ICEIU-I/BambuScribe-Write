@@ -2,11 +2,11 @@ package engine
 
 // Keep the smallest effective size as the table summary for older clients.
 // Each cell fits independently so a long heading cannot shrink short values.
-func (f *Font) tableFontSize(t TableAsset) float64 {
+func (f *Font) tableFontSize(t TableAsset, settings LayoutSettings) float64 {
 	size, hasText := 40.0, false
 	for _, c := range t.Cells {
 		if c.Text != "" {
-			size = min(size, f.tableCellFontSize(t, c))
+			size = min(size, f.tableCellFontSize(t, c, settings))
 			hasText = true
 		}
 	}
@@ -18,7 +18,10 @@ func (f *Font) tableFontSize(t TableAsset) float64 {
 	return max(1, size)
 }
 
-func (f *Font) tableCellFontSize(t TableAsset, c TableCell) float64 {
+func (f *Font) tableCellFontSize(t TableAsset, c TableCell, settings LayoutSettings) float64 {
+	if t.isTextBox() {
+		return f.textBoxFontSize(t, c, settings)
+	}
 	xs, ys := tableOffsets(t.ColumnWidths), tableOffsets(t.RowHeights)
 	width, height := f.MeasureTableText(c.Text, 1)
 	size := 40.0

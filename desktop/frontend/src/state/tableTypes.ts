@@ -38,6 +38,10 @@ export interface TableCellPlacement extends TableCell {
   height: number
   textWidth?: number
   textHeight?: number
+  textSpacing?: {
+    lines: { width: number; gap: number }[]
+    strokeGaps: [number, number][]
+  }
   strokes: Point[][]
   missing: MissingGlyph[]
 }

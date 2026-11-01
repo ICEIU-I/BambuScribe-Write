@@ -24,6 +24,10 @@ type tableText struct {
 // Only explicit newlines create new rows of text. Keep the font's proportions
 // and baseline, and report insufficient width instead of silently wrapping.
 func (f *Font) tableText(text string, size, width float64) tableText {
+	return f.tableTextWithSpacing(text, size, width, nil)
+}
+
+func (f *Font) tableTextWithSpacing(text string, size, width float64, spacing *LayoutSettings) tableText {
 	out := tableText{lines: [][]tableLetter{}, inkTop: math.Inf(1)}
 	bottom := math.Inf(-1)
 	if text == "" {
@@ -73,8 +77,20 @@ func (f *Font) tableText(text string, size, width float64) tableText {
 				}
 				l.bearing = (l.width-(right-left))/2 - left
 			}
+			if spacing != nil {
+				s := *spacing
+				s.FontSize = letterSize
+				l.width = f.advance(r, s)
+				if ok && !unicode.IsSpace(r) {
+					l.bearing = textGlyphBearing(g, f.Units, l.width, s)
+				}
+			}
 			line = append(line, l)
 			used += l.width
+		}
+		if spacing != nil && len(line) > 0 {
+			// Extra spacing separates characters, not the final character and frame.
+			used -= spacing.LetterGap
 		}
 		if used > width+1e-8 {
 			out.issue = "列宽不足，请增大列宽、减小字号或按 Shift+Enter 换行"

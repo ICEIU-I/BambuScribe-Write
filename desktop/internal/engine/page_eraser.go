@@ -106,7 +106,7 @@ func (f *Font) LayoutWithErasures(text string, s LayoutSettings, images []ImageA
 	}
 	doc.Erasures = erasures
 	for i := range doc.Pages {
-		doc.Pages[i].Strokes = erasedPageInk(doc.Pages[i], erasures)
+		doc.Pages[i].Strokes, doc.Pages[i].StrokeKinds = erasedPageInk(doc.Pages[i], erasures)
 	}
 
 	encoded, _ := json.Marshal(struct {

@@ -3,6 +3,11 @@ package engine
 // F is mm/min. A1's per-axis caps still apply, notably Z's 30 mm/s cap.
 const motionFeedRate = 16000
 
+// Slow only pen-down table borders; handwriting, travel and pen cycles retain
+// their existing feed. Keep the kind attached through cutting and sorting.
+const tableGridFeedRate = motionFeedRate * 70 / 100
+const strokeKindTableGrid = "table-grid"
+
 // Initialise motion independently of the previous task or speed preset.
 // The A1 machine profile specifies XY acceleration 12000 mm/s²,
 // Z acceleration 1500 mm/s² and Z speed 30 mm/s. Use the XY limit for

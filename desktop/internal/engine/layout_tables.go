@@ -10,7 +10,7 @@ import (
 )
 
 func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement {
-	t.FontSize = f.tableFontSize(t)
+	t.FontSize = f.tableFontSize(t, settings)
 	rows := append([]float64(nil), t.RowHeights...)
 	xs := tableOffsets(t.ColumnWidths)
 	plans := make([]tableText, len(t.Cells))
@@ -18,11 +18,11 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 	out := TablePlacement{ID: t.ID, Kind: t.Kind, FontSize: t.FontSize, Padding: t.Padding, X: t.X, Y: t.Y, ColumnWidths: t.ColumnWidths, Cells: []TableCellPlacement{}, Issues: []string{}}
 	for i, c := range t.Cells {
 		width := xs[c.Col+c.ColSpan] - xs[c.Col] - 2*t.Padding
-		sizes[i] = f.tableCellFontSize(t, c)
+		sizes[i] = f.tableCellFontSize(t, c, settings)
 		if c.Text == "" {
 			sizes[i] = t.FontSize
 		}
-		plans[i] = f.tableText(c.Text, sizes[i], width)
+		plans[i] = f.objectText(t, c.Text, sizes[i], width, settings)
 		if width <= 0 {
 			plans[i].issue = "内边距过大，请减小内边距或增大列宽"
 		}
@@ -71,7 +71,11 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 		for _, width := range plans[i].widths {
 			textWidth = max(textWidth, width)
 		}
-		out.Cells = append(out.Cells, TableCellPlacement{TableCell: c, X: x, Y: y, Width: w, Height: h, FontSize: sizes[i], TextWidth: textWidth, TextHeight: plans[i].height, Strokes: strokes, Missing: missing})
+		cell := TableCellPlacement{TableCell: c, X: x, Y: y, Width: w, Height: h, FontSize: sizes[i], TextWidth: textWidth, TextHeight: plans[i].height, Strokes: strokes, Missing: missing}
+		if t.isTextBox() && settings.LetterGap > 0 {
+			cell.TextSpacing = f.textBoxSpacing(plans[i], settings.LetterGap, a)
+		}
+		out.Cells = append(out.Cells, cell)
 		out.Strokes = append(out.Strokes, strokes...)
 	}
 	if t.X+out.Width > settings.PaperWidth+1e-8 || t.Y+out.Height > settings.PaperHeight+1e-8 {
@@ -157,13 +161,13 @@ func (f *Font) LayoutWithObjects(text string, s LayoutSettings, images []ImageAs
 		Tables  []TableAsset
 		Images  []ImageAsset
 		Version string
-	}{doc.ID, tables, images, "overlapping-objects-v8-writing-order"})
+	}{doc.ID, tables, images, "overlapping-objects-v9-textbox-spacing-grid-speed"})
 	h := sha256.Sum256(encoded)
 	doc.ID = hex.EncodeToString(h[:12])
 	doc.CharacterCount = count
 	appendObjectInk(doc, images, tables)
 	for i := range doc.Pages {
-		doc.Pages[i].Strokes = erasedPageInk(doc.Pages[i], nil)
+		doc.Pages[i].Strokes, doc.Pages[i].StrokeKinds = erasedPageInk(doc.Pages[i], nil)
 	}
 	return doc, nil
 }

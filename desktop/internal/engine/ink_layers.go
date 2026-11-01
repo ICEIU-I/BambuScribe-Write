@@ -65,7 +65,7 @@ func appendObjectInk(doc *Document, images []ImageAsset, tables []TableAsset) {
 		}
 	}
 }
-func erasedPageInk(page Page, erasures []PageErasure) []Stroke {
+func erasedPageInk(page Page, erasures []PageErasure) ([]Stroke, []string) {
 	order := newPageWritingOrder(page)
 	images := map[string]ImagePlacement{}
 	for _, im := range page.Images {

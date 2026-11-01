@@ -23,6 +23,9 @@ func GenerateGCode(page Page, s LayoutSettings, w WritingSettings) (string, erro
 	if len(page.Strokes) == 0 {
 		return "", fmt.Errorf("第 %d 页没有可书写笔画", page.Number)
 	}
+	if len(page.StrokeKinds) != 0 && len(page.StrokeKinds) != len(page.Strokes) {
+		return "", fmt.Errorf("笔画类型不完整，请重新排版后导出")
+	}
 	parkX, parkY, err := parkingTarget(s, w)
 	if err != nil {
 		return "", err
@@ -39,10 +42,10 @@ func GenerateGCode(page Page, s LayoutSettings, w WritingSettings) (string, erro
 	minX, minY, maxX, maxY := parkX, parkY, parkX, parkY
 	// Chixie uses G1 for both writing and raised-pen repositioning. Keep the
 	// same motion command for the stroke start, stroke points and final park.
-	move := func(x, y int64) {
-		fmt.Fprintf(&b, "G1 X%.3f Y%.3f F%d\n", float64(x)/1000, float64(y)/1000, motionFeedRate)
+	move := func(x, y int64, feed int) {
+		fmt.Fprintf(&b, "G1 X%.3f Y%.3f F%d\n", float64(x)/1000, float64(y)/1000, feed)
 	}
-	for _, stroke := range page.Strokes {
+	for si, stroke := range page.Strokes {
 		if len(stroke) < 2 {
 			return "", fmt.Errorf("笔画数据不完整")
 		}
@@ -55,14 +58,18 @@ func GenerateGCode(page Page, s LayoutSettings, w WritingSettings) (string, erro
 			if maxX-minX > 256000 || maxY-minY > 256000 {
 				return "", fmt.Errorf("书写范围超过 A1 行程，请缩小页面或字号")
 			}
-			move(x, y)
+			feed := motionFeedRate
+			if i > 0 && len(page.StrokeKinds) > 0 && page.StrokeKinds[si] == strokeKindTableGrid {
+				feed = tableGridFeedRate
+			}
+			move(x, y, feed)
 			if i == 0 {
 				fmt.Fprintf(&b, "G1 Z%.3f F%d\n", *w.PenDown, motionFeedRate)
 			}
 		}
 		fmt.Fprintf(&b, "G1 Z%.3f F%d\n", *w.PenUp, motionFeedRate)
 	}
-	move(parkX, parkY)
+	move(parkX, parkY, motionFeedRate)
 	b.WriteString("M400\n")
 	if w.Sound {
 		b.WriteString(completionSoundGCode)

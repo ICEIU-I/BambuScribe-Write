@@ -256,6 +256,10 @@ test('paper rectangle erases body, rotated image, grid and textbox immediately a
   await expect.poll(() => page.evaluate(() => window.__tables.saved?.erasures?.length)).toBe(1)
   await page.getByRole('button', { name: '撤销', exact: true }).click()
   await expect.poll(() => count(page)).toBe(0)
+  // Named projects autosave undo and redo; reopening restores the latest edit.
+  await expect.poll(() => page.evaluate(() => window.__tables.saved?.erasures?.length)).toBe(0)
+  await page.getByRole('button', { name: '重做', exact: true }).click()
+  await expect.poll(() => page.evaluate(() => window.__tables.saved?.erasures?.length)).toBe(1)
   await page.keyboard.press('Control+O')
   await expect.poll(() => count(page)).toBe(1)
   expect(await page.evaluate(() => window.__tables.payload.erasures)).toEqual(erasures)

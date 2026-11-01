@@ -16,6 +16,7 @@ type writingBlock struct {
 	key     writingBlockKey
 	x, y    float64
 	strokes []Stroke
+	kinds   []string
 }
 
 type pageWritingOrder struct {
@@ -50,9 +51,16 @@ func (o *pageWritingOrder) add(layer InkLayer, strokes []Stroke) {
 	block := &o.blocks[i]
 	block.x, block.y = min(block.x, bounds.X), min(block.y, bounds.Y)
 	block.strokes = append(block.strokes, strokes...)
+	kind := ""
+	if layer.ObjectID != "" && layer.Part == "grid" {
+		kind = strokeKindTableGrid
+	}
+	for range strokes {
+		block.kinds = append(block.kinds, kind)
+	}
 }
 
-func (o *pageWritingOrder) strokes() []Stroke {
+func (o *pageWritingOrder) strokes() ([]Stroke, []string) {
 	// Paper Y increases downwards; sort before converting to machine Y.
 	// Visible ink accounts for image whitespace, rotation and completed cuts.
 	sort.SliceStable(o.blocks, func(i, j int) bool {
@@ -71,8 +79,17 @@ func (o *pageWritingOrder) strokes() []Stroke {
 		return a.key.row < b.key.row
 	})
 	out := []Stroke{}
+	kinds := []string{}
+	hasGrid := false
 	for _, block := range o.blocks {
 		out = append(out, block.strokes...)
+		kinds = append(kinds, block.kinds...)
+		for _, kind := range block.kinds {
+			hasGrid = hasGrid || kind == strokeKindTableGrid
+		}
 	}
-	return out
+	if !hasGrid {
+		kinds = nil
+	}
+	return out, kinds
 }

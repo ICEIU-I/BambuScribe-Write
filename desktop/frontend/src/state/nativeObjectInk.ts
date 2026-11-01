@@ -39,14 +39,21 @@ export function nativeObjectStrokes(
           : v === 'bottom'
             ? bounds.height - asset.padding
             : asset.padding)
-    for (const s of clip(old.strokes ?? [], `cell:${c.row}:${c.col}`))
-      strokes.push(
-        s.map((p) =>
-          ratio === 1
-            ? { x: p.x + (newX - oldX), y: p.y + (newY - oldY) }
-            : { x: newX + (p.x - oldX) * ratio, y: newY + (p.y - oldY) * ratio },
-        ),
+    const transformed = (old.strokes ?? []).map((s, index) => {
+      const gap = old.textSpacing?.strokeGaps[index] ?? [0, 0]
+      return s.map((p, j) =>
+        ratio === 1
+          ? { x: p.x + (newX - oldX), y: p.y + (newY - oldY) }
+          : {
+              x:
+                newX +
+                (p.x - oldX) * ratio +
+                (gap[0] + ((gap[1] - gap[0]) * j) / Math.max(1, s.length - 1)) * (1 - ratio),
+              y: newY + (p.y - oldY) * ratio,
+            },
       )
+    })
+    strokes.push(...clip(transformed, `cell:${c.row}:${c.col}`))
   }
   return strokes
 }

@@ -16,7 +16,11 @@ func assertMaximumTableFont(t *testing.T, f *Font, table TableAsset, render Tabl
 				}
 			}
 		}
-		width, height := f.MeasureTableText(cell.Text, cell.FontSize+.001)
+		plan := f.objectText(table, cell.Text, cell.FontSize+.001, 1e9, DefaultLayout())
+		width, height := 0.0, plan.height
+		for _, w := range plan.widths {
+			width = max(width, w)
+		}
 		limited := width > cell.Width-2*table.Padding+1e-8 || height > cell.Height-2*table.Padding+1e-8
 		if cell.Text != "" && !limited && cell.FontSize < 40 {
 			t.Fatal("cell could use a larger font", cell.Text, cell.FontSize)

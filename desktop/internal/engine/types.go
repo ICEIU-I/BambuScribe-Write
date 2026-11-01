@@ -111,6 +111,7 @@ type Page struct {
 	LineCount   int              `json:"lineCount"`
 	Number      int              `json:"number"`
 	Strokes     []Stroke         `json:"strokes"`
+	StrokeKinds []string         `json:"strokeKinds,omitempty"`
 	TextStrokes []Stroke         `json:"textStrokes"`
 	Images      []ImagePlacement `json:"images"`
 	Tables      []TablePlacement `json:"tables,omitempty"`
