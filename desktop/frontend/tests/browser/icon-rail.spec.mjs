@@ -52,6 +52,20 @@ test('page icon hints survive a scrollable rail without clipping or lost page na
   await buttons.first().press('End')
   await expect(buttons.last()).toBeFocused()
   await expect(buttons.last()).toHaveAttribute('aria-current', 'page')
+  // Page navigation scrolls the paper and rail, which intentionally dismisses
+  // hints. Hover only after both scrollers have stopped moving.
+  await page.mouse.move(1000, 590)
+  await page.evaluate(async () => {
+    const scrollers = ['.page-rail', '.document-viewport'].map((s) => document.querySelector(s))
+    let previous = '',
+      stable = 0
+    while (stable < 4) {
+      await new Promise(requestAnimationFrame)
+      const current = scrollers.map((el) => `${el.scrollTop},${el.scrollLeft}`).join(';')
+      stable = current === previous ? stable + 1 : 0
+      previous = current
+    }
+  })
   await buttons.last().hover()
   await expect(page.getByRole('tooltip')).toContainText('实验记录')
   const hint = await page.getByRole('tooltip').boundingBox()

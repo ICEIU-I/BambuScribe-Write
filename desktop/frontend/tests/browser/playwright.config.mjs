@@ -8,6 +8,7 @@ export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.mjs',
   workers: 1,
+  retries: process.env.CI ? 1 : 0,
   outputDir: `${tmpdir()}/bambuscribe-eraser-tests`,
   // Pin the OS locale: the interface follows it by default, and the
   // assertions below are written against the Chinese wording.

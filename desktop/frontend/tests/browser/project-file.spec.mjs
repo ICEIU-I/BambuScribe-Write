@@ -304,11 +304,13 @@ test('new via menu or shortcut waits for autosave and detaches the old file', as
   const errors = await open(page)
   await menu(page, 'saveAs')
   await expect.poll(() => title(page)).toBe('另存项目')
-  await page.locator('textarea.paper-input').fill('需要保留的改动')
-  await page.evaluate(() => window.__setConfirm('save'))
+  // Configure the failure before editing: autosave may finish between separate
+  // browser commands on a busy runner.
   await page.evaluate(() => {
+    window.__setConfirm('save')
     window.__autosaveMode = 'fail'
   })
+  await page.locator('textarea.paper-input').fill('需要保留的改动')
   await menu(page, 'new')
   await expect(page.getByRole('button', { name: '新建空项目', exact: true })).toBeEnabled()
   await expect(page.locator('textarea.paper-input')).toHaveValue('需要保留的改动')
