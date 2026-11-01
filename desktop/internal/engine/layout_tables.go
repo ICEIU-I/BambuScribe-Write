@@ -157,11 +157,14 @@ func (f *Font) LayoutWithObjects(text string, s LayoutSettings, images []ImageAs
 		Tables  []TableAsset
 		Images  []ImageAsset
 		Version string
-	}{doc.ID, tables, images, "overlapping-objects-v7-cell-ink-fit"})
+	}{doc.ID, tables, images, "overlapping-objects-v8-writing-order"})
 	h := sha256.Sum256(encoded)
 	doc.ID = hex.EncodeToString(h[:12])
 	doc.CharacterCount = count
 	appendObjectInk(doc, images, tables)
+	for i := range doc.Pages {
+		doc.Pages[i].Strokes = erasedPageInk(doc.Pages[i], nil)
+	}
 	return doc, nil
 }
 func tableOverlaps(x, y, w, h, ox, oy, ow, oh float64) bool {
