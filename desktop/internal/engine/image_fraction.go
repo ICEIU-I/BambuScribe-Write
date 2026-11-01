@@ -26,7 +26,9 @@ func (p *imageMathParser) sequence(depth int, grouped bool) (imageMathBox, bool)
 	}
 	out := imageMathBox{top: math.Inf(1), bottom: math.Inf(-1)}
 	gap := p.font.Units * .16
+	lastGap := gap
 	for p.pos < len(p.text) && p.text[p.pos] != '}' {
+		atomIndex := p.pos
 		var item imageMathBox
 		var ok bool
 		if strings.HasPrefix(string(p.text[p.pos:]), `\frac{`) {
@@ -99,14 +101,15 @@ func (p *imageMathParser) sequence(depth int, grouped bool) (imageMathBox, bool)
 			return imageMathBox{}, false
 		}
 		out.strokes = appendMathStrokes(out.strokes, item.strokes, out.width, 0, 1)
-		out.width += item.width + gap
+		lastGap = p.variation.gap(atomIndex, gap)
+		out.width += item.width + lastGap
 		out.top = math.Min(out.top, item.top)
 		out.bottom = math.Max(out.bottom, item.bottom)
 	}
 	if !finite(out.top) {
 		return imageMathBox{}, false
 	}
-	out.width -= gap
+	out.width -= lastGap
 	if grouped {
 		if p.pos >= len(p.text) || p.text[p.pos] != '}' {
 			return imageMathBox{}, false

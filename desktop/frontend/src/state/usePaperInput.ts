@@ -145,6 +145,27 @@ export function usePaperInput(
   function keydown(event: KeyboardEvent) {
     if (composing || event.isComposing) return
     let key = event.key
+    if (key === 'Tab' && !event.shiftKey && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      event.preventDefault()
+      const el = input.value
+      if (!el) return
+      // Announce the edit so the shared history captures the selection before
+      // replacing it. Keep blank-row placement and IME handling on changed().
+      if (
+        !el.dispatchEvent(
+          new InputEvent('beforeinput', {
+            inputType: 'insertText',
+            data: '\t',
+            bubbles: true,
+            cancelable: true,
+          }),
+        )
+      )
+        return
+      el.setRangeText('\t', el.selectionStart, el.selectionEnd, 'end')
+      changed()
+      return
+    }
     const mathKey = formulaKey(getText(), start.value, end.value, key)
     if (mathKey && !event.metaKey && !event.ctrlKey && !event.altKey) {
       event.preventDefault()

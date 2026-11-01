@@ -30,7 +30,7 @@ func (f *Font) textBoxFontSize(t TableAsset, c TableCell, settings LayoutSetting
 	for i, line := range unit.lines {
 		if unit.widths[i] > 0 {
 			// Millimeter gaps stay fixed when the font grows or shrinks.
-			size = min(size, (width-float64(max(0, len(line)-1))*gap)/unit.widths[i])
+			size = min(size, (width-textLineGap(line, gap))/unit.widths[i])
 		}
 	}
 	if unit.height > 0 {

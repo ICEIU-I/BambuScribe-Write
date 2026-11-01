@@ -33,6 +33,8 @@ const error = ref(''),
   panel = ref<HTMLElement>()
 const measured = computed(() => ({
   ...props.table,
+  columnWidths: props.preview?.columnWidths ?? props.table.columnWidths,
+  padding: props.preview?.padding ?? props.table.padding,
   fontSize: fitTableFont(props.table, props.preview).fontSize,
   rowHeights:
     props.preview?.rowHeights.length === props.table.rowHeights.length
@@ -45,10 +47,11 @@ const fontRange = computed(() => {
     .map((cell) => {
       const old = props.preview?.cells.find((c) => c.row === cell.row && c.col === cell.col)
       return fitTableCellFont(
-        props.table,
+        measured.value,
         cell,
         old,
         props.preview?.fontSize ?? props.table.fontSize,
+        props.preview?.maxFontSize,
       )
     })
   if (!sizes.length) return measured.value.fontSize.toFixed(2)
@@ -109,12 +112,11 @@ function dimension(axis: 'width' | 'height', e: Event) {
     const resized = fitTableFont(
       resizeTable(
         measured.value,
-        axis === 'width' ? n : sum(props.table.columnWidths),
+        axis === 'width' ? n : sum(measured.value.columnWidths),
         axis === 'height' ? n : sum(measured.value.rowHeights),
       ),
       props.preview,
     )
-    if (axis === 'width') resized.rowHeights = [...props.table.rowHeights]
     return resized
   })
 }
@@ -131,7 +133,6 @@ function sizes(axis: 'row' | 'col', e: Event) {
     for (let i = axis === 'row' ? b.r0 : b.c0; i <= (axis === 'row' ? b.r1 : b.c1); i++)
       array[i] = n
     const fitted = fitTableFont(t, props.preview)
-    if (axis === 'col') fitted.rowHeights = [...props.table.rowHeights]
     return fitted
   })
 }
@@ -142,7 +143,6 @@ function average(axis: 'row' | 'col') {
       total = sum(array)
     array.fill(total / array.length)
     const fitted = fitTableFont(t, props.preview)
-    if (axis === 'col') fitted.rowHeights = [...props.table.rowHeights]
     return fitted
   })
 }
@@ -354,10 +354,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))
                     table,
                     bounds,
                     ($event.target as HTMLSelectElement).value as
-                      | 'all'
-                      | 'outer'
-                      | 'none'
-                      | 'reset',
+                      'all' | 'outer' | 'none' | 'reset',
                   ),
                 )
               "

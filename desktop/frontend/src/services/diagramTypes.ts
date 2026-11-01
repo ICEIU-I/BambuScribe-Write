@@ -1,5 +1,10 @@
 import type { Point } from '../types'
 
+export interface RecognizedDiagram {
+  data: string
+  scene: DiagramScene
+}
+
 export interface DiagramScene {
   width: number
   height: number

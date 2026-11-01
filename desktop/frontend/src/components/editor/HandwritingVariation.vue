@@ -25,7 +25,7 @@ function toggle() {
     </label>
     <div v-if="enabled" class="variation-controls">
       <label>
-        <span>变化强度</span>
+        <span title="同时微调字形、字距和行距">变化强度</span>
         <input
           type="range"
           aria-label="手写变化强度"

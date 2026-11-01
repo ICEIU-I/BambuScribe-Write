@@ -16,11 +16,12 @@ func TestOnlyTableBordersUseSeventyPercentFeedAfterErasureAndReload(t *testing.T
 			s.FontSize = 6
 			table := sampleTable()
 			table.Y, table.Style = 60, style
+			table = f.CompactTable(table, s)
 			caption := sampleTextBox()
 			caption.Page, caption.Y, caption.Cells[0].Text = 0, 120, "图一 ____"
 			im := textBoxImage(t)
 			im.Y, im.Width, im.Height = 180, 40, 10
-			e := PageErasure{ID: "split-grid", X: table.X + 10, Y: table.Y - 1, Width: 5, Height: 2}
+			e := PageErasure{ID: "split-grid", X: table.X + table.ColumnWidths[0]*.25, Y: table.Y - .1, Width: table.ColumnWidths[0] * .1, Height: .2}
 			doc, err := f.LayoutWithErasures("正文Ab", s, []ImageAsset{im}, []TableAsset{caption, table}, []PageErasure{e})
 			if err != nil {
 				t.Fatal(err)

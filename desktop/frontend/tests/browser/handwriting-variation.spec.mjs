@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { test, open } from './tableHarness.mjs'
 
-test('导入的霍尔公式矢量笔画实际更新，分数线和页面位置不变', async ({ page }, info) => {
+test('导入的霍尔公式矢量笔画实际更新，公式间距微调且页面位置不变', async ({ page }, info) => {
   const errors = await open(page)
   const table = JSON.parse(
     readFileSync(
@@ -67,7 +67,7 @@ test('手写变化同步公式及文本框，保存重开和导出保持相同�
   await page.evaluate(() => {
     window.__tables.saved = {
       ...window.__tables.preferences,
-      text: '霍尔效应 888888 242242\n\\(U_{H}=\\frac{25.3+25.5+25.4+25.4}{4}=25.4mV\\)',
+      text: '霍尔效应 888888 242242\n霍尔效应 888888 242242\n霍尔效应 888888 242242\n\\(U_{H}=\\frac{25.3+25.5+25.4+25.4}{4}=25.4mV\\)',
       tables: [
         {
           id: 'formula-textbox',
@@ -101,8 +101,15 @@ test('手写变化同步公式及文本框，保存重开和导出保持相同�
     .toBe(20)
   const initial = await page.evaluate(() => window.__tables.document)
   expect(initial.pages[0].strokes).not.toEqual(original.strokes)
+  const lines = [
+    ...new Set(initial.pages[0].cells.filter((c) => c.end - c.start === 1).map((c) => c.y)),
+  ]
+  expect(lines.length).toBeGreaterThanOrEqual(3)
+  expect(Math.abs(lines[1] - lines[0] - (lines[2] - lines[1]))).toBeGreaterThan(0.000001)
   expect(initial.pages[0].tables[0].strokes).not.toEqual(original.tables[0].strokes)
-  expect(initial.pages[0].formulas).toEqual(original.formulas)
+  expect(initial.pages[0].formulas.map((f) => f.source)).toEqual(
+    original.formulas.map((f) => f.source),
+  )
   await page.getByRole('slider', { name: '手写变化强度' }).fill('70')
   await expect
     .poll(() => page.evaluate(() => window.__tables.document?.settings.handwritingVariation))

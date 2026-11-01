@@ -20,12 +20,44 @@ func normalizeText(text string) string {
 		for end < len(runes) && unicode.Is(unicode.Zs, runes[end]) {
 			end++
 		}
-		if i > 0 && end < len(runes) && !compactSpaceBoundary(runes[i-1]) && !compactSpaceBoundary(runes[end]) {
+		if writingBlank(runes, i, end) {
+			out.WriteString(strings.Repeat(" ", end-i))
+		} else if i > 0 && end < len(runes) && !compactSpaceBoundary(runes[i-1]) && !compactSpaceBoundary(runes[end]) {
 			out.WriteByte(' ')
 		}
 		i = end
 	}
 	return out.String()
+}
+
+// Several spaces after an assignment (or inside empty parentheses) reserve
+// room for a handwritten answer. A populated numeric value is still compact.
+func writingBlank(runes []rune, start, end int) bool {
+	if start == 0 || end-start < 2 {
+		return false
+	}
+	previous := runes[start-1]
+	if strings.ContainsRune("(（[【", previous) {
+		return end < len(runes) && strings.ContainsRune(")）]】", runes[end])
+	}
+	if !strings.ContainsRune("=＝:：", previous) {
+		return false
+	}
+	if end == len(runes) || strings.ContainsRune("\r\n,，;；)）]】", runes[end]) {
+		return true
+	}
+	suffix := string(runes[end:])
+	suffix = strings.TrimLeft(suffix, "(（")
+	for _, unit := range []string{"mm", "cm", "nm", "μm", "µm", "km", "m", "ms", "s", "mV", "V", "mA", "μA", "µA", "A", "kΩ", "Ω", "Hz", "kHz", "MHz", "kg", "mg", "g", "N", "Pa", "J", "W", "°C", "℃", "%", "毫米", "厘米", "米", "秒", "伏", "安", "度"} {
+		if !strings.HasPrefix(suffix, unit) {
+			continue
+		}
+		after := []rune(strings.TrimPrefix(suffix, unit))
+		if len(after) == 0 || !unicode.IsLetter(after[0]) {
+			return true
+		}
+	}
+	return false
 }
 
 func compactSpaceBoundary(r rune) bool {

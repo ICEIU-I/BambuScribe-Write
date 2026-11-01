@@ -33,7 +33,9 @@ func (p *formulaParser) sequence(depth int, grouped bool) (imageMathBox, error) 
 	out := imageMathBox{top: math.Inf(1), bottom: math.Inf(-1)}
 	unit := p.font.Units
 	gap := .10 * unit
+	lastGap := gap
 	for p.pos < len(p.input) && p.input[p.pos] != '}' {
+		atomIndex := p.pos
 		p.nodes++
 		if p.nodes > 2000 {
 			return out, fmt.Errorf("公式过长，请拆分")
@@ -129,14 +131,15 @@ func (p *formulaParser) sequence(depth int, grouped bool) (imageMathBox, error) 
 			b.bottom = math.Max(b.bottom, script.bottom+shift)
 		}
 		out.strokes = appendMathStrokes(out.strokes, b.strokes, out.width, 0, 1)
-		out.width += b.width + gap
+		lastGap = p.variation.gap(atomIndex, gap)
+		out.width += b.width + lastGap
 		out.top = math.Min(out.top, b.top)
 		out.bottom = math.Max(out.bottom, b.bottom)
 	}
 	if !finite(out.top) {
 		return out, fmt.Errorf("公式内容不能为空")
 	}
-	out.width -= gap
+	out.width -= lastGap
 	if grouped {
 		if p.pos >= len(p.input) || p.input[p.pos] != '}' {
 			return out, fmt.Errorf("公式括号未闭合")

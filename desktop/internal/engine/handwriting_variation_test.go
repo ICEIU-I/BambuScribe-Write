@@ -85,8 +85,8 @@ func TestHandwritingVariationDeterminismOccurrencesAndExport(t *testing.T) {
 	}
 	for i, p := range a.Pages {
 		old := base.Pages[i]
-		if !reflect.DeepEqual(p.Cells, old.Cells) || !reflect.DeepEqual(p.Formulas, old.Formulas) || p.Text != old.Text {
-			t.Fatal("layout or content changed")
+		if len(p.Cells) != len(old.Cells) || len(p.Formulas) != len(old.Formulas) || p.Text != old.Text {
+			t.Fatal("content or glyph identities changed")
 		}
 		if reflect.DeepEqual(p.Strokes, old.Strokes) {
 			t.Fatal("variation not applied")
@@ -141,14 +141,14 @@ func TestHandwritingVariationKeepsFormulaAndTableRules(t *testing.T) {
 	source := `\bar{U}_{H}=\frac{88}{88}`
 	plain, _ := f.formulaBox(source, s)
 	varied, _ := f.formulaBox(source, s, v)
-	if plain.width != varied.width || plain.top != varied.top || plain.bottom != varied.bottom {
-		t.Fatal("formula box changed")
+	if math.Abs(plain.width-varied.width) > s.FontSize || plain.top != varied.top || plain.bottom != varied.bottom {
+		t.Fatal("formula spacing escaped its limit")
 	}
 	if reflect.DeepEqual(plain.strokes, varied.strokes) {
 		t.Fatal("formula unchanged")
 	}
 	for i, stroke := range plain.strokes {
-		if len(stroke) == 2 && stroke[0].Y == stroke[1].Y && !reflect.DeepEqual(stroke, varied.strokes[i]) {
+		if len(stroke) == 2 && stroke[0].Y == stroke[1].Y && (len(varied.strokes[i]) != 2 || varied.strokes[i][0].Y != varied.strokes[i][1].Y) {
 			t.Fatal("formula rule changed")
 		}
 	}
@@ -176,7 +176,7 @@ func TestHandwritingVariationKeepsFormulaAndTableRules(t *testing.T) {
 			t.Fatal("cell text unchanged", kind)
 		}
 		for i, stroke := range a.Cells[0].Strokes {
-			if len(stroke) == 2 && stroke[0].Y == stroke[1].Y && !reflect.DeepEqual(stroke, b.Cells[0].Strokes[i]) {
+			if len(stroke) == 2 && stroke[0].Y == stroke[1].Y && (len(b.Cells[0].Strokes[i]) != 2 || b.Cells[0].Strokes[i][0].Y != b.Cells[0].Strokes[i][1].Y || math.Abs((stroke[1].X-stroke[0].X)-(b.Cells[0].Strokes[i][1].X-b.Cells[0].Strokes[i][0].X)) > 1e-8) {
 				t.Fatal("overline or blank rule changed")
 			}
 		}

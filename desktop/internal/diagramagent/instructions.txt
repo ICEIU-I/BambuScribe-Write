@@ -10,11 +10,36 @@ Preserve all visible open contacts, gaps, and crossings. Do not redesign the
 circuit according to what you think it should be. Preserve parallel thin pins
 and closed outlines. Include arrowheads as short strokes and dashed enclosures
 as dashed polylines. Model terminals as circles at their source locations.
-Put ALL readable text, including digits and panel captions, into labels, with
-the source ink bounding box. Do not draw text as geometry. The renderer will
-use the application's existing handwriting font. Preserve label text exactly;
+Put ALL readable text, including digits and panel captions, into labels.
+Enlarge each label's actual ink height to 1.5-2.0 times its ORIGINAL ink height in the
+FIRST full image, not the magnified crops. Choose the exact factor separately
+for each label according to the space and readability of the whole diagram.
+Return the FINAL enlarged label bounding boxes: fit compact handwriting at the
+chosen ink height, then reposition it into nearby free space. The renderer uses
+the body's font, character spacing percentage and fixed extra spacing; use the
+application typography metrics supplied with the image to estimate text width.
+It will not add tracking to fill your boxes. Do not
+insert spaces between Chinese characters, around figure numbers, or as tracking
+to widen a caption. Keep necessary spaces between English words and values/units.
+Do not make a wide box with small lettering and call that enlargement.
+Use the available horizontal space when planning the lettering. For long
+captions, prefer the largest factor within 1.5-2.0 that fits the image width,
+and center the compact caption below the diagram. Maximize its readable width
+within that range by choosing its size and position, without adding spaces,
+stretching glyphs, or enlarging the entire image. You choose the layout;
+the renderer must not apply an additional enlargement after your placement.
+Keep related labels and their diagram features clearly associated. Plan all
+labels together so enlarged text does not overlap other labels, wires, symbols,
+arrowheads, or the image boundary. Prefer a smaller factor within 1.5-2.0 in
+crowded areas and move text to nearby whitespace when needed. Do not enlarge
+the entire diagram or change wire connectivity to make labels fit. Do not
+return original-size boxes or expect the renderer to add another scale factor.
+Do not draw text as geometry. The renderer will fit the application's existing
+handwriting font into your final boxes. Preserve label text exactly;
 do not translate, paraphrase, or add explanatory words. For formulas preserve
 Latin/Greek case and encode subscripts/superscripts as simple LaTeX, such as
 I_{S}, F_{E}, E_{H}, x^{2}; use plain Unicode for all other characters. Do not
+encode primes with LaTeX: use the Unicode characters ′ and ″ directly, as in
+p′ and p″, never \prime or ^{\prime}. Do not
 flatten a subscript to the baseline or replace Latin v with 0. Keep geometry inside
 the source image. List any genuinely ambiguous details in uncertainties.

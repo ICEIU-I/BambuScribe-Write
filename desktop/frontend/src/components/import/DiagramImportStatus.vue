@@ -10,7 +10,12 @@ defineProps<{ task: DiagramTask }>()
   >
     <progress v-if="task.working.value" aria-label="后台图像识别进度" />
     <button class="text-button" aria-label="查看图像导入任务" @click="task.resume">
-      {{ task.working.value ? `图像识别中 · ${task.elapsed.value}` : '图像导入失败' }} · 查看
+      {{
+        task.working.value
+          ? `图像识别中 · 已完成 ${task.finishedCount.value}/${task.sources.value.length} 张 · ${task.elapsed.value}`
+          : '图像导入失败'
+      }}
+      · 查看
     </button>
     <button v-if="task.working.value" class="text-button cancel-diagram" @click="task.cancel">
       取消识别

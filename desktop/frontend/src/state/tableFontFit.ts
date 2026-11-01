@@ -12,13 +12,14 @@ export function fitTableCellFont(
   cell: TableCell,
   old?: TableCellPlacement,
   fallback = table.fontSize,
+  limit = 40,
 ): number {
   if (!old || old.text !== cell.text || old.textWidth === undefined || old.textHeight === undefined)
     return fallback
   if (!cell.text) return old.fontSize ?? fallback
   const box = cellBounds(table, cell),
     previous = old.fontSize ?? fallback
-  let size = 40
+  let size = limit
   for (const line of lineMetrics(old))
     if (line.width > 0)
       size = Math.min(size, ((box.width - 2 * table.padding - line.gap) * previous) / line.width)
@@ -74,5 +75,9 @@ export function fitTableFont(source: TableAsset, preview?: TablePlacement): Tabl
         table.columnWidths[col]! += dw / cell.colSpan
     if (dh > 1e-8) table.rowHeights[cell.row + cell.rowSpan - 1]! += dh
   }
+  // Smart import owns grid compaction. Later edits fit text without
+  // contracting the dimensions chosen by the user.
+  const limit = preview.maxFontSize ?? 40
+  table.fontSize = Math.min(table.fontSize, limit)
   return table
 }

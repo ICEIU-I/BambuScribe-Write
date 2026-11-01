@@ -39,7 +39,7 @@ export function objectBounds(doc: Document, images: ImageAsset[], tables: TableA
         kind: 'table' as const,
         x: table.x,
         y: table.y,
-        width: table.columnWidths.reduce((a, b) => a + b, 0),
+        width: preview?.width ?? table.columnWidths.reduce((a, b) => a + b, 0),
         height: preview?.height ?? table.rowHeights.reduce((a, b) => a + b, 0),
       }
     }),

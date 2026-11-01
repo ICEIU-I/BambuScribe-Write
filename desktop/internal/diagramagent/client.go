@@ -21,7 +21,7 @@ var instructions string
 //go:embed schema.json
 var schema json.RawMessage
 
-func Recognize(ctx context.Context, c tableimport.Config, data, instruction string) (*diagram.Scene, error) {
+func Recognize(ctx context.Context, c tableimport.Config, data, instruction string, typography ...string) (*diagram.Scene, error) {
 	if err := c.Validate(); err != nil {
 		return nil, err
 	}
@@ -40,6 +40,9 @@ func Recognize(ctx context.Context, c tableimport.Config, data, instruction stri
 	}
 	format := map[string]any{"name": "bambuscribe_diagram", "strict": true, "schema": schema}
 	prompt := imagePrompt(w, h, instruction)
+	for _, profile := range typography {
+		prompt += "\nApplication typography: " + profile
+	}
 	var body map[string]any
 	endpoint := "/responses"
 	if c.Protocol == "responses" {

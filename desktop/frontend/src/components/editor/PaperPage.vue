@@ -16,6 +16,7 @@ import type {
   Point,
 } from '../../types'
 import ImageOverlay from './ImageOverlay.vue'
+import LayoutDiagnostics from './LayoutDiagnostics.vue'
 import PaperEraser from './PaperEraser.vue'
 import { pageErasuresKey, paperMask } from '../../state/pageEraser'
 import { targetErasure } from '../../state/erasureTargets'
@@ -138,7 +139,7 @@ async function draw() {
             return {
               x: t.x,
               y: t.y,
-              width: t.columnWidths.reduce((a, b) => a + b, 0),
+              width: preview?.width ?? t.columnWidths.reduce((a, b) => a + b, 0),
               height: (preview?.rowHeights ?? t.rowHeights).reduce((a, b) => a + b, 0),
             }
           }),
@@ -309,6 +310,11 @@ onBeforeUnmount(() => observer?.disconnect())
       @edit-text="(id, r) => emit('editImageText', id, r)"
       @add="(id, r) => emit('addImageText', id, r)"
       @remove="emit('removeImage', $event)"
+    />
+    <LayoutDiagnostics
+      :diagnostics="page.diagnostics ?? []"
+      :width="settings.paperWidth"
+      :height="settings.paperHeight"
     />
     <PaperEraser
       v-if="tool === 'erase'"

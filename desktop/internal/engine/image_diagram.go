@@ -15,7 +15,7 @@ func (f *Font) ValidateDiagram(scene *diagram.Scene) error {
 	asset := ImageAsset{Width: float64(scene.Width), Height: float64(scene.Height)}
 	for _, l := range scene.Labels {
 		box := diagramTextBox(l, scene)
-		if len(imageRegionTextStrokes(f, box, asset, DefaultLayout(), scene.Width, scene.Height)) == 0 {
+		if len(diagramLabelTextStrokes(f, box, asset, DefaultLayout(), scene.Width, scene.Height)) == 0 {
 			return fmt.Errorf("图中文字或公式暂不支持：%s；请在补充要求中指定简写后重试", l.Text)
 		}
 	}
@@ -23,11 +23,12 @@ func (f *Font) ValidateDiagram(scene *diagram.Scene) error {
 }
 
 func diagramTextBox(l diagram.Label, s *diagram.Scene) OCRBox {
+	text := normalizeDiagramPrimes(compactDiagramLabel(l.Text))
 	format := ""
-	if strings.ContainsAny(l.Text, "_^") {
+	if strings.ContainsAny(text, "_^\\") {
 		format = "math"
 	}
-	return OCRBox{Text: l.Text, X: l.X / float64(s.Width), Y: l.Y / float64(s.Height), W: l.Width / float64(s.Width), H: l.Height / float64(s.Height), TextFormat: format}
+	return OCRBox{Text: text, X: l.X / float64(s.Width), Y: l.Y / float64(s.Height), W: l.Width / float64(s.Width), H: l.Height / float64(s.Height), TextFormat: format}
 }
 
 func diagramImageStrokes(f *Font, asset ImageAsset, settings LayoutSettings) (imageRender, error) {
@@ -44,7 +45,11 @@ func diagramImageStrokes(f *Font, asset ImageAsset, settings LayoutSettings) (im
 		source = append(source, stroke)
 	}
 	for _, label := range scene.Labels {
-		source = append(source, imageRegionTextStrokes(f, diagramTextBox(label, scene), asset, settings, scene.Width, scene.Height)...)
+		strokes := diagramLabelTextStrokes(f, diagramTextBox(label, scene), asset, settings, scene.Width, scene.Height)
+		if len(strokes) == 0 {
+			return imageRender{}, fmt.Errorf("图中文字无法按当前字距放入，请减小额外字距或重新识别图像")
+		}
+		source = append(source, strokes...)
 	}
 	// Existing manual masks and text stay attached when a legacy image is
 	// reconstructed. Saved automatic OCR is superseded by the complete scene.

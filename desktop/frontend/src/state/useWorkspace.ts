@@ -9,6 +9,7 @@ import {
   watch,
 } from 'vue'
 import { errorText, native, onPrinterState, snapshot } from '../services/bridge'
+import { previewEditor } from '../services/editorPreview'
 import { defaultPreferences, defaultPrinter } from './defaults'
 import { currentLanguage, setLanguage } from '../i18n'
 import type { MenuState } from '../types'
@@ -60,6 +61,8 @@ export function useWorkspace() {
   let poll: ReturnType<typeof setInterval> | undefined
   let sequence = 0,
     stopEvents = () => {}
+  let previewRunning = false
+  let queuedPreview: number | undefined
 
   watch(
     () => preferences.theme,
@@ -113,29 +116,21 @@ export function useWorkspace() {
     ...projectFiles,
   })
   async function preview(version: number) {
+    if (version !== sequence) return
+    if (previewRunning) {
+      queuedPreview = version
+      return
+    }
+    previewRunning = true
     loading.value = true
     try {
-      const api = native()
-      const result = preferences.erasures.length
-        ? await api.PreviewWithErasures(
-            preferences.text,
-            snapshot(preferences.layout),
-            snapshot(preferences.images),
-            snapshot(preferences.tables),
-            snapshot(preferences.erasures),
-          )
-        : preferences.tables.length
-          ? await api.PreviewWithObjects(
-              preferences.text,
-              snapshot(preferences.layout),
-              snapshot(preferences.images),
-              snapshot(preferences.tables),
-            )
-          : await api.PreviewWithImages(
-              preferences.text,
-              snapshot(preferences.layout),
-              snapshot(preferences.images),
-            )
+      const result = await previewEditor(
+        preferences.text,
+        snapshot(preferences.layout),
+        snapshot(preferences.images),
+        snapshot(preferences.tables),
+        snapshot(preferences.erasures),
+      )
       if (version !== sequence) return
       document.value = result
       if (result.erasures && preferences.erasures.some((e) => !e.cuts))
@@ -145,23 +140,30 @@ export function useWorkspace() {
     } catch (e) {
       if (version === sequence) tell(errorText(e))
     } finally {
-      if (version === sequence) loading.value = false
+      previewRunning = false
+      const queued = queuedPreview
+      queuedPreview = undefined
+      if (queued === sequence) void preview(queued)
+      else loading.value = false
     }
   }
   watch(
-    () => [
-      preferences.text,
-      preferences.layout,
-      preferences.images,
-      preferences.tables,
-      preferences.erasures,
-    ],
-    () => {
+    () =>
+      [
+        preferences.text,
+        preferences.layout,
+        preferences.images,
+        preferences.tables,
+        preferences.erasures,
+      ] as const,
+    ([text], [previousText]) => {
       if (!ready.value) return
       dirty.value = true
       const version = ++sequence
       clearTimeout(previewTimer)
-      previewTimer = setTimeout(() => preview(version), 65)
+      const lineBreakChanged =
+        (text.match(/[\n\f]/g)?.length ?? 0) !== (previousText.match(/[\n\f]/g)?.length ?? 0)
+      previewTimer = setTimeout(() => preview(version), lineBreakChanged ? 0 : 65)
     },
     { deep: true },
   )

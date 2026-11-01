@@ -10,12 +10,14 @@ import (
 )
 
 func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement {
+	// Smart import has already compacted its grid. Rendering must preserve
+	// saved/manual dimensions instead of contracting them on every relayout.
 	t.FontSize = f.tableFontSize(t, settings)
 	rows := append([]float64(nil), t.RowHeights...)
 	xs := tableOffsets(t.ColumnWidths)
 	plans := make([]tableText, len(t.Cells))
 	sizes := make([]float64, len(t.Cells))
-	out := TablePlacement{ID: t.ID, Kind: t.Kind, FontSize: t.FontSize, Padding: t.Padding, X: t.X, Y: t.Y, ColumnWidths: t.ColumnWidths, Cells: []TableCellPlacement{}, Issues: []string{}}
+	out := TablePlacement{ID: t.ID, Kind: t.Kind, Style: t.Style, FontSize: t.FontSize, MaxFontSize: tableFontLimit(t, settings), Padding: t.Padding, X: t.X, Y: t.Y, ColumnWidths: t.ColumnWidths, Cells: []TableCellPlacement{}, Issues: []string{}}
 	for i, c := range t.Cells {
 		width := xs[c.Col+c.ColSpan] - xs[c.Col] - 2*t.Padding
 		sizes[i] = f.tableCellFontSize(t, c, settings)
@@ -79,6 +81,7 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 		out.Cells = append(out.Cells, cell)
 		out.Strokes = append(out.Strokes, strokes...)
 	}
+	varyTableBands(t, &out, settings)
 	if t.X+out.Width > settings.PaperWidth+1e-8 || t.Y+out.Height > settings.PaperHeight+1e-8 {
 		out.Issues = append(out.Issues, fmt.Sprintf("%s超出纸张，请移动或缩小尺寸", t.label()))
 	}
@@ -162,7 +165,7 @@ func (f *Font) LayoutWithObjects(text string, s LayoutSettings, images []ImageAs
 		Tables  []TableAsset
 		Images  []ImageAsset
 		Version string
-	}{doc.ID, tables, images, "overlapping-objects-v9-textbox-spacing-grid-speed"})
+	}{doc.ID, tables, images, "overlapping-objects-v11-body-sized-tables"})
 	h := sha256.Sum256(encoded)
 	doc.ID = hex.EncodeToString(h[:12])
 	doc.CharacterCount = count

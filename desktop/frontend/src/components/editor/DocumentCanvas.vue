@@ -428,6 +428,13 @@ defineExpose({
   },
   imageImportAnchor: () => ({ ...caret.value }),
   selectedImage: () => props.images.find((i) => i.id === selectedImageId.value),
+  applyImages: (images: ImageAsset[]) => {
+    const last = images.at(-1)
+    importedTarget = last ? { id: last.id, page: last.page } : undefined
+    input.value?.blur()
+    editing.importImages(images)
+    if (last) emit('update:index', last.page)
+  },
   applyImage: (image: ImageAsset, replace: boolean) => {
     importedTarget = { id: image.id, page: image.page }
     input.value?.blur()

@@ -124,6 +124,7 @@ func (f *Font) planObjects(s LayoutSettings, images []ImageAsset, tables []Table
 			out.images[o.image].Page, out.images[o.image].X, out.images[o.image].Y = page, x, y
 		} else {
 			// Source height is the configured minimum, not automatic text growth.
+			out.positions[len(out.positions)-1].Source.Width = tableOffsets(tables[o.table].ColumnWidths)[len(tables[o.table].ColumnWidths)]
 			out.positions[len(out.positions)-1].Source.Height = tableOffsets(tables[o.table].RowHeights)[len(tables[o.table].RowHeights)]
 			out.tables[o.table].Page, out.tables[o.table].X, out.tables[o.table].Y = page, x, y
 			out.renders[o.table].X, out.renders[o.table].Y = x, y

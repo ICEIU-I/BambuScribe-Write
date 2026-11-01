@@ -82,10 +82,12 @@ func Build(f *engine.Font, p project.Project, e Extraction, anchor Placement) (P
 		if manual {
 			position = anchor.Positions[i]
 		}
-		objects, warnings, err := sizeTable(f, t, s.FontSize, position.Width)
+		position.Width = max(position.Width, min(s.PaperWidth-s.MarginRight-position.X, readableImportWidth(f, t, s)))
+		objects, warnings, err := sizeTable(f, t, s, position.Width)
 		if err != nil {
 			return out, fmt.Errorf("表格 %d：%w", i+1, err)
 		}
+		position.Width = sum(objects[len(objects)-1].ColumnWidths)
 		h := 0.0
 		for j, o := range objects {
 			h += sum(o.RowHeights)

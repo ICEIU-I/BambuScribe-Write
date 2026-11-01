@@ -84,10 +84,14 @@ func handwritingCharacters(f *Font, box OCRBox, asset ImageAsset, pixelWidth, pi
 	y := asset.Y + box.Y*asset.Height + (box.H*asset.Height-(bottom-top)*scale)/2
 	out := []Stroke{}
 	for index, l := range letters {
+		dx := variation.spaceOffset(index, false, f.Units*l.scale, 0, max(0, l.advance-l.width))
+		if index == len(letters)-1 {
+			dx = 0
+		}
 		for _, s := range variation.strokes(l.glyph.Strokes, index) {
 			stroke := make(Stroke, len(s))
 			for i, p := range s {
-				stroke[i] = imagePoint(asset, x+(p.X*l.scale-l.left)*scale, y+(p.Y*l.scale+l.shift-top)*scale)
+				stroke[i] = imagePoint(asset, x+(p.X*l.scale-l.left+dx)*scale, y+(p.Y*l.scale+l.shift-top)*scale)
 			}
 			out = append(out, stroke)
 		}

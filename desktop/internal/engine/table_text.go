@@ -14,6 +14,7 @@ type tableLetter struct {
 	size, shift    float64
 	missing        bool
 	overline       bool
+	radical        int
 }
 type tableText struct {
 	variation                  handwritingVariation
@@ -40,10 +41,14 @@ func (f *Font) tableTextWithSpacing(text string, size, width float64, spacing *L
 	for _, paragraph := range strings.Split(text, "\n") {
 		// Trailing spaces have no ink and must not affect alignment or height.
 		// Retain the original cell text, indentation and explicit blank lines.
-		paragraph = strings.TrimRightFunc(paragraph, unicode.IsSpace)
+		trimmed := strings.TrimRightFunc(paragraph, unicode.IsSpace)
+		if len(paragraph)-len(trimmed) < 2 || (!strings.HasSuffix(trimmed, "=") && !strings.HasSuffix(trimmed, "＝") && !strings.HasSuffix(trimmed, ":") && !strings.HasSuffix(trimmed, "：")) {
+			paragraph = trimmed
+		}
 		line := []tableLetter{}
 		used := 0.0
-		for _, character := range tableCharacters(paragraph) {
+		characters := tableRadicalCharacters(tableCharacters(paragraph), 0)
+		for _, character := range characters {
 			r := character.char
 			letterSize, shift := size*character.scale, size*character.shift
 			g, ok := f.Glyphs[r]
@@ -61,16 +66,12 @@ func (f *Font) tableTextWithSpacing(text string, size, width float64, spacing *L
 				}
 			} else if !ok {
 				l.width = letterSize
-				out.inkTop = min(out.inkTop, shift)
-				bottom = max(bottom, shift+letterSize)
 			} else {
 				left, right := math.Inf(1), math.Inf(-1)
 				for _, stroke := range g.Strokes {
 					for _, p := range stroke {
 						left = min(left, p.X/f.Units*letterSize)
 						right = max(right, p.X/f.Units*letterSize)
-						out.inkTop = min(out.inkTop, shift+p.Y/f.Units*letterSize)
-						bottom = max(bottom, shift+p.Y/f.Units*letterSize)
 					}
 				}
 				if !finite(left) {
@@ -91,7 +92,20 @@ func (f *Font) tableTextWithSpacing(text string, size, width float64, spacing *L
 				}
 			}
 			line = append(line, l)
+		}
+		f.fitTableRadicals(line, characters, spacing)
+		for _, l := range line {
 			used += l.width
+			if l.missing {
+				out.inkTop = min(out.inkTop, l.shift)
+				bottom = max(bottom, l.shift+l.size)
+			}
+			for _, stroke := range l.glyph.Strokes {
+				for _, p := range stroke {
+					out.inkTop = min(out.inkTop, l.shift+p.Y/f.Units*l.size)
+					bottom = max(bottom, l.shift+p.Y/f.Units*l.size)
+				}
+			}
 		}
 		if spacing != nil && len(line) > 0 {
 			// Extra spacing separates characters, not the final character and frame.
@@ -133,8 +147,23 @@ func (f *Font) placeTableText(t tableText, padding, x, y, width, height float64,
 		} else if align == "right" {
 			originX += max(0, spareX)
 		}
+		lineY := originY + float64(i)*t.lineHeight
+		before, after := max(0, t.lineHeight-(t.height-float64(len(t.lines)-1)*t.lineHeight))/2, max(0, t.lineHeight-(t.height-float64(len(t.lines)-1)*t.lineHeight))/2
+		if i == 0 {
+			before = originY + t.inkTop - y - padding
+		}
+		if i == len(t.lines)-1 {
+			after = y + height - padding - (originY + t.inkTop + t.height)
+		}
+		size := 0.0
+		for _, l := range line {
+			size = max(size, l.size)
+		}
+		if len(t.lines) > 1 {
+			lineY += t.variation.spaceOffset(i, true, size, before, after)
+		}
 		for index := 0; index < len(line); {
-			if stroke, count, advance := f.tableFillLine(line[index:], originX, originY+float64(i)*t.lineHeight); count > 0 {
+			if stroke, count, advance := f.tableFillLine(line[index:], originX, lineY); count > 0 {
 				out = append(out, stroke)
 				originX += advance
 				index += count
@@ -142,7 +171,11 @@ func (f *Font) placeTableText(t tableText, padding, x, y, width, height float64,
 			}
 			l := line[index]
 			index++
-			letterY := originY + float64(i)*t.lineHeight + l.shift
+			letterY := lineY + l.shift
+			dx := 0.0
+			if l.radical == 0 {
+				dx = f.letterOffset(l.glyph, l.size, l.bearing, l.width, t.variation, occurrence+index-1)
+			}
 			if l.missing {
 				missing = append(missing, MissingGlyph{Char: string(l.char), X: originX, Y: letterY, Size: l.size})
 			}
@@ -150,14 +183,16 @@ func (f *Font) placeTableText(t tableText, padding, x, y, width, height float64,
 			if l.overline {
 				strokes = strokes[:len(strokes)-1]
 			}
-			strokes = t.variation.strokes(strokes, occurrence+index-1)
+			if l.radical == 0 {
+				strokes = t.variation.strokes(strokes, occurrence+index-1)
+			}
 			if l.overline {
 				strokes = append(append([]Stroke(nil), strokes...), l.glyph.Strokes[len(l.glyph.Strokes)-1])
 			}
 			for _, stroke := range strokes {
 				s := make(Stroke, len(stroke))
 				for j, p := range stroke {
-					s[j] = Point{originX + l.bearing + p.X/f.Units*l.size, letterY + p.Y/f.Units*l.size}
+					s[j] = Point{originX + l.bearing + dx + p.X/f.Units*l.size, letterY + p.Y/f.Units*l.size}
 				}
 				if len(s) >= 2 {
 					out = append(out, s)

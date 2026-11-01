@@ -6,6 +6,7 @@ type tableCharacter struct {
 	char         rune
 	scale, shift float64
 	overline     bool
+	radical      int // number of following characters under this radical
 }
 
 // A closed, nonempty _{...} group uses the original glyphs as subscripts.

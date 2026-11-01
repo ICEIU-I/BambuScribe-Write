@@ -31,6 +31,11 @@ const clipInk = useInkCuts(() => props.asset.id)
 const host = ref<HTMLElement>()
 const resolved = computed<TableAsset>(() => ({
   ...props.asset,
+  columnWidths:
+    props.preview?.columnWidths.length === props.asset.columnWidths.length
+      ? props.preview.columnWidths
+      : props.asset.columnWidths,
+  padding: props.preview?.padding ?? props.asset.padding,
   rowHeights:
     props.preview?.rowHeights.length === props.asset.rowHeights.length
       ? props.preview.rowHeights

@@ -1,6 +1,7 @@
 import type { Point } from '../types'
 import type { TableAsset, TablePlacement } from './tableTypes'
 import { cellBounds, tableLines } from './tableGeometry'
+import { previewTableRules } from './tablePreviewRules'
 import { fitTableCellFont } from './tableFontFit'
 
 export function nativeObjectStrokes(
@@ -8,13 +9,13 @@ export function nativeObjectStrokes(
   preview?: TablePlacement,
   clip: (strokes: Point[][], part: string) => Point[][] = (s) => s,
 ): Point[][] {
-  const strokes = clip(tableLines(asset), 'grid')
+  const strokes = clip(previewTableRules(asset, preview) ?? tableLines(asset), 'grid')
   for (const c of asset.cells) {
     const old = preview?.cells.find((v) => v.row === c.row && v.col === c.col)
     if (!old || old.text !== c.text) continue
     const bounds = cellBounds(asset, c),
       previousSize = old.fontSize ?? preview?.fontSize ?? asset.fontSize,
-      size = fitTableCellFont(asset, c, old, previousSize),
+      size = fitTableCellFont(asset, c, old, previousSize, preview?.maxFontSize),
       ratio = Math.abs(size - previousSize) < 1e-10 ? 1 : size / previousSize,
       oldPadding = preview?.padding ?? asset.padding,
       a = c.align ?? asset.align,

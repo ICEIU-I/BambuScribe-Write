@@ -51,9 +51,11 @@ type TableCellPlacement struct {
 }
 
 type TablePlacement struct {
+	Style        string               `json:"style"`
 	ID           string               `json:"id"`
 	Kind         string               `json:"kind,omitempty"`
 	FontSize     float64              `json:"fontSize"`
+	MaxFontSize  float64              `json:"maxFontSize,omitempty"`
 	Padding      float64              `json:"padding"`
 	X            float64              `json:"x"`
 	Y            float64              `json:"y"`

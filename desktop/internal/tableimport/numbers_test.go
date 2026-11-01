@@ -28,8 +28,8 @@ func TestImportedNumbersKeepPhysicalRowsAndFillTheirInkArea(t *testing.T) {
 		t.Fatal(err)
 	}
 	a, rendered := plan.Objects[0], plan.Preview[0]
-	if a.RowHeights[0] < p.Layout.FontSize+2*a.Padding-1e-8 {
-		t.Fatal("import shrank the physical row to the small digit's old height")
+	if rendered.Cells[0].FontSize > p.Layout.FontSize+1e-8 || a.RowHeights[0] > p.Layout.FontSize+2*a.Padding+1e-8 {
+		t.Fatal("import enlarged the digits or retained an oversized row")
 	}
 	top, bottom := math.Inf(1), math.Inf(-1)
 	for _, stroke := range rendered.Cells[0].Strokes {

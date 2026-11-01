@@ -91,7 +91,7 @@ func TestImportIsAtomicForInvalidOrTooWideTables(t *testing.T) {
 		func(e *Extraction) { e.Tables[0].Cells[1].Col = 0 },
 		func(e *Extraction) { e.Tables[0].Cells = e.Tables[0].Cells[:3] },
 		func(e *Extraction) { e.Tables[0].Columns[0] = math.NaN() },
-		func(e *Extraction) { e.Tables[0].Cells[0].Text = strings.Repeat("宽", 400) },
+		func(e *Extraction) { e.Tables[0].Cells[0].Text = strings.Repeat("宽", 2000) },
 	} {
 		e := fixture()
 		change(&e)

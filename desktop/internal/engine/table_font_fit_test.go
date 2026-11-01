@@ -1,7 +1,6 @@
 package engine
 
 import (
-	"math"
 	"reflect"
 	"testing"
 )
@@ -11,7 +10,7 @@ func assertMaximumTableFont(t *testing.T, f *Font, table TableAsset, render Tabl
 	for _, cell := range render.Cells {
 		for _, stroke := range cell.Strokes {
 			for _, p := range stroke {
-				if p.X < cell.X+table.Padding-1e-7 || p.X > cell.X+cell.Width-table.Padding+1e-7 || p.Y < cell.Y+table.Padding-1e-7 || p.Y > cell.Y+cell.Height-table.Padding+1e-7 {
+				if p.X < cell.X+render.Padding-1e-7 || p.X > cell.X+cell.Width-render.Padding+1e-7 || p.Y < cell.Y+render.Padding-1e-7 || p.Y > cell.Y+cell.Height-render.Padding+1e-7 {
 					t.Fatal("maximum font clipped ink", cell.Text, p)
 				}
 			}
@@ -21,8 +20,8 @@ func assertMaximumTableFont(t *testing.T, f *Font, table TableAsset, render Tabl
 		for _, w := range plan.widths {
 			width = max(width, w)
 		}
-		limited := width > cell.Width-2*table.Padding+1e-8 || height > cell.Height-2*table.Padding+1e-8
-		if cell.Text != "" && !limited && cell.FontSize < 40 {
+		limited := width > cell.Width-2*render.Padding+1e-8 || height > cell.Height-2*render.Padding+1e-8
+		if cell.Text != "" && !limited && cell.FontSize < render.MaxFontSize-1e-7 {
 			t.Fatal("cell could use a larger font", cell.Text, cell.FontSize)
 		}
 	}
@@ -45,7 +44,7 @@ func TestTableFontGrowsAndShrinksToMaximumIncludingLegacySmallFonts(t *testing.T
 		scaled.RowHeights = []float64{10 * factor, 10 * factor}
 		scaled.Padding *= factor
 		render := f.renderTable(scaled, DefaultLayout())
-		if math.Abs(render.FontSize-initial.FontSize*factor) > 1e-7 {
+		if render.FontSize > render.MaxFontSize+1e-7 || render.Width > 60*factor+1e-7 {
 			t.Fatal("font did not scale with cells", factor, render.FontSize, initial.FontSize)
 		}
 		assertMaximumTableFont(t, f, scaled, render)

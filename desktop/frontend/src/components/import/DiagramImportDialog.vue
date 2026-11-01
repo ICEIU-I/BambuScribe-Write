@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue'
-import { readImageFile } from '../../services/imageFiles'
 import type { DiagramTask } from '../../state/useDiagramTask'
 import ImportModelConfig from './ImportModelConfig.vue'
 import './table-import.css'
@@ -23,15 +22,11 @@ watch(task.session, async () => {
   await model.value?.load()
 })
 function choose(files: File[]) {
-  if (!files.length) return
-  void task.read(async () => {
-    if (files.length !== 1) throw new Error('每次导入一张图像，请分次添加')
-    return readImageFile(files[0]!)
-  })
+  void task.add(files)
 }
-function fileChange(e: Event) {
+function fileChange(e: Event, index?: number) {
   const input = e.target as HTMLInputElement
-  choose([...(input.files ?? [])])
+  void task.add([...(input.files ?? [])], index)
   input.value = ''
 }
 function paste(e: ClipboardEvent) {
@@ -81,36 +76,91 @@ function run() {
       @dragover.prevent
       @drop.prevent="choose([...($event.dataTransfer?.files ?? [])])"
     >
-      <img v-if="task.data.value" :src="task.data.value" alt="待识别原图" />
-      <span v-else>粘贴或拖入示意图、线稿图片</span>
+      <span v-if="!task.sources.value.length">粘贴或拖入多张示意图、线稿图片</span>
+      <div
+        v-for="(source, index) in task.sources.value"
+        :key="source.id"
+        class="import-source diagram-source-item"
+        :class="{ single: task.sources.value.length === 1 }"
+        :data-diagram-source="index"
+      >
+        <img
+          :src="source.data"
+          :alt="task.sources.value.length === 1 ? '待识别原图' : `待识别原图 ${index + 1}`"
+        />
+        <span>
+          {{ index + 1 }}. {{ source.name }}
+          <small :class="{ 'import-error': source.error }">{{
+            source.processing ? '识别中…' : source.result ? '已识别' : source.error || '待识别'
+          }}</small>
+        </span>
+        <label class="button"
+          >更换图片<input
+            type="file"
+            accept="image/png,image/jpeg"
+            :aria-label="`更换图像 ${index + 1}`"
+            :disabled="task.busy.value"
+            @change="fileChange($event, index)"
+        /></label>
+        <button
+          class="icon-button"
+          :aria-label="`移除图像 ${index + 1}`"
+          :disabled="task.busy.value"
+          @click="task.remove(index)"
+        >
+          ×
+        </button>
+      </div>
       <label class="button"
-        >{{ task.data.value ? '更换图片' : '选择图片'
+        >{{ task.sources.value.length ? '添加图片' : '选择图片'
         }}<input
           type="file"
+          multiple
           accept="image/png,image/jpeg"
           aria-label="图像文件"
           :disabled="task.busy.value"
-          @change="fileChange"
+          @change="fileChange($event)"
       /></label>
     </div>
+    <p class="import-warning">最多同时识别 3 张 · 每批最多 10 张 · 文字自动放大 1.5–2 倍</p>
     <label class="import-field"
       >补充要求（可选）<input
         v-model="task.instruction.value"
         maxlength="2000"
         aria-label="图像补充要求"
-        :disabled="task.working.value"
+        :disabled="task.busy.value"
     /></label>
     <ImportModelConfig ref="model" :disabled="task.busy.value" @error="task.error.value = $event" />
     <p v-if="task.error.value" class="import-error" role="alert">{{ task.error.value }}</p>
     <div v-if="task.working.value" class="diagram-progress" role="status">
-      <progress aria-label="图像识别进度" />正在重建图像… {{ task.elapsed.value }}
+      <progress aria-label="图像识别进度" />
+      <span>
+        {{ task.processingCount.value ? '正在重建图像…' : '正在准备导入…' }}
+        {{ task.elapsed.value }}
+        <small>
+          正在识别 {{ task.processingCount.value }} 张 · 已完成 {{ task.finishedCount.value }} /
+          {{ task.sources.value.length }} 张
+        </small>
+      </span>
     </div>
     <div class="import-actions">
       <button class="button" @click="task.cancel">
         {{ task.working.value ? '取消识别' : '取消' }}
       </button>
-      <button class="button primary" :disabled="task.busy.value || !task.data.value" @click="run">
-        {{ task.working.value ? '识别中…' : replacing ? '重新识别' : '识别并插入' }}
+      <button
+        class="button primary"
+        :disabled="task.busy.value || !task.sources.value.length"
+        @click="run"
+      >
+        {{
+          task.working.value
+            ? '识别中…'
+            : task.failed.value && task.sources.value.length > 1
+              ? '重试失败图片'
+              : replacing
+                ? '重新识别'
+                : '识别并插入'
+        }}
       </button>
     </div>
   </dialog>
@@ -120,22 +170,33 @@ function run() {
   max-width: 680px;
 }
 .diagram-source {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  max-height: 360px;
 }
-.diagram-source img {
-  max-width: 100%;
+.diagram-source-item.single {
+  flex-wrap: wrap;
+}
+.diagram-source-item.single img {
+  width: 100%;
+  height: auto;
   max-height: 230px;
-  object-fit: contain;
-  background: white;
+}
+.diagram-source-item .button {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.diagram-source input[type='file'] {
+  display: none;
 }
 .diagram-progress {
   display: flex;
   gap: 12px;
   align-items: center;
   padding: 12px 0;
+}
+.diagram-progress small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-soft);
 }
 .import-actions {
   display: flex;

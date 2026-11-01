@@ -21,6 +21,7 @@ func (f *Font) appendTextFragment(page *Page, runes []rune, part textFragment, s
 				}
 			} else {
 				bearing := textGlyphBearing(g, f.Units, advance, s)
+				bearing += f.letterOffset(g, s.FontSize, bearing, advance, variation, *textIndex)
 				start := len(page.Strokes)
 				for _, stroke := range variation.strokes(g.Strokes, *textIndex) {
 					out := make(Stroke, len(stroke))

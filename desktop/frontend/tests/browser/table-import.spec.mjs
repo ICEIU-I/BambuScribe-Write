@@ -463,3 +463,52 @@ test('batch cancellation stops all running images and never starts queued images
   expect(await page.evaluate(() => window.__tables.payload.tables.length)).toBe(0)
   expect(errors).toEqual([])
 })
+
+test('lens and slit tables retain answer blanks, one-line caption and 70 percent minimum', async ({
+  page,
+}) => {
+  const errors = await setup(page)
+  const recognized = JSON.parse(
+    readFileSync(
+      new URL('../../../internal/tableimport/testdata/lens-and-slit.json', import.meta.url),
+      'utf8',
+    ),
+  )
+  await page.evaluate((e) => {
+    window.go.application.App.RecognizeTables = async () => e
+  }, recognized)
+  await page.getByRole('button', { name: '智能导入', exact: true }).click()
+  await page.getByRole('button', { name: '导入表格', exact: true }).click()
+  await page.getByLabel('表格图片文件').setInputFiles(png('lens-and-slit.png'))
+  await page.getByRole('button', { name: '识别并预览' }).click()
+  await readyPreview(page)
+  await expect(page.getByLabel('识别表名')).toHaveValue('表2 Δs=0.00 mm, Δe=35.00 mm')
+  await page.screenshot({
+    path: `/tmp/bambuscribe-readable-tables-${test.info().project.name}.png`,
+  })
+  await page.getByRole('button', { name: '全部插入' }).click()
+  await expect.poll(() => page.evaluate(() => window.__tables.payload.tables.length)).toBe(4)
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.document.pages.flatMap((p) => p.tables).length))
+    .toBe(4)
+  const result = await page.evaluate(() => ({
+    body: window.__tables.payload.settings.fontSize,
+    tables: window.__tables.document.pages.flatMap((p) => p.tables),
+  }))
+  const cells = result.tables.flatMap((t) => t.cells)
+  expect(result.tables[0].cells[0].text).not.toContain('\n')
+  expect(cells.filter((c) => c.text.includes('        mm'))).toHaveLength(3)
+  for (const c of cells.filter((c) => c.text.trim()))
+    expect(c.fontSize).toBeGreaterThanOrEqual(result.body * 0.7 - 1e-6)
+  const root = cells.find((c) => c.text.includes('√'))
+  expect(root.missing).toEqual([])
+  expect(
+    root.strokes.some(
+      (s) => s.length === 2 && s[0].y === s[1].y && s[1].x - s[0].x > root.fontSize,
+    ),
+  ).toBe(true)
+  await page.screenshot({
+    path: `/tmp/bambuscribe-readable-tables-inserted-${test.info().project.name}.png`,
+  })
+  expect(errors).toEqual([])
+})

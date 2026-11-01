@@ -37,6 +37,7 @@ func TestBothModelProtocolsNormalizeBeforeReview(t *testing.T) {
 			e.Tables[0].Title = "表 3 U_{H} 沿 X 轴"
 			e.Tables[0].Notes = []string{"置于 C 型电磁铁， I_{M} = 1 000 mA"}
 			e.Tables[0].Cells[0].Text = "I_{S} = 10.00 mA"
+			e.Tables[0].Cells[3].Text = "d̅=√(d̅_{1}d̅_{2})=        mm"
 			calls := 0
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				calls++
@@ -57,6 +58,7 @@ func TestBothModelProtocolsNormalizeBeforeReview(t *testing.T) {
 			want.Tables[0].Title = "表3 U_{H}沿X轴"
 			want.Tables[0].Notes = []string{"置于C型电磁铁，I_{M}=1000 mA"}
 			want.Tables[0].Cells[0].Text = "I_{S}=10.00 mA"
+			want.Tables[0].Cells[3].Text = e.Tables[0].Cells[3].Text
 			if !reflect.DeepEqual(got, want) {
 				t.Fatal("review retained model whitespace or changed topology/uncertainty", got)
 			}

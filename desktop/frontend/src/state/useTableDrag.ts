@@ -54,8 +54,10 @@ export function useTableDrag(
       rect = dest?.getBoundingClientRect(),
       k = rect ? rect.width / s.paperWidth : scale(),
       base = g.base
-    const dx = (g.point.x - g.start.x) / k,
-      dy = (g.point.y - g.start.y) / k
+    // Use paper coordinates so scrolling during a gesture does not leave
+    // the handle behind the pointer. Retain the initial grab offset.
+    const dx = rect ? (g.point.x - rect.left) / k - base.x - g.grab.x : (g.point.x - g.start.x) / k,
+      dy = rect ? (g.point.y - rect.top) / k - base.y - g.grab.y : (g.point.y - g.start.y) / k
     let next = cloneTable(base)
     if (g.kind === 'move') {
       next.page = dest ? Number(dest.dataset.paper) : base.page
@@ -143,6 +145,10 @@ export function useTableDrag(
     const g = gesture,
       next = draft.value ? cloneTable(draft.value) : null
     if (next) {
+      if (g.kind === 'move') {
+        next.columnWidths = [...g.source.columnWidths]
+        next.padding = g.source.padding
+      }
       // Automatic text growth is measured geometry, not a new minimum height.
       // Only an explicit height resize may store those displayed dimensions.
       next.rowHeights = next.rowHeights.map((height, i) =>

@@ -1,6 +1,7 @@
 import type { CalculationSources, CalculationPlan, CalculationPreview } from './calculationTypes'
 import type { AgentConfig, Extraction, ImportPlacement, ImportPlan } from './tableImportTypes'
 import type { DiagramScene } from './diagramTypes'
+import type { EditorPreview } from './editorPreview'
 import type { UpdateInfo, UpdateProgress } from './updateTypes'
 import type {
   Bootstrap,
@@ -22,6 +23,13 @@ import type {
 } from '../types'
 
 interface NativeAPI {
+  PreviewEditor?(
+    text: string,
+    settings: LayoutSettings,
+    images: ImageAsset[],
+    tables: TableAsset[],
+    erasures: PageErasure[],
+  ): Promise<EditorPreview>
   RecognizeCalculations(sources: CalculationSources): Promise<CalculationPlan>
   CancelCalculationRecognition(): Promise<void>
   PreviewCalculations(plan: CalculationPlan, settings: LayoutSettings): Promise<CalculationPreview>

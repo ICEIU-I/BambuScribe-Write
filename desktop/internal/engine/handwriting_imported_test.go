@@ -36,8 +36,14 @@ func TestImportedFormulaVariationVisibleAtSmallSize(t *testing.T) {
 		t.Fatal("formula rows moved")
 	}
 	grid := len(tableLines(table, table.RowHeights))
-	if !reflect.DeepEqual(plain.Strokes[:grid], varied.Strokes[:grid]) {
-		t.Fatal("fraction bars changed")
+	for i, stroke := range plain.Strokes[:grid] {
+		other := varied.Strokes[i]
+		if len(other) != 2 || other[0].Y != other[1].Y || other[0].X != stroke[0].X || other[1].X != stroke[1].X {
+			t.Fatal("fraction bar deformed")
+		}
+	}
+	if reflect.DeepEqual(plain.Strokes[:grid], varied.Strokes[:grid]) {
+		t.Fatal("imported equation line spacing did not change")
 	}
 	total, count := 0.0, 0
 	for i, cell := range plain.Cells {

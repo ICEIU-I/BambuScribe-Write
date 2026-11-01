@@ -46,9 +46,11 @@ export interface TableCellPlacement extends TableCell {
   missing: MissingGlyph[]
 }
 export interface TablePlacement {
+  style?: TableAsset['style']
   id: string
   kind?: 'textbox'
   fontSize?: number
+  maxFontSize?: number
   padding?: number
   x: number
   y: number

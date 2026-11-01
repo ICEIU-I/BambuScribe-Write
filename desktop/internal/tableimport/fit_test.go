@@ -4,7 +4,6 @@ import (
 	"bambuscribe/desktop/internal/engine"
 	"bambuscribe/desktop/internal/project"
 	"encoding/json"
-	"math"
 	"reflect"
 	"strings"
 	"testing"
@@ -32,11 +31,11 @@ func TestImportShrinksOnlyOversizedTextBoxes(t *testing.T) {
 			}
 			for i, o := range plan.Objects {
 				if i == index {
-					if o.FontSize >= p.Layout.FontSize || o.FontSize < 1 || o.Cells[0].Text != long {
+					if o.FontSize >= p.Layout.FontSize || o.FontSize < p.Layout.FontSize*.7 || strings.ReplaceAll(o.Cells[0].Text, "\n", "") != long {
 						t.Fatalf("long text was not preserved and fitted: %+v", o)
 					}
-					w, _ := font(t).MeasureTableText(long, o.FontSize)
-					if math.Abs(w+2*o.Padding-sum(o.ColumnWidths)) > .001 {
+					w, _ := font(t).MeasureTextBoxText(o.Cells[0].Text, o.FontSize, p.Layout)
+					if w+2*o.Padding > sum(o.ColumnWidths)+1e-7 {
 						t.Fatal("text shrank further than necessary")
 					}
 				} else if o.FontSize != p.Layout.FontSize {
@@ -65,10 +64,10 @@ func TestImportShrinksWideTableAndPreservesMergedCells(t *testing.T) {
 		t.Fatal(err)
 	}
 	a := plan.Objects[len(plan.Objects)-1]
-	if a.FontSize >= p.Layout.FontSize || a.FontSize < 1 || plan.Objects[0].FontSize != p.Layout.FontSize {
+	if a.FontSize >= p.Layout.FontSize || a.FontSize < p.Layout.FontSize*.7 || plan.Objects[0].FontSize != p.Layout.FontSize {
 		t.Fatal("table font was not fitted independently")
 	}
-	if a.Page != 1 || a.Cells[0].RowSpan != 2 || a.Cells[1].ColSpan != 2 || a.Cells[0].Text != e.Tables[0].Cells[0].Text || a.Cells[1].Text != strings.Repeat("频率", 10)+"10¹⁴ Hz" || a.Cells[2].Text != "" || a.Cells[3].Text != "" {
+	if a.Page != 1 || a.Cells[0].RowSpan != 2 || a.Cells[1].ColSpan != 2 || strings.ReplaceAll(a.Cells[0].Text, "\n", "") != strings.ReplaceAll(e.Tables[0].Cells[0].Text, "\n", "") || strings.ReplaceAll(a.Cells[1].Text, "\n", "") != strings.Repeat("频率", 10)+"10¹⁴ Hz" || a.Cells[2].Text != "" || a.Cells[3].Text != "" {
 		t.Fatal("lost placement, merged cells, explicit lines or blank measurements")
 	}
 	// A slightly larger font must exceed at least one actual cell's width.
@@ -77,7 +76,7 @@ func TestImportShrinksWideTableAndPreservesMergedCells(t *testing.T) {
 		w, _ := font(t).MeasureTableText(c.Text, a.FontSize+.01)
 		tooWide = tooWide || w+2*a.Padding > sum(a.ColumnWidths[c.Col:c.Col+c.ColSpan])
 	}
-	if !tooWide {
+	if !tooWide && a.FontSize > p.Layout.FontSize*.7+1e-7 {
 		t.Fatal("table shrank further than necessary")
 	}
 	assertImportRendersAndExports(t, p, plan)
@@ -92,7 +91,7 @@ func TestImportRowsUseOnlyMeasuredTextHeight(t *testing.T) {
 		t.Fatal(err)
 	}
 	a := plan.Objects[len(plan.Objects)-1]
-	if math.Abs(sum(a.ColumnWidths)-(p.Layout.PaperWidth-p.Layout.MarginLeft-p.Layout.MarginRight)) > 1e-8 {
+	if sum(a.ColumnWidths) > p.Layout.PaperWidth-p.Layout.MarginLeft-p.Layout.MarginRight+1e-8 {
 		t.Fatal("compact rows changed the import width")
 	}
 	// Lowering any row above the 3 mm editor minimum must clip at least one
@@ -128,7 +127,7 @@ func TestImportPreservesMeanVoltageAndWritingBlanks(t *testing.T) {
 		t.Fatal(err)
 	}
 	a := plan.Objects[len(plan.Objects)-1]
-	if a.Cells[0].Text != e.Tables[0].Cells[0].Text || plan.Objects[1].Cells[0].Text != e.Tables[0].Notes[0] {
+	if strings.ReplaceAll(a.Cells[0].Text, "\n", "") != strings.ReplaceAll(e.Tables[0].Cells[0].Text, "\n", "") || strings.ReplaceAll(plan.Objects[1].Cells[0].Text, "\n", "") != e.Tables[0].Notes[0] {
 		t.Fatal("import changed the recognized mean voltage or blanks")
 	}
 	if strings.Contains(strings.Join(plan.Warnings, " "), "缺少") {
@@ -143,7 +142,7 @@ func TestImportMinimumFontAndAtomicFailure(t *testing.T) {
 			p := source()
 			e := fixture()
 			tooWide := fixture().Tables[0]
-			long := strings.Repeat("宽", 400)
+			long := strings.Repeat("宽", 2000)
 			switch target {
 			case "title":
 				tooWide.Title = long
@@ -155,7 +154,7 @@ func TestImportMinimumFontAndAtomicFailure(t *testing.T) {
 			e.Tables = append(e.Tables, tooWide)
 			before, _ := json.Marshal(p)
 			_, err := Build(font(t), p, e, Placement{})
-			if err == nil || !strings.Contains(err.Error(), "最小字号 1 mm") {
+			if err == nil || !strings.Contains(err.Error(), "超过整页可用高度") {
 				t.Fatal("minimum font failure not explained:", err)
 			}
 			after, _ := json.Marshal(p)
@@ -164,13 +163,12 @@ func TestImportMinimumFontAndAtomicFailure(t *testing.T) {
 			}
 		})
 	}
-	// A fit exactly at the editor's minimum must still produce a valid object.
+	// The new floor is 70% of the body, and additional lines grow the box.
 	f := font(t)
 	text := strings.Repeat("宽", 30)
-	w, _ := f.MeasureTableText(text, 1)
-	b, err := textBox(f, text, 8.21, w+1, "left")
-	if err != nil || b.FontSize != 1 {
-		t.Fatalf("minimum boundary failed: %v, %v", b.FontSize, err)
+	b, err := textBox(f, text, source().Layout, 100, "left")
+	if err != nil || b.FontSize != source().Layout.FontSize*.7 || !strings.Contains(b.Cells[0].Text, "\n") {
+		t.Fatalf("readability boundary failed: %v, %v", b.FontSize, err)
 	}
 	if err := b.Validate(); err != nil {
 		t.Fatal(err)

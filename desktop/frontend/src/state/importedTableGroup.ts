@@ -16,7 +16,7 @@ export function importedGroupGeometry(
   const rects = members.map((t) => ({
     x: t.x,
     y: t.y,
-    width: sum(t.columnWidths),
+    width: doc.pages[t.page]?.tables?.find((o) => o.id === t.id)?.width ?? sum(t.columnWidths),
     height: doc.pages[t.page]?.tables?.find((o) => o.id === t.id)?.height ?? sum(t.rowHeights),
   }))
   return {

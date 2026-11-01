@@ -182,6 +182,7 @@ export function useDocumentEditing(
       return
     }
     if (e.inputType === 'insertFromPaste') pasted = true
+    if (e.inputType === 'insertText' && e.data === '\t') history.breakGroup()
     if (input.value)
       selection = { start: input.value.selectionStart, end: input.value.selectionEnd }
   }
@@ -354,7 +355,9 @@ export function useDocumentEditing(
     if (props.disabled || !props.active) return
     const state = history[direction]()
     if (!state) return
-    const erasureChange = state.erasures !== erasures
+    // Typing can rebase (or merely copy) erasure records. Only an eraser-only
+    // history step should leave the text caret untouched.
+    const erasureChange = state.text === text && state.erasures !== erasures
     calculations = state.calculations ?? []
     text = state.text
     images = state.images
@@ -433,6 +436,16 @@ export function useDocumentEditing(
   }
 
   return {
+    importImages: (imported: ImageAsset[]) =>
+      commit({
+        images: [
+          ...images.map((image) => imported.find((next) => next.id === image.id) ?? image),
+          ...imported.filter((image) => !images.some((old) => old.id === image.id)),
+        ],
+        imageId: imported.at(-1)?.id ?? '',
+        tableId: '',
+        regionId: '',
+      }),
     replaceGenerated: (from: number, to: number, inserted: string, record: CalculationRecord) => {
       const nextText = text.slice(0, from) + inserted + text.slice(to)
       const retained = calculations.filter(

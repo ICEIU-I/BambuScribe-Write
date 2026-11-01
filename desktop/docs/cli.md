@@ -61,7 +61,7 @@ bambuscribe tool textbox.update --project note.ccf --output note.ccf --params '{
 
 `table.paste` 指定二维 `data`、`tsv` 字符串或 TSV `file` 三者之一，可指定起点 `row/col`，支持 Excel 的引号、单元格内换行和空列，并按需扩展表格。文本框固定为无边框的一个单元格，`textbox.update` 可修改 `text`、`page`、`x/y`、`width/height`、`fontSize`、`padding` 和对齐。
 
-表格和独立文本框在每次排版时按每个非空单元格的实际笔画边界独立计算最大可用字号（1–40 mm），不受保存的旧 `fontSize` 限制；有效字号见预览的 `tables[].cells[].fontSize`；`tables[].fontSize` 为非空单元格的最小字号摘要。`textbox.insert` 的 `fontSize` 仅参与默认框高的初始计算，最终字号按框的宽高适配。
+表格按非空单元格的实际笔画边界计算字号，上限为当前正文字号；自动收紧整表宽高和内边距仅在智能导入时执行，保留可读标签、填写区及最小行列尺寸。导入后的手动宽高、行列调整以及排版和导出均保留指定尺寸，仅适配文字。独立文本框仍按 1–40 mm 适配，导入表名和说明遵守正文字号上限。不受保存的旧 `fontSize` 限制；有效字号见预览的 `tables[].cells[].fontSize`；`tables[].fontSize` 为非空单元格的最小字号摘要。`textbox.insert` 的 `fontSize` 仅参与默认框高的初始计算，最终字号按框的宽高适配。
 
 独立文本框使用正文的 `letterSpacing` 与 `letterGap`；额外字距按毫米保持固定并参与自动字号计算。表格单元格保留自身的间距。表格边框落笔绘制使用 `F11200`，为普通书写 `F16000` 的 70%；表内文字、正文、图片及抬笔移动沿用普通速度。预览中的 `pages[].strokeKinds` 与笔画一一对应，`table-grid` 标记表格边框；没有边框时省略该数组。已上传的文件需重新生成并上传。
 

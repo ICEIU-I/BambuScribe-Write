@@ -5,25 +5,29 @@ import (
 	"fmt"
 )
 
-// Keep the native table editor's minimum font size and physical cell padding.
-const minImportFontSize = 1.0
+const minImportFontRatio = .7
 
-func fitTableColumns(f *engine.Font, t Table, size, width, pad float64) (float64, []float64, error) {
+func importMinimumSize(size float64) float64 { return max(1, size*minImportFontRatio) }
+
+func fitTableColumns(f *engine.Font, t Table, size, width, pad float64) (Table, float64, []float64, error) {
 	// Text widths scale linearly, including explicit newlines and subscripts.
 	// Measure once so the search does not repeatedly traverse glyph strokes.
+	t.Cells = append([]Cell(nil), t.Cells...)
 	widths := make([]float64, len(t.Cells))
-	for i, c := range t.Cells {
-		widths[i], _ = f.MeasureTableText(cellText(c.Text), 1)
+	for i := range t.Cells {
+		t.Cells[i].Text = cellText(t.Cells[i].Text)
+		widths[i], _ = f.MeasureTableText(t.Cells[i].Text, 1)
 	}
 	columns := minimumColumns(t, widths, size, pad)
 	if sum(columns) <= width {
-		return size, columns, nil
+		return t, size, columns, nil
 	}
-	columns = minimumColumns(t, widths, minImportFontSize, pad)
+	minimum := importMinimumSize(size)
+	columns = minimumColumns(t, widths, minimum, pad)
 	if sum(columns) > width {
-		return 0, nil, fmt.Errorf("表格缩小至最小字号 1 mm 后仍需 %.2f mm 宽，纸面可用 %.2f mm；请加宽纸张或减少内容", sum(columns), width)
+		return wrapTableColumns(f, t, minimum, width, pad)
 	}
-	low, high := minImportFontSize, size
+	low, high := minimum, size
 	for range 40 {
 		mid := (low + high) / 2
 		candidate := minimumColumns(t, widths, mid, pad)
@@ -33,7 +37,40 @@ func fitTableColumns(f *engine.Font, t Table, size, width, pad float64) (float64
 			high = mid
 		}
 	}
-	return low, columns, nil
+	return t, low, columns, nil
+}
+
+func wrapTableColumns(f *engine.Font, t Table, size, width, pad float64) (Table, float64, []float64, error) {
+	widths := make([]float64, len(t.Cells))
+	for i, c := range t.Cells {
+		for _, token := range wrapTokens(c.Text) {
+			w, _ := f.MeasureTableText(token, 1)
+			widths[i] = max(widths[i], w)
+		}
+	}
+	columns := minimumColumns(t, widths, size, pad)
+	if sum(columns) > width+1e-8 {
+		return t, 0, nil, fmt.Errorf("按正文70%%（%.2f mm）排版仍需 %.2f mm 宽；请加宽纸张或缩短不可换行的公式", size, sum(columns))
+	}
+	distributeColumns(columns, t.Columns, width)
+	for i, c := range t.Cells {
+		text, err := wrapText(c.Text, sum(columns[c.Col:c.Col+c.ColSpan])-2*pad, func(text string) float64 {
+			w, _ := f.MeasureTableText(text, size)
+			return w
+		})
+		if err != nil {
+			return t, 0, nil, err
+		}
+		t.Cells[i].Text = text
+	}
+	return t, size, columns, nil
+}
+
+func distributeColumns(columns, ratios []float64, width float64) {
+	extra, total := max(0, width-sum(columns)), sum(ratios)
+	for i, r := range ratios {
+		columns[i] += extra * r / total
+	}
 }
 
 func minimumColumns(t Table, widths []float64, size, pad float64) []float64 {
@@ -57,17 +94,4 @@ func minimumColumns(t Table, widths []float64, size, pad float64) []float64 {
 		}
 	}
 	return columns
-}
-
-func fitTextBoxFont(f *engine.Font, text string, size, width float64) (float64, error) {
-	w, _ := f.MeasureTableText(text, size)
-	if w+1 <= width {
-		return size, nil
-	}
-	minimum, _ := f.MeasureTableText(text, minImportFontSize)
-	if minimum+1 > width {
-		return 0, fmt.Errorf("表名或说明缩小至最小字号 1 mm 后仍需 %.2f mm 宽，纸面可用 %.2f mm；请加宽纸张或减少文字", minimum+1, width)
-	}
-	// Leave a tiny rounding margin for the native renderer's width check.
-	return max(minImportFontSize, size*(width-1)/w-1e-9), nil
 }

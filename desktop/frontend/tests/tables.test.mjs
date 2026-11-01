@@ -13,6 +13,9 @@ async function moduleURL(name, replacements = {}) {
 }
 const geometry = await moduleURL('tableGeometry')
 const { cellAt, selectionBounds, tableLines } = await import(geometry)
+const { previewTableRules } = await import(
+  await moduleURL('tablePreviewRules', { './tableGeometry': geometry })
+)
 const operations = await moduleURL('tableOperations', { './tableGeometry': geometry })
 const { createTable, mergeCells, splitCells, changeAxis, pasteCells, setBorders, resizeTable } =
   await import(operations)
@@ -229,4 +232,35 @@ test('native HTML clipboard fallback retains merges without executing cell marku
   assert.ok(!values.get('text/html').includes('<script>'))
   values.set('text/html', '<table><tr><td>Other</td></tr></table>')
   assert.equal(readTable(data), undefined)
+})
+
+test('shifted fraction bars match native ink through resizing and reject stale border topology', () => {
+  const asset = createTable({ rows: 2, cols: 1, width: 40, style: 'none' }, settings, {
+    page: 0,
+    x: 0,
+    y: 0,
+  })
+  asset.rowHeights = [10, 10]
+  asset.cells[0].borders = { bottom: true }
+  const bar = [
+    { x: 0, y: 10.2 },
+    { x: 40, y: 10.2 },
+  ]
+  const preview = {
+    ...structuredClone(asset),
+    strokes: [bar],
+    cells: asset.cells.map((c) => ({ ...structuredClone(c), strokes: [] })),
+  }
+  assert.deepEqual(previewTableRules(asset, preview), [bar])
+  const resized = { ...asset, columnWidths: [80], rowHeights: [20, 20] }
+  assert.deepEqual(previewTableRules(resized, preview), [
+    [
+      { x: 0, y: 20.4 },
+      { x: 80, y: 20.4 },
+    ],
+  ])
+  const edited = structuredClone(asset)
+  edited.cells[0].borders.bottom = false
+  assert.equal(previewTableRules(edited, preview), null)
+  assert.equal(previewTableRules({ ...asset, style: 'grid' }, preview), null)
 })

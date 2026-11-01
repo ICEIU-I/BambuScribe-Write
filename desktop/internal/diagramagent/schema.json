@@ -83,6 +83,7 @@
     },
     "labels": {
       "type": "array",
+      "description": "All readable source text, enlarged 1.5-2.0 times from the first full image; choose the factor and non-overlapping placement for each label.",
       "items": {
         "type": "object",
         "properties": {
@@ -96,10 +97,12 @@
             "type": "number"
           },
           "width": {
-            "type": "number"
+            "type": "number",
+            "description": "Final enlarged ink width in original-image pixels, using the same 1.5-2.0 factor as height."
           },
           "height": {
-            "type": "number"
+            "type": "number",
+            "description": "Final enlarged ink height in original-image pixels, 1.5-2.0 times the source lettering; renderer applies no additional enlargement."
           }
         },
         "required": [

@@ -32,7 +32,7 @@ func (f *Font) appendBodyFormula(doc *Document, s LayoutSettings, source string,
 			if i == len(lines)-1 {
 				total += h
 			} else {
-				total += h + s.FontSize*.35
+				total += h + variation.gap(i, s.FontSize*.35)
 			}
 		}
 		if total > bottom-s.MarginTop {
@@ -73,7 +73,7 @@ func (f *Font) appendBodyFormula(doc *Document, s LayoutSettings, source string,
 		page.Carets = append(page.Carets, CaretStop{start, x, *y}, CaretStop{*textIndex, x + b.width, *y})
 		page.Formulas = append(page.Formulas, FormulaPlacement{Start: start, End: *textIndex, Source: line.source, RegionBounds: RegionBounds{x, *y, b.width, height}})
 		page.Text += sourceText
-		*y += height + s.FontSize*.35
+		*y += height + variation.gap(li, s.FontSize*.35)
 		*row = int(math.Floor((*y - s.MarginTop) / page.LineHeight))
 		*ink = textInk{}
 	}

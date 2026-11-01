@@ -124,9 +124,7 @@ func TestSpacingRejectsRealOverlapAndKeepsLegacyGrid(t *testing.T) {
 	f := testFont(t)
 	s := DefaultLayout()
 	s.LineSpacing = 50
-	if _, err := f.Layout("你\n你", s); err == nil || !strings.Contains(err.Error(), "重叠") {
-		t.Fatalf("real line overlap must explain how to fix it: %v", err)
-	}
+	requireOverlapIssue(t, f, "你\n你", s)
 	s = DefaultLayout()
 	s.LetterSpacing = 50
 	doc, err := f.Layout("你你", s)

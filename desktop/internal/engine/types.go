@@ -116,6 +116,7 @@ type FormulaPlacement struct {
 }
 
 type Page struct {
+	Diagnostics []LayoutDiagnostic `json:"diagnostics,omitempty"`
 	Formulas    []FormulaPlacement `json:"formulas,omitempty"`
 	Ink         []InkLayer         `json:"ink,omitempty"`
 	LineHeight  float64            `json:"lineHeight"`

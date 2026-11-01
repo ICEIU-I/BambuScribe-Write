@@ -137,6 +137,7 @@ export interface FormulaPlacement extends RegionBounds {
   source: string
 }
 export interface Page {
+  diagnostics?: LayoutDiagnostic[]
   formulas?: FormulaPlacement[]
   ink?: InkLayer[]
   lineHeight: number
@@ -153,6 +154,10 @@ export interface Page {
   cells: GlyphCell[]
   carets: CaretStop[]
   blankCarets?: (CaretStop & { blankLines: number })[]
+}
+export interface LayoutDiagnostic extends RegionBounds {
+  code: string
+  message: string
 }
 export interface Document {
   erasures?: PageErasure[]

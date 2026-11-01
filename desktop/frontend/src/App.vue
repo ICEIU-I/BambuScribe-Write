@@ -16,6 +16,7 @@ import WorkspaceSidebar from './components/layout/WorkspaceSidebar.vue'
 import LayoutInspector from './components/editor/LayoutInspector.vue'
 import DocumentCanvas from './components/editor/DocumentCanvas.vue'
 import EditorToolbar from './components/editor/EditorToolbar.vue'
+import DocumentWarnings from './components/editor/DocumentWarnings.vue'
 import DevicePage from './components/device/DevicePage.vue'
 import JobBar from './components/JobBar.vue'
 import UploadDialog from './components/upload/UploadDialog.vue'
@@ -229,7 +230,8 @@ watch(
         :task="diagramImport.task"
         :replacing="
           !!diagramImport.replacement.value &&
-          diagramImport.task.data.value === diagramImport.replacement.value.data
+          diagramImport.task.sources.value.length === 1 &&
+          diagramImport.task.sources.value[0]?.data === diagramImport.replacement.value.data
         "
       />
       <UploadDialog
@@ -304,9 +306,15 @@ watch(
         <div v-if="page?.issues?.length" class="document-alert" role="alert">
           <AppIcon name="alert" :size="16" />{{ page.issues[0] }}
         </div>
-        <div v-else-if="page?.warnings?.length" class="document-alert table-warning" role="status">
-          <AppIcon name="alert" :size="16" />{{ page.warnings[0] }}
-        </div>
+        <DocumentWarnings
+          :key="w.projectOpened.value"
+          :warnings="page?.issues?.length ? [] : (page?.warnings ?? [])"
+          :images="
+            preferences.images.filter((image) =>
+              page?.images?.some((placed) => placed.id === image.id),
+            )
+          "
+        />
         <div class="editor-body">
           <DocumentCanvas
             :key="w.projectOpened.value"

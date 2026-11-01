@@ -85,3 +85,46 @@ func TestFailureDoesNotRetryOrLeakResponse(t *testing.T) {
 		t.Fatal("cancelled request was sent", err)
 	}
 }
+
+func TestModelPlannedEnlargedLabelsAreRequestedAndPreserved(t *testing.T) {
+	// The model chooses 1.75x for a 12x10 source label and moves it into free
+	// space. Recognition must preserve that final box without scaling twice.
+	planned := `{"width":100,"height":80,"strokes":[{"id":"wire","role":"wire","points":[{"x":10,"y":20},{"x":80,"y":20}],"dashed":false}],"circles":[],"labels":[{"text":"A","x":38,"y":35,"width":21,"height":17.5}],"uncertainties":[]}`
+	for _, protocol := range []string{"responses", "chat-completions"} {
+		t.Run(protocol, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				var body map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+					t.Error(err)
+					return
+				}
+				var prompt string
+				if protocol == "responses" {
+					prompt = body["instructions"].(string)
+					json.NewEncoder(w).Encode(map[string]any{"status": "completed", "output": []any{map[string]any{"content": []any{map[string]any{"type": "output_text", "text": planned}}}}})
+				} else {
+					prompt = body["messages"].([]any)[0].(map[string]any)["content"].(string)
+					json.NewEncoder(w).Encode(map[string]any{"choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"content": planned}}}})
+				}
+				for _, required := range []string{"1.5-2.0 times", "FIRST full image", "Choose the exact factor separately", "FINAL enlarged label bounding boxes", "does not overlap", "Preserve label text exactly"} {
+					if !strings.Contains(prompt, required) {
+						t.Errorf("label layout request missing %q", required)
+					}
+				}
+				if strings.Contains(prompt, "with\nthe source ink bounding box") {
+					t.Error("conflicting original-size box instruction")
+				}
+			}))
+			defer server.Close()
+			config := tableimport.Config{BaseURL: server.URL, APIKey: "test", Model: "test", Protocol: protocol}
+			scene, err := Recognize(context.Background(), config, picture(t), "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			label := scene.Labels[0]
+			if scene.Width != 100 || scene.Height != 80 || label.Text != "A" || label.X != 38 || label.Y != 35 || label.Width != 21 || label.Height != 17.5 {
+				t.Fatalf("model label layout changed: %+v", scene)
+			}
+		})
+	}
+}

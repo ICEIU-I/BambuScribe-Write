@@ -7,19 +7,38 @@ func (f *Font) LayoutWithImages(text string, s LayoutSettings, assets []ImageAss
 	return f.LayoutWithObjects(text, s, assets, nil)
 }
 
-// Image frames still participate in object placement. Body text clears the
-// rendered ink envelope, allowing existing text in the raster's white margins
-// to retain its position. Trace once and reuse those exact strokes for export.
+// Smart figures reserve their complete frame; raster images use the rendered
+// ink envelope so existing text in white margins retains its position.
+// Trace once and reuse those exact strokes for export.
 func (f *Font) prepareBodyOccupancy(plan *objectPlan, s LayoutSettings) error {
 	plan.bodyOccupied = map[int][]RegionBounds{}
 	plan.imageRenders = make([]imageRender, len(plan.images))
+	positions := map[string]ObjectPosition{}
+	for _, p := range plan.positions {
+		positions[p.ID] = p
+	}
 	for i, asset := range plan.images {
 		render, err := imageStrokes(f, asset, s)
 		if err != nil {
 			return err
 		}
 		plan.imageRenders[i] = render
-		if bounds, ok := imageInkBounds(render.Strokes); ok {
+		if asset.Diagram != nil {
+			// Smart-imported figures reserve their complete frame. Their blank
+			// margins belong to the figure too; following body lines must move
+			// below it rather than remain inside that draggable frame.
+			a := asset.Rotation * math.Pi / 180
+			w := math.Abs(asset.Width*math.Cos(a)) + math.Abs(asset.Height*math.Sin(a))
+			h := math.Abs(asset.Width*math.Sin(a)) + math.Abs(asset.Height*math.Cos(a))
+			plan.bodyOccupied[asset.Page] = append(plan.bodyOccupied[asset.Page], RegionBounds{asset.X + (asset.Width-w)/2, asset.Y + (asset.Height-h)/2, w, h})
+			p := positions[asset.ID]
+			if p.Page > p.SourcePage {
+				// An overflowing insertion leaves the original page after the
+				// cursor empty, so later body text still follows the figure.
+				top := max(0, p.Source.Y+(asset.Height-h)/2)
+				plan.bodyOccupied[p.SourcePage] = append(plan.bodyOccupied[p.SourcePage], RegionBounds{0, top, s.PaperWidth, max(0, s.PaperHeight-top)})
+			}
+		} else if bounds, ok := imageInkBounds(render.Strokes); ok {
 			plan.bodyOccupied[asset.Page] = append(plan.bodyOccupied[asset.Page], bounds)
 		}
 	}

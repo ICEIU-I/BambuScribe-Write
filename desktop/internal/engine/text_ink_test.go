@@ -3,7 +3,6 @@ package engine
 import (
 	"os"
 	"reflect"
-	"strings"
 	"testing"
 )
 
@@ -40,9 +39,7 @@ func TestCompactDCChecksHorizontalInkPosition(t *testing.T) {
 			}
 		}
 	}
-	if _, err := f.Layout("料\n着", s); err == nil || !strings.Contains(err.Error(), "重叠") {
-		t.Fatal("glyphs overlapping in both axes must remain blocked", err)
-	}
+	requireOverlapIssue(t, f, "料\n着", s)
 }
 
 func TestCompactDCLessonKeepsOriginalSettingsAndExports(t *testing.T) {
@@ -67,7 +64,7 @@ func TestCompactDCLessonKeepsOriginalSettingsAndExports(t *testing.T) {
 func TestInkTrackerRetainsLongDescendersAndResetsPerPage(t *testing.T) {
 	f := &Font{Units: 11, Glyphs: map[rune]Glyph{
 		'a': {Width: 2, Strokes: []Stroke{{{0, 9}, {2, 11}}}},
-		'b': {Width: 2, Strokes: []Stroke{{{0, 0}, {2, 2}}}},
+		'b': {Width: 2, Strokes: []Stroke{{{2, 0}, {0, 2}}}},
 		'c': {Width: 2, Strokes: []Stroke{{{0, 5}, {2, 6}}}},
 	}}
 	s := DefaultLayout()
@@ -76,9 +73,7 @@ func TestInkTrackerRetainsLongDescendersAndResetsPerPage(t *testing.T) {
 		t.Fatal("intermediate disjoint line should fit", err)
 	}
 	for _, text := range []string{"a\n       c\nb", "a\n\nb"} {
-		if _, err := f.Layout(text, s); err == nil || !strings.Contains(err.Error(), "重叠") {
-			t.Fatal("lost an earlier descender across intervening/blank rows", err)
-		}
+		requireOverlapIssue(t, f, text, s)
 	}
 	if _, err := f.Layout("a\fb", s); err != nil {
 		t.Fatal("ink from another sheet blocked its first row", err)

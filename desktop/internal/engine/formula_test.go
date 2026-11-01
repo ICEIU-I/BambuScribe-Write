@@ -82,7 +82,7 @@ func TestBodyFormulasFlowAroundObjectsAndStayWhole(t *testing.T) {
 			if m.Y+m.Height > s.PaperHeight-s.MarginBottom+1e-8 {
 				t.Fatal("formula exceeds page")
 			}
-			if p.Number == 1 && tableOverlaps(m.X, m.Y, m.Width, m.Height, 12, 20, 60, 20) {
+			if p.Number == 1 && tableOverlaps(m.X, m.Y, m.Width, m.Height, doc.Pages[0].Tables[0].X, doc.Pages[0].Tables[0].Y, doc.Pages[0].Tables[0].Width, doc.Pages[0].Tables[0].Height) {
 				t.Fatal("formula crosses table")
 			}
 		}

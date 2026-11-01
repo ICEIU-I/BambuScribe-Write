@@ -4,6 +4,7 @@ package main
 import (
 	"bambuscribe/desktop/internal/calculation"
 	"bambuscribe/desktop/internal/engine"
+	"bambuscribe/desktop/internal/preview"
 	"bambuscribe/desktop/internal/project"
 	"bambuscribe/desktop/internal/tableimport"
 	"encoding/json"
@@ -25,6 +26,7 @@ func main() {
 		Tables   []engine.TableAsset   `json:"tables"`
 		Erasures []engine.PageErasure  `json:"erasures"`
 		Export   bool                  `json:"export"`
+		Compact  bool                  `json:"compact"`
 		Page     int                   `json:"page"`
 	}
 	if err := json.NewDecoder(os.Stdin).Decode(&input); err != nil {
@@ -80,6 +82,10 @@ func main() {
 		json.NewEncoder(os.Stdout).Encode(map[string]any{"document": doc, "gcode": gcode})
 		return
 	}
-	json.NewEncoder(os.Stdout).Encode(doc)
+	if input.Compact {
+		json.NewEncoder(os.Stdout).Encode(preview.Pack(doc))
+	} else {
+		json.NewEncoder(os.Stdout).Encode(doc)
+	}
 }
 func fail(err error) { fmt.Fprint(os.Stderr, err); os.Exit(1) }

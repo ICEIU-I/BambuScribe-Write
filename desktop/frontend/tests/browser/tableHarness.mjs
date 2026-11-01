@@ -21,7 +21,7 @@ export const test = base.extend({
     { scope: 'worker', auto: true },
   ],
 })
-export async function open(page, update = {}) {
+export async function open(page, update = {}, compact = false) {
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
   await page.route('**/__table-preview', async (route) => {
@@ -35,7 +35,11 @@ export async function open(page, update = {}) {
       await route.fulfill({ status: 400, body: e.stderr?.toString() ?? e.message })
     }
   })
+  await page.addInitScript((enabled) => {
+    window.__compactPreview = enabled
+  }, compact)
   await page.addInitScript((update) => {
+    const compact = window.__compactPreview
     const layout = {
       templateName: '表格测试',
       lineMode: 'fixed',
@@ -62,7 +66,14 @@ export async function open(page, update = {}) {
       layout,
       images: [],
       tables: [],
-      writing: { offsetX: 0, offsetY: 0, penUp: 7, penDown: 3.4, originMode: 'auto', sound: true },
+      writing: {
+        offsetX: 0,
+        offsetY: 0,
+        penUp: 7,
+        penDown: 3.4,
+        originMode: 'auto',
+        sound: true,
+      },
     }
     const state = {
       connected: false,
@@ -85,13 +96,17 @@ export async function open(page, update = {}) {
       },
       WindowSetTitle: () => {},
     }
-    const preview = async (text, settings, images, tables = [], erasures = []) => {
-      const payload = { text, settings, images, tables, erasures }
+    const preview = async (text, settings, images, tables = [], erasures = [], packed = false) => {
+      const payload = { text, settings, images, tables, erasures, compact: packed }
       window.__tables.payload = payload
       const r = await fetch('/__table-preview', { method: 'POST', body: JSON.stringify(payload) })
       if (!r.ok) throw new Error(await r.text())
       const doc = await r.json()
-      window.__tables.document = doc
+      window.__tables.document = packed
+        ? (
+            await import(`${window.location.origin}/src/services/editorPreview.ts`)
+          ).unpackEditorPreview(structuredClone(doc))
+        : doc
       return doc
     }
     const none = async () => ''
@@ -125,6 +140,12 @@ export async function open(page, update = {}) {
           PreviewWithImages: preview,
           PreviewWithObjects: preview,
           PreviewWithErasures: preview,
+          ...(compact
+            ? {
+                PreviewEditor: (text, settings, images, tables, erasures) =>
+                  preview(text, settings, images, tables, erasures, true),
+              }
+            : {}),
           SavePreferences: async (p, path) => {
             window.__tables.preferences = p
             if (path) {

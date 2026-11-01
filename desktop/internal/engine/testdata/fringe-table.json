@@ -1,0 +1,368 @@
+{
+  "groupId": "fringe",
+  "id": "fringe",
+  "page": 0,
+  "x": 17,
+  "y": 40,
+  "columnWidths": [
+    70.39262542631282,
+    19.70127394504047,
+    21.530614551101074,
+    21.18295030867683,
+    21.42765818746471,
+    21.764877581404107
+  ],
+  "rowHeights": [
+    10.206666666666667,
+    10.206666666666667,
+    10.206666666666667,
+    10.206666666666667,
+    10.206666666666667,
+    10.206666666666667,
+    10.206666666666667
+  ],
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "条纹序号",
+      "borders": {
+        "top": true,
+        "right": true,
+        "bottom": true,
+        "left": false
+      }
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "1"
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "2"
+    },
+    {
+      "row": 0,
+      "col": 3,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "3"
+    },
+    {
+      "row": 0,
+      "col": 4,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "4"
+    },
+    {
+      "row": 0,
+      "col": 5,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "5",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": true
+      }
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "条纹位置x_{i}/mm",
+      "borders": {
+        "top": true,
+        "right": true,
+        "bottom": true,
+        "left": false
+      }
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": true
+      }
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "条纹序号",
+      "borders": {
+        "top": true,
+        "right": true,
+        "bottom": true,
+        "left": false
+      }
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "1+n"
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "2+n"
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "3+n"
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "4+n"
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "5+n",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": true
+      }
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "条纹位置x_{i+n}/mm",
+      "borders": {
+        "top": true,
+        "right": true,
+        "bottom": true,
+        "left": false
+      }
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 3,
+      "col": 4,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": true
+      }
+    },
+    {
+      "row": 4,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "(x_{i+n}-x_{i})/mm",
+      "borders": {
+        "top": true,
+        "right": true,
+        "bottom": true,
+        "left": false
+      }
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 4,
+      "col": 2,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 4,
+      "col": 3,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 4,
+      "col": 4,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 4,
+      "col": 5,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": true
+      }
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "条纹间距Δx_{i}/mm",
+      "borders": {
+        "top": true,
+        "right": true,
+        "bottom": true,
+        "left": false
+      }
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 5,
+      "col": 2,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 5,
+      "col": 3,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 5,
+      "col": 4,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": ""
+    },
+    {
+      "row": 5,
+      "col": 5,
+      "rowSpan": 1,
+      "colSpan": 1,
+      "text": "",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": true
+      }
+    },
+    {
+      "row": 6,
+      "col": 0,
+      "rowSpan": 1,
+      "colSpan": 6,
+      "text": "Δ̅x̅_{i}=______ mm",
+      "borders": {
+        "top": true,
+        "right": false,
+        "bottom": true,
+        "left": false
+      }
+    }
+  ],
+  "style": "grid",
+  "fontSize": 8.206666666666667,
+  "padding": 1,
+  "align": "center",
+  "verticalAlign": "middle"
+}

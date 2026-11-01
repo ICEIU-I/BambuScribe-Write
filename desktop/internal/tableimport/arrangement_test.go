@@ -23,7 +23,7 @@ func TestManualArrangementPreservesNativePositionsAndRoundtrip(t *testing.T) {
 		t.Fatal(plan)
 	}
 	for i, g := range plan.Groups {
-		if g.Position != positions[i] || len(g.ObjectIDs) < 2 {
+		if g.Page != positions[i].Page || g.X != positions[i].X || g.Y != positions[i].Y || g.Width > positions[i].Width+1e-7 || len(g.ObjectIDs) < 2 {
 			t.Fatal(g)
 		}
 	}
@@ -81,7 +81,7 @@ func TestManualArrangementAllowsOverlapAndReflowsBody(t *testing.T) {
 		t.Fatal(err)
 	}
 	for i, group := range plan.Groups {
-		if group.Position != positions[i] {
+		if group.Page != positions[i].Page || group.X != positions[i].X || group.Y != positions[i].Y || group.Width > positions[i].Width+1e-7 {
 			t.Fatal("overlap displaced manual position", group)
 		}
 	}

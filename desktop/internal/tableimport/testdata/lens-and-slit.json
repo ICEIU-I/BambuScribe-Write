@@ -1,0 +1,626 @@
+{
+  "tables": [
+    {
+      "title": "表2 Δs=0.00 mm, Δe=35.00 mm",
+      "notes": [],
+      "rows": 2,
+      "columns": [
+        1,
+        1,
+        1,
+        1,
+        1.2
+      ],
+      "style": "grid",
+      "cells": [
+        {
+          "row": 0,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "狭缝座位置\nY_{s}/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "目镜座位置\nY_{e}/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "狭缝面相对座\n中心偏移Δs/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "叉丝面相对座\n中心偏移Δe/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 4,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "D(=|Y_{e}-Y_{s}|+Δs+Δe)\n/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "0.00",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "35.00",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 4,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        }
+      ]
+    },
+    {
+      "title": "表3 放大及缩小像间距测量",
+      "notes": [],
+      "rows": 7,
+      "columns": [
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "style": "grid",
+      "cells": [
+        {
+          "row": 0,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "测量对象",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 5,
+          "text": "放大像间距d_{1}测量",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 6,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "测量对象",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 0,
+          "col": 7,
+          "rowSpan": 1,
+          "colSpan": 5,
+          "text": "缩小像间距d_{2}测量",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "第i次",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "1",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "2",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "3",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 4,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "4",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 5,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "5",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "左像位置x_{li}/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 4,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 5,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "右像位置x_{ri}/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 4,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 5,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "d_{1i}(=|x_{li}-x_{ri}|)/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 1,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 2,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 3,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 4,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 5,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 5,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 6,
+          "text": "d̅_{1}=        mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 6,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "第i次",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 7,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "1",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 8,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "2",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 9,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "3",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 10,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "4",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 1,
+          "col": 11,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "5",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 6,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "左像位置x_{li}/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 7,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 8,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 9,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 10,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 2,
+          "col": 11,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 6,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "右像位置x_{ri}/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 7,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 8,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 9,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 10,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 3,
+          "col": 11,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 6,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "d_{2i}(=|x_{li}-x_{ri}|)/mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 7,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 8,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 9,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 10,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 4,
+          "col": 11,
+          "rowSpan": 1,
+          "colSpan": 1,
+          "text": "",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 5,
+          "col": 6,
+          "rowSpan": 1,
+          "colSpan": 6,
+          "text": "d̅_{2}=        mm",
+          "uncertain": false,
+          "borders": null
+        },
+        {
+          "row": 6,
+          "col": 0,
+          "rowSpan": 1,
+          "colSpan": 12,
+          "text": "d̅=√(d̅_{1}d̅_{2})=        mm",
+          "uncertain": false,
+          "borders": null
+        }
+      ]
+    }
+  ]
+}

@@ -5,12 +5,15 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 )
 
 const maxDocumentCharacters = 20000
+const lineOverlapIssue = "行距过小，笔画会重叠，请增大行距或减小字号"
+const tabCells = 4
 
 func (s LayoutSettings) Validate() error {
 	s = s.normalized()
@@ -80,7 +83,7 @@ func noLineEnd(r rune) bool { return strings.ContainsRune("（《【〈“‘([{
 func (f *Font) advance(r rune, s LayoutSettings) float64 {
 	ratio := s.LetterSpacing / 100
 	if r == '\t' {
-		return 2*s.FontSize*ratio + s.LetterGap
+		return tabCells * (s.FontSize*ratio + s.LetterGap)
 	}
 	if r == ' ' {
 		return s.FontSize*0.5*ratio + s.LetterGap
@@ -127,7 +130,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v20-visible-handwriting-variation", occupied, f.ID})
+	}{text, s, "stroke-fonts-v25-ink-overlap", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {
@@ -136,10 +139,12 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 	doc := &Document{ID: hex.EncodeToString(h[:12]), Settings: s, Pages: []Page{}, Missing: []string{}, CharacterCount: utf8.RuneCountInString(text), FontName: name}
 	row := 0
 	ink := textInk{}
+	diagnosticBounds := map[RegionBounds]bool{}
 	newPage := func() {
 		doc.Pages = append(doc.Pages, blankLayoutPage(s, pageOffset+len(doc.Pages)))
 		row = 0
 		ink = textInk{}
+		diagnosticBounds = map[RegionBounds]bool{}
 	}
 	newPage()
 	y := s.MarginTop
@@ -211,11 +216,17 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 				y = s.MarginTop
 				continue
 			}
-			if !ink.addLine(f, runes, line, s, y) {
-				return nil, fmt.Errorf("行距过小，笔画会重叠，请增大行距或减小字号")
+			drawY, fits := f.placeVariedTextLine(&ink, runes, line, s, y, page.LineHeight, occupied[len(doc.Pages)-1], s.variation("body").at(textOffset+textIndex))
+			if !fits && !slices.Contains(page.Issues, lineOverlapIssue) {
+				// Keep text, pagination and carets current while the writer fixes
+				// spacing. Page issues still block G-code generation and upload.
+				page.Issues = append(page.Issues, lineOverlapIssue)
+			}
+			if !fits {
+				appendOverlapDiagnostics(page, ink.overlaps, diagnosticBounds)
 			}
 			for _, part := range line.parts {
-				f.appendTextFragment(page, runes[part.start:part.end], part, s, y, &textIndex, missingSet, doc, s.variation("body").at(textOffset))
+				f.appendTextFragment(page, runes[part.start:part.end], part, s, drawY, &textIndex, missingSet, doc, s.variation("body").at(textOffset))
 				offset = part.end
 			}
 			y += page.LineHeight
