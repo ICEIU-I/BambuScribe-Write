@@ -42,6 +42,7 @@ type TableCellPlacement struct {
 	Y          float64        `json:"y"`
 	Width      float64        `json:"width"`
 	Height     float64        `json:"height"`
+	FontSize   float64        `json:"fontSize"`
 	TextWidth  float64        `json:"textWidth"`
 	TextHeight float64        `json:"textHeight"`
 	Strokes    []Stroke       `json:"strokes"`

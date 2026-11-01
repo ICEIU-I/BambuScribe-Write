@@ -14,10 +14,15 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 	rows := append([]float64(nil), t.RowHeights...)
 	xs := tableOffsets(t.ColumnWidths)
 	plans := make([]tableText, len(t.Cells))
+	sizes := make([]float64, len(t.Cells))
 	out := TablePlacement{ID: t.ID, Kind: t.Kind, FontSize: t.FontSize, Padding: t.Padding, X: t.X, Y: t.Y, ColumnWidths: t.ColumnWidths, Cells: []TableCellPlacement{}, Issues: []string{}}
 	for i, c := range t.Cells {
 		width := xs[c.Col+c.ColSpan] - xs[c.Col] - 2*t.Padding
-		plans[i] = f.tableText(c.Text, t.FontSize, width)
+		sizes[i] = f.tableCellFontSize(t, c)
+		if c.Text == "" {
+			sizes[i] = t.FontSize
+		}
+		plans[i] = f.tableText(c.Text, sizes[i], width)
 		if width <= 0 {
 			plans[i].issue = "内边距过大，请减小内边距或增大列宽"
 		}
@@ -41,7 +46,7 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 				height += v
 			}
 			required := plans[i].height + 2*t.Padding
-			if required > height {
+			if required > height+1e-8 {
 				rows[c.Row+c.RowSpan-1] += required - height
 			}
 		}
@@ -66,7 +71,7 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 		for _, width := range plans[i].widths {
 			textWidth = max(textWidth, width)
 		}
-		out.Cells = append(out.Cells, TableCellPlacement{TableCell: c, X: x, Y: y, Width: w, Height: h, TextWidth: textWidth, TextHeight: plans[i].height, Strokes: strokes, Missing: missing})
+		out.Cells = append(out.Cells, TableCellPlacement{TableCell: c, X: x, Y: y, Width: w, Height: h, FontSize: sizes[i], TextWidth: textWidth, TextHeight: plans[i].height, Strokes: strokes, Missing: missing})
 		out.Strokes = append(out.Strokes, strokes...)
 	}
 	if t.X+out.Width > settings.PaperWidth+1e-8 || t.Y+out.Height > settings.PaperHeight+1e-8 {
@@ -152,7 +157,7 @@ func (f *Font) LayoutWithObjects(text string, s LayoutSettings, images []ImageAs
 		Tables  []TableAsset
 		Images  []ImageAsset
 		Version string
-	}{doc.ID, tables, images, "overlapping-objects-v6-max-object-font"})
+	}{doc.ID, tables, images, "overlapping-objects-v7-cell-ink-fit"})
 	h := sha256.Sum256(encoded)
 	doc.ID = hex.EncodeToString(h[:12])
 	doc.CharacterCount = count

@@ -75,6 +75,7 @@ func Decode(raw []byte) (Extraction, error) {
 	if err := editor.Decode(raw, &e); err != nil {
 		return e, err
 	}
+	e.normalizeText()
 	return e, e.Validate()
 }
 func (e Extraction) Validate() error {
@@ -116,6 +117,7 @@ func (e Extraction) Validate() error {
 	return nil
 }
 func cellText(s string) string {
+	s = normalizeText(s)
 	s = strings.ReplaceAll(strings.ReplaceAll(s, "\r\n", "\n"), "\r", "\n")
 	s = strings.NewReplacer("–", "-", "‑", "-").Replace(s)
 	if strings.Trim(strings.TrimSpace(s), ".…⋯ ") == "" {

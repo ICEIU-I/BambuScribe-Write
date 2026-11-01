@@ -1,9 +1,27 @@
-import type { TableAsset, TablePlacement } from './tableTypes'
+import type { TableAsset, TableCell, TableCellPlacement, TablePlacement } from './tableTypes'
 import { cellBounds, sum } from './tableGeometry'
 import { cloneTable } from './tableOperations'
 
-// Match native table fitting while resizing: both grow and shrink to the largest
-// uniform size. Native metrics include formulas, merged cells and explicit lines.
+// Reuse native ink metrics while resizing, including formulas and explicit lines.
+export function fitTableCellFont(
+  table: TableAsset,
+  cell: TableCell,
+  old?: TableCellPlacement,
+  fallback = table.fontSize,
+): number {
+  if (!old || old.text !== cell.text || old.textWidth === undefined || old.textHeight === undefined)
+    return fallback
+  if (!cell.text) return old.fontSize ?? fallback
+  const box = cellBounds(table, cell),
+    previous = old.fontSize ?? fallback
+  let size = 40
+  if (old.textWidth > 0)
+    size = Math.min(size, ((box.width - 2 * table.padding) * previous) / old.textWidth)
+  if (old.textHeight > 0)
+    size = Math.min(size, ((box.height - 2 * table.padding) * previous) / old.textHeight)
+  return Math.max(1, size)
+}
+
 export function fitTableFont(source: TableAsset, preview?: TablePlacement): TableAsset {
   if (!preview?.fontSize) return source
   const table = cloneTable(source),
@@ -19,8 +37,8 @@ export function fitTableFont(source: TableAsset, preview?: TablePlacement): Tabl
       return [
         {
           cell,
-          width: old.textWidth / preview.fontSize!,
-          height: old.textHeight / preview.fontSize!,
+          width: old.textWidth / (old.fontSize ?? preview.fontSize!),
+          height: old.textHeight / (old.fontSize ?? preview.fontSize!),
         },
       ]
     })

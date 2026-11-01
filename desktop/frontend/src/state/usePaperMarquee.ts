@@ -2,6 +2,7 @@ import { onBeforeUnmount, ref, watch, type Ref } from 'vue'
 import type { Document, ImageAsset, ImageEditTool, Point, TableAsset } from '../types'
 import { nearestPaper } from './paperGeometry'
 import { onBodyText, selectionAt, type ObjectSelection } from './objectSelection'
+import { selectedGeometry } from './objectSelectionMove'
 
 interface Context {
   document: Document | null
@@ -146,7 +147,6 @@ export function usePaperMarquee(
   }
   watch(
     () => [
-      props.document,
       props.modelValue,
       props.images,
       props.tables,
@@ -156,6 +156,19 @@ export function usePaperMarquee(
       props.zoom,
     ],
     clear,
+  )
+  watch(
+    () => props.document,
+    (doc) => {
+      if (gesture || !doc) {
+        clear()
+        return
+      }
+      if (selection.value?.objects.length)
+        selection.value =
+          selectedGeometry(doc, props.images, props.tables ?? [], selection.value)?.selection ??
+          null
+    },
   )
   onBeforeUnmount(clear)
   return { selection, begin, clear, lostCapture }

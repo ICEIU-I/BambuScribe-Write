@@ -92,11 +92,18 @@ test('字体切换同步正文与公式对象，保存重开仍使用所选字�
   await expect.poll(() => page.evaluate(() => window.__tables.saved.layout.fontId)).toBe('dc')
   await font.selectOption('handwriting')
   await expect.poll(() => page.evaluate(() => window.__tables.document?.fontName)).toBe('教案专用')
+  // Named projects now autosave subsequent font changes before reopening.
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.saved.layout.fontId))
+    .toBe('handwriting')
+  const reopened = page.waitForResponse('**/__table-preview')
   await page.evaluate(() => window.__tables.menu['menu:action']('open'))
-  await expect.poll(() => page.evaluate(() => window.__tables.document?.fontName)).toBe('DC体')
-  await expect(font).toHaveValue('dc')
+  await reopened
+  await expect(page.getByRole('button', { name: '导出', exact: true })).toBeEnabled()
+  await expect.poll(() => page.evaluate(() => window.__tables.document?.fontName)).toBe('教案专用')
+  await expect(font).toHaveValue('handwriting')
   expect(await page.evaluate(() => window.__tables.document.pages[0].strokes)).toEqual(
-    dc.pages[0].strokes,
+    original.strokes,
   )
   await page.evaluate(() => window.__tables.menu['menu:action']('exportPage'))
   await expect.poll(() => page.evaluate(() => window.__tables.exported?.gcode)).toContain('G1')

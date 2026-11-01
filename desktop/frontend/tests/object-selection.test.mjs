@@ -82,9 +82,10 @@ const box = {
 const images = [image],
   tables = [table, box]
 const doc = {
-  settings: { paperWidth: 163, paperHeight: 240, marginTop: 5, marginBottom: 10 },
+  settings: { paperWidth: 163, paperHeight: 240, marginTop: 5, marginBottom: 10, fontSize: 6 },
   pages: [
     {
+      lineHeight: 15,
       cells: [
         { start: 0, end: 1, x: 0, y: 0, width: 6, height: 6 },
         { start: 1, end: 2, x: 6, y: 0, width: 3, height: 6 },
@@ -120,7 +121,55 @@ test('marquee includes complete images, merged tables and captions; body and oth
   const reverse = selectionAt(doc, images, tables, 0, { x: 150, y: 100 }, { x: 0, y: 0 })
   assert.deepEqual(reverse, select())
   assert.equal(onBodyText(doc, '字 ', 0, { x: 2, y: 2 }), true)
-  assert.equal(onBodyText(doc, '字 ', 0, { x: 8, y: 2 }), false)
+  assert.equal(onBodyText(doc, '字 ', 0, { x: 8, y: 2 }), true)
+  assert.equal(onBodyText(doc, '字 ', 0, { x: 13, y: 2 }), false)
+})
+test('body hit area follows each row, includes spaces and stops one character past its visible end', () => {
+  const text = '甲 乙。    \n丙\n   ',
+    cells = [...text]
+      .map((char, start) => ({
+        start,
+        end: start + 1,
+        x: start < 9 ? 10 + start * 6 : start === 9 ? 10 : 10 + (start - 11) * 6,
+        y: start < 9 ? 15 : start === 9 ? 30 : 60,
+        width: char === '。' ? 2 : 6,
+        height: 6,
+      }))
+      .filter((c) => text[c.start] !== '\n'),
+    d = { ...doc, pages: [{ ...doc.pages[0], cells }] },
+    hit = (x, y) => onBodyText(d, text, 0, { x, y })
+  assert.equal(hit(19, 18), true) // internal space
+  assert.equal(hit(35, 18), true) // after compact final punctuation
+  assert.equal(hit(37, 18), false) // remainder of the half-empty row
+  assert.equal(hit(35, 11), true) // upper half of the interline gap
+  assert.equal(hit(35, 25), true) // lower half, still nearest to this row
+  assert.equal(hit(35, 27), false) // next row is shorter
+  assert.equal(hit(21, 33), true)
+  assert.equal(hit(23, 33), false)
+  assert.equal(hit(12, 48), false) // empty/object-only row
+  assert.equal(hit(12, 63), false) // whitespace-only row
+  assert.equal(hit(9, 18), false) // left paper blank
+  assert.equal(onBodyText(d, text, 1, { x: 12, y: 18 }), false)
+})
+test('body hit padding follows font size and respects tightly spaced rows and paper edges', () => {
+  for (const fontSize of [3, 9]) {
+    const height = fontSize * 0.85,
+      d = {
+        ...doc,
+        settings: { ...doc.settings, fontSize },
+        pages: [
+          {
+            ...doc.pages[0],
+            lineHeight: height,
+            cells: [{ start: 0, end: 1, x: 155, y: 240 - height, width: 2, height }],
+          },
+        ],
+      }
+    assert.equal(onBodyText(d, '。', 0, { x: Math.min(163, 157 + fontSize), y: 239 }), true)
+    assert.equal(onBodyText(d, '。', 0, { x: 157 + fontSize + 0.1, y: 239 }), false)
+    assert.equal(onBodyText(d, '。', 0, { x: 156, y: 240 - height - 0.1 }), false)
+    assert.equal(onBodyText(d, '。', 0, { x: 156, y: 240 }), false)
+  }
 })
 test('copy preserves visible resolved positions, OCR refresh, manual erasure and editable merged cells', () => {
   const resolved = {

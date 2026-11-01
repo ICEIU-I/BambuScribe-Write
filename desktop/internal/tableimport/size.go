@@ -35,6 +35,12 @@ func sizeTable(f *engine.Font, t Table, size, width float64) ([]engine.TableAsse
 				continue
 			}
 			_, h := f.MeasureTableText(cellText(c.Text), size)
+			if cellText(c.Text) != "" {
+				// Preserve the intended physical row height now that measurement
+				// excludes unused font margins. Short digits must grow to fit the
+				// row instead of making newly imported rows tiny again.
+				h = max(h, size)
+			}
 			used := sum(a.RowHeights[c.Row : c.Row+c.RowSpan])
 			if h+2*pad > used {
 				a.RowHeights[c.Row+c.RowSpan-1] += h + 2*pad - used
@@ -80,6 +86,9 @@ func textBox(f *engine.Font, text string, size, width float64, align string) (en
 		return engine.TableAsset{}, err
 	}
 	_, h := f.MeasureTableText(text, size)
+	if text != "" {
+		h = max(h, size)
+	}
 	return engine.TableAsset{ID: "import-title-" + uuid.NewString(), Kind: "textbox", ColumnWidths: []float64{width}, RowHeights: []float64{max(3, h+1)}, Cells: []engine.TableCell{{RowSpan: 1, ColSpan: 1, Text: text}}, Style: "none", FontSize: size, Padding: .5, Align: align, VerticalAlign: "middle"}, nil
 }
 func sum(a []float64) (v float64) {

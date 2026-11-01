@@ -31,6 +31,7 @@ export interface TableAsset {
   verticalAlign: TableVerticalAlign
 }
 export interface TableCellPlacement extends TableCell {
+  fontSize?: number
   x: number
   y: number
   width: number

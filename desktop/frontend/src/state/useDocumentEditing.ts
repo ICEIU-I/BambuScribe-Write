@@ -412,6 +412,17 @@ export function useDocumentEditing(
   }
 
   return {
+    changeObjects: (changedImages: ImageAsset[], changedTables: TableAsset[]) => {
+      const imageMap = new Map(changedImages.map((im) => [im.id, im])),
+        tableMap = new Map(changedTables.map((table) => [table.id, table]))
+      commit({
+        images: images.map((im) => imageMap.get(im.id) ?? im),
+        tables: tables.map((table) => tableMap.get(table.id) ?? table),
+        tableId: '',
+        imageId: '',
+        regionId: '',
+      })
+    },
     changePage: (index: number, action: PageAction, destination?: number) => {
       if (props.disabled || !props.document) return false
       const contents = {

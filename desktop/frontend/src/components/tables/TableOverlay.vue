@@ -168,7 +168,7 @@ function begin(
         wrap="off"
         maxlength="20000"
         :style="{
-          fontSize: `${(preview?.fontSize ?? shown.fontSize) * scale * 0.85}px`,
+          fontSize: `${(preview?.cells.find((cell) => cell.row === c.row && cell.col === c.col)?.fontSize ?? preview?.fontSize ?? shown.fontSize) * scale * 0.85}px`,
           padding: `${shown.padding * scale}px`,
         }"
         @pointerdown.stop

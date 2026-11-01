@@ -32,7 +32,9 @@ func TestTableSubscriptKeepsCapitalShapeAndLowersInk(t *testing.T) {
 		for i, stroke := range body {
 			for j, p := range stroke {
 				q := script[i][j]
-				if math.Abs(q.X-.65*p.X) > 1e-8 || math.Abs(q.Y-(.65*p.Y+2)) > 1e-8 {
+				// Restore the common font origin: each standalone cell now
+				// aligns its actual ink to the top padding.
+				if math.Abs(q.X-.65*p.X) > 1e-8 || math.Abs(q.Y+sub.inkTop-(.65*(p.Y+normal.inkTop)+2)) > 1e-8 {
 					t.Fatalf("%c subscript must scale both axes equally and move down: body=%+v sub=%+v", r, p, q)
 				}
 			}
@@ -86,7 +88,7 @@ func TestTableSubscriptHeightFitsRowsAndExplicitLines(t *testing.T) {
 		}
 	}
 	missing := render.Cells[2].Missing
-	if len(missing) != 1 || missing[0].Char != "🙂" || missing[0].Size >= table.FontSize || missing[0].Y <= render.Cells[2].Y+table.Padding {
+	if len(missing) != 1 || missing[0].Char != "🙂" || math.Abs(missing[0].Size-render.Cells[2].FontSize*.65) > 1e-8 || missing[0].Y < render.Cells[2].Y+table.Padding-1e-8 {
 		t.Fatal("missing subscript glyph lost its size or vertical position", missing)
 	}
 	doc, err := f.LayoutWithObjects("", DefaultLayout(), nil, []TableAsset{table})

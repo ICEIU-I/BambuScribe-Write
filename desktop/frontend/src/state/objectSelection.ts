@@ -68,14 +68,27 @@ export function selectionAt(
   }
 }
 export function onBodyText(doc: Document, text: string, page: number, p: Point) {
-  return (
-    doc.pages[page]?.cells.some(
-      (c) =>
-        p.x >= c.x &&
-        p.x <= c.x + c.width &&
-        p.y >= c.y &&
-        p.y <= c.y + c.height &&
-        text.slice(c.start, c.end).trim() !== '',
-    ) ?? false
-  )
+  const layout = doc.pages[page]
+  if (!layout) return false
+  const rows = new Map<number, { left: number; right: number; height: number }>()
+  for (const cell of layout.cells) {
+    const row = rows.get(cell.y) ?? { left: cell.x, right: -Infinity, height: cell.height }
+    row.left = Math.min(row.left, cell.x)
+    row.height = Math.max(row.height, cell.height)
+    if (text.slice(cell.start, cell.end).trim() !== '')
+      row.right = Math.max(row.right, cell.x + cell.width)
+    rows.set(cell.y, row)
+  }
+  // Include spaces within a text row and one em beyond its last visible cell.
+  // Split the normal interline gap evenly, matching nearest-caret selection;
+  // do not bridge empty rows or rows skipped to make room for an object.
+  return [...rows].some(([y, row]) => {
+    const gap = Math.max(0, layout.lineHeight - row.height) / 2
+    return (
+      p.x >= row.left &&
+      p.x <= Math.min(doc.settings.paperWidth, row.right + doc.settings.fontSize) &&
+      p.y >= Math.max(0, y - gap) &&
+      p.y < Math.min(doc.settings.paperHeight, y + row.height + gap)
+    )
+  })
 }

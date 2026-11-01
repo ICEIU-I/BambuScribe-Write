@@ -19,7 +19,7 @@ import {
   splitCells,
 } from '../../state/tableOperations'
 import { selectionBounds, sum } from '../../state/tableGeometry'
-import { fitTableFont } from '../../state/tableFontFit'
+import { fitTableCellFont, fitTableFont } from '../../state/tableFontFit'
 const props = defineProps<{
   table: TableAsset
   preview?: TablePlacement
@@ -39,6 +39,23 @@ const measured = computed(() => ({
       ? props.preview.rowHeights
       : props.table.rowHeights,
 }))
+const fontRange = computed(() => {
+  const sizes = props.table.cells
+    .filter((cell) => cell.text)
+    .map((cell) => {
+      const old = props.preview?.cells.find((c) => c.row === cell.row && c.col === cell.col)
+      return fitTableCellFont(
+        props.table,
+        cell,
+        old,
+        props.preview?.fontSize ?? props.table.fontSize,
+      )
+    })
+  if (!sizes.length) return measured.value.fontSize.toFixed(2)
+  const min = Math.min(...sizes).toFixed(2),
+    max = Math.max(...sizes).toFixed(2)
+  return min === max ? min : `${min}–${max}`
+})
 const bounds = computed(() =>
   props.selection
     ? selectionBounds(props.table, props.selection)
@@ -207,8 +224,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', shortcut))
         <div class="table-form-row">
           <label
             >自动字号（mm）<input
-              type="number"
-              :value="measured.fontSize.toFixed(2)"
+              type="text"
+              :value="fontRange"
               readonly
               aria-label="表格字号" /></label
           ><label

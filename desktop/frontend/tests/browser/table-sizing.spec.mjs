@@ -50,6 +50,59 @@ const make = (id, page, y, rows, width = 176) => ({
 })
 const assets = (page) => page.evaluate(() => window.__tables.payload.tables)
 
+test('short numbers fill the cell ink area independently of long headings', async ({ page }) => {
+  const errors = await open(page)
+  const table = make('legible', 0, 40, 3, 22)
+  table.rowHeights = [6.78, 6.78, 6.78]
+  table.cells[0].text = '表头很长 U_{H}/mV'
+  table.cells[1].text = '1000'
+  table.cells[2].text = '0.00'
+  await load(page, [table])
+  const readInk = () =>
+    page.evaluate(() => {
+      const rendered = window.__tables.document.pages[0].tables[0]
+      const expected = rendered.strokes.flat().flatMap((p) => [p.x, p.y])
+      const shown = (
+        document
+          .querySelector('.table-ink path')
+          .getAttribute('d')
+          .match(/-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/g) ?? []
+      ).map(Number)
+      return {
+        error:
+          expected.length === shown.length
+            ? Math.max(...expected.map((v, i) => Math.abs(v - shown[i])))
+            : Infinity,
+        cells: rendered.cells.map((c) => {
+          const ys = c.strokes.flat().map((p) => p.y)
+          return { size: c.fontSize, height: Math.max(...ys) - Math.min(...ys) }
+        }),
+      }
+    })
+  await expect.poll(async () => (await readInk()).error).toBeLessThan(1e-7)
+  const initial = await readInk()
+  expect(initial.cells[1].height).toBeCloseTo(4.78, 5)
+  expect(initial.cells[2].height).toBeCloseTo(4.78, 5)
+  expect(initial.cells[1].size).toBeGreaterThan(initial.cells[0].size)
+  await page.locator('[data-table-cell="0:0"]').dblclick()
+  await page.getByLabel('单元格文字', { exact: true }).fill('短')
+  await page.getByLabel('单元格文字', { exact: true }).press('Enter')
+  await expect
+    .poll(async () => (await readInk()).cells[0].size)
+    .toBeGreaterThan(initial.cells[0].size)
+  await expect.poll(async () => (await readInk()).error).toBeLessThan(1e-7)
+  expect((await readInk()).cells.slice(1)).toEqual(initial.cells.slice(1))
+  await page.evaluate(() => window.__tables.menu['menu:action']('exportPage'))
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.exported?.gcode))
+    .toContain('A1 handwriting')
+  expect(
+    await page.evaluate(() => window.__tables.exported.document.pages[0].tables[0].strokes),
+  ).toEqual(await page.evaluate(() => window.__tables.document.pages[0].tables[0].strokes))
+  await page.screenshot({ path: `/tmp/bambuscribe-cell-ink-${test.info().project.name}.png` })
+  expect(errors).toEqual([])
+})
+
 test('third-page group uses the second-page bottom margin, previews captions and undoes atomically', async ({
   page,
 }) => {
@@ -178,7 +231,9 @@ test('height and width resizing maximize text in both directions and persist thr
   expect((await assets(page))[0].fontSize).toBeGreaterThan(8.2)
   await height.fill('20')
   await height.press('Tab')
-  await expect.poll(async () => (await assets(page))[0].fontSize).toBeLessThan(4)
+  await expect
+    .poll(async () => (await assets(page))[0].fontSize)
+    .toBeCloseTo((initialSize * (10 - 2)) / (30 - 2), 5)
   await expect
     .poll(() => page.evaluate(() => window.__tables.document.pages[0].tables[0].height))
     .toBeCloseTo(20, 5)
@@ -224,6 +279,9 @@ test('dragging the resize handle fits text immediately, supports cancel and one-
   table.rowHeights = [20, 20]
   table.cells[0].text = 'U_{H}'
   await load(page, [table])
+  const initialSize = await page.evaluate(
+    () => window.__tables.document.pages[0].tables[0].fontSize,
+  )
   await page.getByLabel('页面缩放').selectOption('75')
   await page.locator('[data-table-cell]').first().click()
   const original = await assets(page)
@@ -247,7 +305,7 @@ test('dragging the resize handle fits text immediately, supports cancel and one-
   expect(await assets(page)).toEqual(original)
   await shrink()
   await page.mouse.up()
-  await expect.poll(async () => (await assets(page))[0].fontSize).toBeLessThan(4.3)
+  await expect.poll(async () => (await assets(page))[0].fontSize).toBeLessThan(initialSize * 0.3)
   await expect
     .poll(() => page.evaluate(() => window.__tables.document.pages[0].tables[0].height))
     .toBeLessThan(12.5)

@@ -102,7 +102,7 @@ func Build(f *engine.Font, p project.Project, e Extraction, anchor Placement) (P
 		}
 		page, y = position.Page-1, position.Y
 		occupied[page] = append(occupied[page], rect{position.X, y, position.Width, h})
-		group := Group{Position: position, Index: i, Title: t.Title, Height: h, ObjectIDs: []string{}}
+		group := Group{Position: position, Index: i, Title: normalizeText(t.Title), Height: h, ObjectIDs: []string{}}
 		for j := range objects {
 			objects[j].GroupID = objects[len(objects)-1].ID
 			objects[j].Page = page

@@ -68,7 +68,7 @@ func TestImportShrinksWideTableAndPreservesMergedCells(t *testing.T) {
 	if a.FontSize >= p.Layout.FontSize || a.FontSize < 1 || plan.Objects[0].FontSize != p.Layout.FontSize {
 		t.Fatal("table font was not fitted independently")
 	}
-	if a.Page != 1 || a.Cells[0].RowSpan != 2 || a.Cells[1].ColSpan != 2 || a.Cells[0].Text != e.Tables[0].Cells[0].Text || a.Cells[1].Text != e.Tables[0].Cells[1].Text || a.Cells[2].Text != "" || a.Cells[3].Text != "" {
+	if a.Page != 1 || a.Cells[0].RowSpan != 2 || a.Cells[1].ColSpan != 2 || a.Cells[0].Text != e.Tables[0].Cells[0].Text || a.Cells[1].Text != strings.Repeat("频率", 10)+"10¹⁴ Hz" || a.Cells[2].Text != "" || a.Cells[3].Text != "" {
 		t.Fatal("lost placement, merged cells, explicit lines or blank measurements")
 	}
 	// A slightly larger font must exceed at least one actual cell's width.

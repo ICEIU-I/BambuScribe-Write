@@ -22,6 +22,7 @@ import { createFreeTextBox } from '../../state/freeTextBox'
 import { flushEditors } from '../../state/editorCommands'
 import { placedObjects, keepObjectAnchor } from '../../state/objectLayout'
 import { usePaperMarquee } from '../../state/usePaperMarquee'
+import { useSelectionDrag } from '../../state/useSelectionDrag'
 import { useSelectionClipboard } from '../../state/useSelectionClipboard'
 import { provideImportedTableDrag } from '../../state/useImportedTableDrag'
 import type { PageAction } from '../../state/documentPages'
@@ -159,6 +160,14 @@ const { start, end, caret, focused, composition } = editor
 const marquee = usePaperMarquee(props, stack, viewport, (event) => {
   if (stack.value) editor.placeCaret(event, stack.value)
 })
+const selectionDrag = useSelectionDrag(
+  props,
+  stack,
+  viewport,
+  marquee.selection,
+  editing.changeObjects,
+  (page) => emit('update:index', page),
+)
 const selectionClipboard = useSelectionClipboard(
   props,
   () => marquee.selection.value,
@@ -178,6 +187,14 @@ function copy(event: ClipboardEvent) {
 function keydown(event: KeyboardEvent) {
   if (event.key === 'Escape') marquee.clear()
   editing.globalKeydown(event)
+}
+function capturePointerDown(event: PointerEvent) {
+  if (selectionDrag.begin(event)) return
+  insertTextBox(event)
+}
+function lostCapture() {
+  marquee.lostCapture()
+  selectionDrag.lostCapture()
 }
 useCanvasZoom(
   viewport,
@@ -414,11 +431,11 @@ defineExpose({
       class="document-stack"
       :style="{ width: `${width + 112}px` }"
       @pointerdown="pointerDown"
-      @pointerdown.capture="insertTextBox"
+      @pointerdown.capture="capturePointerDown"
       @pointermove="stack && editor.pointerMove($event, stack)"
       @pointerup="editor.pointerUp"
       @pointercancel="editor.pointerUp"
-      @lostpointercapture="marquee.lostCapture"
+      @lostpointercapture="lostCapture"
     >
       <template v-if="document"
         ><PaperPage
@@ -431,7 +448,7 @@ defineExpose({
           :ruled="ruled"
           :selection-start="start"
           :selection-end="end"
-          :marquee="marquee.selection.value"
+          :marquee="selectionDrag.selection.value"
           :tables="placedTables"
           :selected-table-id="selectedTableId"
           :new-text-box-id="newTextBoxId"

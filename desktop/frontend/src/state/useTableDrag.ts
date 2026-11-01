@@ -6,6 +6,7 @@ import { sum } from './tableGeometry'
 import { nearestPaper } from './paperGeometry'
 import { importedTableDragKey } from './useImportedTableDrag'
 import { fitTableFont } from './tableFontFit'
+import { useSelectedObjectDrag } from './useSelectionDrag'
 
 export function useTableDrag(
   host: Ref<HTMLElement | undefined>,
@@ -19,6 +20,7 @@ export function useTableDrag(
   const draft = ref<TableAsset | null>(null),
     offset = ref<Point>({ x: 0, y: 0 })
   const group = inject(importedTableDragKey, undefined)
+  const selectedDrag = useSelectedObjectDrag(() => asset().id)
   const groupPreview = computed(() => {
     const p = group?.preview.value
     return p?.ids.has(asset().id) ? p : null
@@ -198,12 +200,24 @@ export function useTableDrag(
   onBeforeUnmount(cancel)
   return {
     draft: computed(() => {
+      const selected = selectedDrag.value
+      if (selected) {
+        const base = table()
+        return {
+          ...base,
+          page: selected.page,
+          x: base.x + selected.delta.x,
+          y: base.y + selected.delta.y,
+        }
+      }
       if (draft.value) return draft.value
       const p = groupPreview.value,
         base = table()
       return p ? { ...base, page: p.page, x: base.x + p.dx, y: base.y + p.dy } : null
     }),
-    offset: computed(() => groupPreview.value?.offset ?? offset.value),
+    offset: computed(
+      () => selectedDrag.value?.offset ?? groupPreview.value?.offset ?? offset.value,
+    ),
     begin,
   }
 }

@@ -33,8 +33,13 @@ func TestTableMeanVoltageAttachesBarWithoutExtraWidth(t *testing.T) {
 			}
 		}
 		withoutBar := append(append([]Stroke(nil), ink[:barIndex]...), ink[barIndex+1:]...)
-		if !reflect.DeepEqual(withoutBar, plainInk) {
-			t.Fatal("bar changed base letter, subscript or unit strokes")
+		for i, stroke := range withoutBar {
+			for j, p := range stroke {
+				q := plainInk[i][j]
+				if math.Abs(p.X-q.X) > 1e-8 || math.Abs(p.Y+plan.inkTop-q.Y-plain.inkTop) > 1e-8 {
+					t.Fatal("bar changed base letter, subscript or unit shape")
+				}
+			}
 		}
 	}
 	if !reflect.DeepEqual(f.Glyphs['U'], base) {

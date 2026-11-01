@@ -7,6 +7,7 @@ defineProps<{ selection: ObjectSelection; scale: number }>()
     class="paper-marquee-layer"
     aria-label="框选对象"
     :data-selected-count="selection.objects.length"
+    :class="{ 'has-objects': selection.objects.length }"
   >
     <div
       v-for="object in selection.objects"
@@ -47,5 +48,11 @@ defineProps<{ selection: ObjectSelection; scale: number }>()
   position: absolute;
   outline: 2px solid var(--info);
   background: rgb(51 156 255 / 10%);
+}
+.has-objects .paper-marquee,
+.has-objects .marquee-object {
+  pointer-events: auto;
+  cursor: move;
+  touch-action: none;
 }
 </style>

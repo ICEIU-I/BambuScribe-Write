@@ -1,6 +1,7 @@
-import { onBeforeUnmount, ref, type Ref } from 'vue'
+import { computed, onBeforeUnmount, ref, type Ref } from 'vue'
 import type { ImageAsset, LayoutSettings, Point } from '../types'
 import { nearestPaper } from './paperGeometry'
+import { useSelectedObjectDrag } from './useSelectionDrag'
 
 const clamp = (value: number, max: number) => Math.max(0, Math.min(max, value))
 
@@ -15,6 +16,7 @@ export function useImageDrag(
 ) {
   const draft = ref<ImageAsset | null>(null),
     offset = ref<Point>({ x: 0, y: 0 })
+  const selectedDrag = useSelectedObjectDrag(() => asset().id)
   let gesture:
     | {
         kind: 'move' | 'size'
@@ -159,5 +161,15 @@ export function useImageDrag(
     window.addEventListener('keydown', keydown)
   }
   onBeforeUnmount(cleanup)
-  return { draft, offset, begin }
+  return {
+    draft: computed(() => {
+      const p = selectedDrag.value,
+        base = asset()
+      return p
+        ? { ...base, page: p.page, x: base.x + p.delta.x, y: base.y + p.delta.y }
+        : draft.value
+    }),
+    offset: computed(() => selectedDrag.value?.offset ?? offset.value),
+    begin,
+  }
 }

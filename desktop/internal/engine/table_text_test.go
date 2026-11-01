@@ -64,7 +64,7 @@ func TestTableOnlyExplicitNewlinesChangeHeight(t *testing.T) {
 	if len(single.lines) != 1 || single.issue == "" {
 		t.Fatal("long text must stay on one line and report insufficient width", single)
 	}
-	if single.height != f.tableText("实验", 5, 18).height {
+	if single.height != f.tableText(text, 5, 100).height {
 		t.Fatal("column width changed the height of a single line")
 	}
 	multiline := f.tableText("实验\n数据\n显示", 5, 18)

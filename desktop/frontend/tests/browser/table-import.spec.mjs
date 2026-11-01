@@ -422,7 +422,7 @@ test('images run three at a time and out-of-order completion retains source orde
         .filter((t) => t.kind === 'textbox')
         .map((t) => t.cells[0].text),
     ),
-  ).toEqual(['图片 1', '图片 2', '图片 3', '图片 4', '图片 5'])
+  ).toEqual(['图片1', '图片2', '图片3', '图片4', '图片5'])
   expect(errors).toEqual([])
 })
 

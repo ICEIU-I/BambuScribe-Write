@@ -24,9 +24,10 @@ type tableText struct {
 // Only explicit newlines create new rows of text. Keep the font's proportions
 // and baseline, and report insufficient width instead of silently wrapping.
 func (f *Font) tableText(text string, size, width float64) tableText {
-	out := tableText{lines: [][]tableLetter{}, inkTop: 0}
-	bottom := size
+	out := tableText{lines: [][]tableLetter{}, inkTop: math.Inf(1)}
+	bottom := math.Inf(-1)
 	if text == "" {
+		out.inkTop = 0
 		return out
 	}
 	text = strings.ReplaceAll(strings.ReplaceAll(text, "\r\n", "\n"), "\r", "\n")
@@ -51,6 +52,7 @@ func (f *Font) tableText(text string, size, width float64) tableText {
 				}
 			} else if !ok {
 				l.width = letterSize
+				out.inkTop = min(out.inkTop, shift)
 				bottom = max(bottom, shift+letterSize)
 			} else {
 				left, right := math.Inf(1), math.Inf(-1)
@@ -79,6 +81,12 @@ func (f *Font) tableText(text string, size, width float64) tableText {
 		}
 		out.lines = append(out.lines, line)
 		out.widths = append(out.widths, used)
+	}
+	// Fit and center the visible ink, not the font's empty em box. In the
+	// handwriting font a digit can occupy less than half of that box.
+	// Whitespace-only text still reserves explicit lines for editing.
+	if !finite(out.inkTop) {
+		out.inkTop, bottom = 0, size
 	}
 	out.lineHeight = max(size*1.25, bottom-out.inkTop+size*.2)
 	out.height = float64(len(out.lines)-1)*out.lineHeight + bottom - out.inkTop

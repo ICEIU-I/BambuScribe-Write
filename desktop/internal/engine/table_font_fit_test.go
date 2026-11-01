@@ -8,7 +8,6 @@ import (
 
 func assertMaximumTableFont(t *testing.T, f *Font, table TableAsset, render TablePlacement) {
 	t.Helper()
-	limited := false
 	for _, cell := range render.Cells {
 		for _, stroke := range cell.Strokes {
 			for _, p := range stroke {
@@ -17,11 +16,11 @@ func assertMaximumTableFont(t *testing.T, f *Font, table TableAsset, render Tabl
 				}
 			}
 		}
-		width, height := f.MeasureTableText(cell.Text, render.FontSize+.001)
-		limited = limited || width > cell.Width-2*table.Padding+1e-8 || height > cell.Height-2*table.Padding+1e-8
-	}
-	if !limited && render.FontSize < 40 {
-		t.Fatal("table could use a larger font", render.FontSize)
+		width, height := f.MeasureTableText(cell.Text, cell.FontSize+.001)
+		limited := width > cell.Width-2*table.Padding+1e-8 || height > cell.Height-2*table.Padding+1e-8
+		if cell.Text != "" && !limited && cell.FontSize < 40 {
+			t.Fatal("cell could use a larger font", cell.Text, cell.FontSize)
+		}
 	}
 }
 

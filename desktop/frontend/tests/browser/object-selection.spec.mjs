@@ -60,17 +60,20 @@ async function seed(page, zoom = '75') {
       ],
     }
     window.__tables.menu['menu:action']('open')
-    window.addEventListener('copy', (e) => {
-      window.__copied = Object.fromEntries(
-        [...e.clipboardData.types].map((t) => [t, e.clipboardData.getData(t)]),
-      )
-    })
   })
   await expect
     .poll(() => page.evaluate(() => window.__tables.document?.objectLayout?.length))
     .toBe(3)
   await page.getByLabel('页面缩放').selectOption(zoom)
   await show(page, 0)
+  // Opening a project remounts the canvas. Observe copy after its handler.
+  await page.evaluate(() => {
+    window.addEventListener('copy', (e) => {
+      window.__copied = Object.fromEntries(
+        [...e.clipboardData.types].map((t) => [t, e.clipboardData.getData(t)]),
+      )
+    })
+  })
   return errors
 }
 async function show(page, index) {
@@ -89,7 +92,7 @@ async function point(page, x, y, index = 0) {
     { x, y },
   )
 }
-async function drag(page, a = [10, 24], b = [132, 100]) {
+async function drag(page, a = [132, 24], b = [10, 100]) {
   const start = await point(page, ...a),
     end = await point(page, ...b)
   await page.mouse.move(start.x, start.y)
@@ -199,6 +202,9 @@ test('wide A4 tables and captions preserve original X when pasting near the righ
         { ...window.__tables.saved.tables[1], id: 'wide-caption', x: 89.434, y: 35.375 },
       ],
     }
+    // Flushing the current project before opening must not overwrite the fixture.
+    const project = window.__tables.saved
+    window.go.application.App.OpenProject = async () => ({ path: '/tmp/wide.ccf', project })
     window.__tables.menu['menu:action']('open')
   })
   await expect
@@ -307,8 +313,8 @@ test('partial rectangle selects a whole textbox; empty copy and pointer cancella
   await page.keyboard.press('Meta+c')
   await expect(page.locator('.notice-text')).toHaveText('框内没有可复制的图片、表格或文本框。')
   expect(await page.evaluate(() => window.__copied['text/plain'])).toBeUndefined()
-  const a = await point(page, 10, 24),
-    b = await point(page, 132, 100)
+  const a = await point(page, 132, 24),
+    b = await point(page, 10, 100)
   await page.mouse.move(a.x, a.y)
   await page.mouse.down()
   await page.mouse.move(b.x, b.y)
@@ -388,4 +394,247 @@ test('marquee auto scrolls within its starting page; disabled and inactive canva
       window.imageFixture.state[key] = key !== 'disabled'
     }, key)
   }
+})
+
+const objectFrames = (page) =>
+  page.evaluate(() =>
+    ['[data-image-id="diagram"]', '[data-table="data"]', '[data-free-text-box="caption"]'].map(
+      (s) => {
+        const el = document.querySelector(s)
+        return { x: parseFloat(el.style.left), y: parseFloat(el.style.top) }
+      },
+    ),
+  )
+const members = (p) => [...p.images, ...p.tables]
+function expectMoved(before, after, dx, dy, page = 0) {
+  expect(after.text).toBe(before.text)
+  expect(after.erasures).toEqual(before.erasures)
+  members(after).forEach((o, i) => {
+    const original = members(before)[i]
+    expect(o).toEqual({ ...original, page, x: expect.any(Number), y: expect.any(Number) })
+    expect(o.x).toBeCloseTo(original.x + dx, 6)
+    expect(o.y).toBeCloseTo(original.y + dy, 6)
+  })
+}
+for (const zoom of ['50', '100'])
+  test(`marquee group movement at ${zoom}% previews all objects, keeps selection and saves one undo step`, async ({
+    page,
+  }) => {
+    const errors = await seed(page, zoom),
+      before = await payload(page)
+    await drag(page)
+    const frames = await objectFrames(page),
+      a = await point(page, 90, 50),
+      b = await point(page, 100, 65)
+    await page.mouse.move(a.x, a.y)
+    await page.mouse.down()
+    await page.mouse.move(b.x, b.y, { steps: 8 })
+    expect(await payload(page)).toEqual(before) // no intermediate writes
+    const preview = await objectFrames(page),
+      k = ((96 / 25.4) * Number(zoom)) / 100
+    preview.forEach((o, i) => {
+      expect(Math.abs(o.x - frames[i].x - 10 * k)).toBeLessThan(1.1)
+      expect(Math.abs(o.y - frames[i].y - 15 * k)).toBeLessThan(1.1)
+      expect(o.x - frames[i].x).toBeCloseTo(preview[0].x - frames[0].x, 2)
+      expect(o.y - frames[i].y).toBeCloseTo(preview[0].y - frames[0].y, 2)
+    })
+    await page.screenshot({ path: test.info().outputPath('group-moving.png') })
+    await page.mouse.up()
+    await expect
+      .poll(async () => Math.abs((await payload(page)).tables[0].x - 85))
+      .toBeLessThan(0.6)
+    const after = await payload(page)
+    expectMoved(
+      before,
+      after,
+      after.images[0].x - before.images[0].x,
+      after.images[0].y - before.images[0].y,
+    )
+    await expect
+      .poll(() =>
+        page.evaluate(() => window.__tables.document.objectLayout.find((o) => o.id === 'data').x),
+      )
+      .toBeCloseTo(after.tables[0].x, 6)
+    await expect(selected(page)).toHaveCount(3)
+    // Another member can drag the same selection without reselecting it.
+    await drag(page, [40, 60], [45, 65])
+    await expect
+      .poll(async () => Math.abs((await payload(page)).images[0].x - 35))
+      .toBeLessThan(0.7)
+    const repeated = await payload(page)
+    expectMoved(
+      after,
+      repeated,
+      repeated.images[0].x - after.images[0].x,
+      repeated.images[0].y - after.images[0].y,
+    )
+    await page.keyboard.press('Meta+z')
+    await expect.poll(() => payload(page)).toEqual(after)
+    await page.keyboard.press('Meta+z')
+    await expect.poll(() => payload(page)).toEqual(before)
+    await page.keyboard.press('Meta+Shift+z')
+    await expect.poll(() => payload(page)).toEqual(after)
+    await page.evaluate(() => window.__tables.menu['menu:action']('saveAs'))
+    await expect.poll(() => page.evaluate(() => window.__tables.saved.tables)).toEqual(after.tables)
+    await page.evaluate(() => window.__tables.menu['menu:action']('open'))
+    await expect.poll(() => payload(page)).toEqual(after)
+    await expect
+      .poll(() =>
+        page.evaluate(() => window.__tables.document.objectLayout.find((o) => o.id === 'data').x),
+      )
+      .toBeCloseTo(after.tables[0].x, 6)
+    await page.getByRole('button', { name: '导出', exact: true }).click()
+    const exportButton = page.getByRole('button', { name: '导出当前页 G-code' })
+    await expect(exportButton).toBeEnabled()
+    await exportButton.click()
+    await expect
+      .poll(() => page.evaluate(() => window.__tables.exported?.gcode))
+      .toContain('A1 handwriting')
+    const exported = await page.evaluate(() => window.__tables.exported.document)
+    expect(
+      exported.objectLayout
+        .filter((o) => ['data', 'caption', 'diagram'].includes(o.id))
+        .map((o) => [o.id, o.x, o.y]),
+    ).toEqual(members(after).map((o) => [o.id, o.x, o.y]))
+    expect(errors).toEqual([])
+  })
+
+test('marquee group movement cancels with Escape, pointer cancellation or capture loss and ignores a click', async ({
+  page,
+}) => {
+  const errors = await seed(page),
+    before = await payload(page)
+  for (const cancel of ['click', 'Escape', 'pointercancel', 'capture']) {
+    await drag(page)
+    const frames = await objectFrames(page),
+      a = await point(page, 35, 85),
+      b = await point(page, 43, 99)
+    await page.mouse.move(a.x, a.y)
+    await page.mouse.down()
+    if (cancel !== 'click') {
+      await page.mouse.move(b.x, b.y, { steps: 6 })
+      if (cancel === 'Escape') await page.keyboard.press('Escape')
+      else if (cancel === 'pointercancel')
+        await page.locator('.document-stack').dispatchEvent('pointercancel')
+      else
+        await page.locator('.document-stack').evaluate((el) => {
+          for (let i = 1; i < 10; i++) if (el.hasPointerCapture(i)) el.releasePointerCapture(i)
+        })
+    }
+    await page.mouse.up()
+    expect(await payload(page)).toEqual(before)
+    expect(await objectFrames(page)).toEqual(frames)
+    await page.keyboard.press('Escape')
+  }
+  expect(errors).toEqual([])
+})
+
+test('marquee group movement clamps all objects together and leaves unselected import siblings alone', async ({
+  page,
+}) => {
+  const errors = await seed(page, '50')
+  await page.evaluate(() => {
+    const p = window.__tables.saved
+    const next = {
+      ...p,
+      tables: [
+        ...p.tables.map((t) => ({ ...t, groupId: 'imported' })),
+        { ...p.tables[1], id: 'unselected', groupId: 'imported', x: 10, y: 180 },
+      ],
+    }
+    window.go.application.App.OpenProject = async () => ({
+      path: '/tmp/boundary.ccf',
+      project: next,
+    })
+    window.__tables.menu['menu:action']('open')
+  })
+  await expect.poll(async () => (await payload(page)).tables.length).toBe(3)
+  await expect.poll(() => page.evaluate(() => window.__tables.document.objectLayout.length)).toBe(4)
+  await show(page, 0)
+  const before = await payload(page)
+  await drag(page)
+  await expect(selected(page)).toHaveCount(3)
+  await drag(page, [90, 50], [250, 210])
+  await expect.poll(async () => (await payload(page)).tables[0].x).toBeCloseTo(113, 6)
+  const after = await payload(page),
+    dx = after.images[0].x - before.images[0].x,
+    dy = after.images[0].y - before.images[0].y
+  expectMoved(
+    { ...before, tables: before.tables.slice(0, 2) },
+    { ...after, tables: after.tables.slice(0, 2) },
+    dx,
+    dy,
+  )
+  expect(after.tables[2]).toEqual(before.tables[2])
+  expect(after.tables[1].y + after.tables[1].rowHeights[0]).toBeCloseTo(240, 6)
+  await page.keyboard.press('Meta+z')
+  await expect.poll(() => payload(page)).toEqual(before)
+  expect(errors).toEqual([])
+})
+
+test('marquee group movement follows scrolling across pages with a single drop and undo', async ({
+  page,
+}) => {
+  const errors = await seed(page, '75'),
+    before = await payload(page)
+  await drag(page)
+  const a = await point(page, 90, 50)
+  await page.mouse.move(a.x, a.y)
+  await page.mouse.down()
+  await page.mouse.move(a.x + 10, a.y + 10)
+  await show(page, 1)
+  const b = await point(page, 100, 65, 1)
+  await page.mouse.move(b.x, b.y, { steps: 8 })
+  expect(await payload(page)).toEqual(before)
+  await page.screenshot({ path: test.info().outputPath('group-next-page.png') })
+  await page.mouse.up()
+  await expect.poll(async () => (await payload(page)).tables[0].page).toBe(1)
+  const after = await payload(page)
+  expect(Math.abs(after.images[0].x - before.images[0].x - 10)).toBeLessThan(0.6)
+  expect(Math.abs(after.images[0].y - before.images[0].y - 15)).toBeLessThan(0.6)
+  expectMoved(
+    before,
+    after,
+    after.images[0].x - before.images[0].x,
+    after.images[0].y - before.images[0].y,
+    1,
+  )
+  await expect(page.locator('[data-paper="1"] .marquee-object')).toHaveCount(3)
+  await expect(page.locator('[data-paper="1"] [data-image-id]')).toHaveCount(1)
+  await page.keyboard.press('Meta+z')
+  await expect.poll(() => payload(page)).toEqual(before)
+  expect(errors).toEqual([])
+})
+
+test('marquee group movement auto scrolls at the viewport edge without committing intermediate positions', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1100, height: 650 })
+  const errors = await seed(page, '100'),
+    before = await payload(page)
+  await drag(page)
+  const a = await point(page, 90, 50),
+    view = await page.locator('.document-viewport').boundingBox()
+  await page.mouse.move(a.x, a.y)
+  await page.mouse.down()
+  await page.mouse.move(a.x, view.y + view.height - 4, { steps: 6 })
+  await expect
+    .poll(() => page.locator('.document-viewport').evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(1000)
+  expect(await payload(page)).toEqual(before)
+  const b = await point(page, 100, 65, 1)
+  await page.mouse.move(b.x, b.y)
+  await page.mouse.up()
+  await expect.poll(async () => (await payload(page)).images[0].page).toBe(1)
+  const after = await payload(page)
+  expectMoved(
+    before,
+    after,
+    after.images[0].x - before.images[0].x,
+    after.images[0].y - before.images[0].y,
+    1,
+  )
+  await page.keyboard.press('Meta+z')
+  await expect.poll(() => payload(page)).toEqual(before)
+  expect(errors).toEqual([])
 })
