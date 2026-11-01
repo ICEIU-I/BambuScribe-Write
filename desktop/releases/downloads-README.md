@@ -8,4 +8,4 @@
 
 适用于 M 系列 Mac，macOS 13 及以上。打开 DMG，将应用拖入 Applications。项目和配置沿用原位置。
 
-本项目基于 [Animesh-Varma/BambuScribe](https://github.com/Animesh-Varma/BambuScribe)，按 [GPL-3.0](LICENSE) 分发。[对应源码说明](SOURCE-ACCESS.md)。
+本项目基于 [Animesh-Varma/BambuScribe](https://github.com/Animesh-Varma/BambuScribe)，按 [GPL-3.0](https://github.com/ICEIU-I/BambuScribe-Write/blob/main/LICENSE) 分发。[对应源码说明](SOURCE-ACCESS.md)。
