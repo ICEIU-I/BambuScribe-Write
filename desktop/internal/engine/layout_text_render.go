@@ -5,7 +5,7 @@ import (
 	"unicode"
 )
 
-func (f *Font) appendTextFragment(page *Page, runes []rune, part textFragment, s LayoutSettings, y float64, textIndex *int, missingSet map[rune]bool, doc *Document) {
+func (f *Font) appendTextFragment(page *Page, runes []rune, part textFragment, s LayoutSettings, y float64, textIndex *int, missingSet map[rune]bool, doc *Document, variation handwritingVariation) {
 	x := textFragmentOrigin(part, s)
 	page.Carets = append(page.Carets, CaretStop{*textIndex, x, y})
 	for _, r := range runes {
@@ -22,7 +22,7 @@ func (f *Font) appendTextFragment(page *Page, runes []rune, part textFragment, s
 			} else {
 				bearing := textGlyphBearing(g, f.Units, advance, s)
 				start := len(page.Strokes)
-				for _, stroke := range g.Strokes {
+				for _, stroke := range variation.strokes(g.Strokes, *textIndex) {
 					out := make(Stroke, len(stroke))
 					for i, p := range stroke {
 						out[i] = Point{x + bearing + p.X/f.Units*s.FontSize, y + p.Y/f.Units*s.FontSize}

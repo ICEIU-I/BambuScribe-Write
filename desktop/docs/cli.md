@@ -34,7 +34,9 @@ bambuscribe export --project note.ccf --page 1 --output page.gcode
 bambuscribe export --project note.ccf --page all --output pages.zip
 ```
 
-`new --params` 可指定 `text`、`layout`、`writing` 等项目字段，未指定项使用默认值。`layout.set` 使用 `LayoutSettings` 字段，`fontSize` 是保存格式的毫米字框大小（客户端显示百分比）；`writing.set` 使用 `offsetX`、`offsetY`、`penUp`、`penDown`、`originMode`（`auto`／`manual`）、`sound`。所有笔画统一使用基础抬落笔 Z；旧项目中的底部降笔参数会忽略并在重新保存时移除。示例抬落笔值是默认值，实际使用需按笔架校准。
+`new --params` 可指定 `text`、`layout`、`writing` 等项目字段，未指定项使用默认值。`layout.set` 使用 `LayoutSettings` 字段，`fontSize` 是保存格式的毫米字框大小（客户端显示百分比）；`writing.set` 使用 `offsetX`、`offsetY`、`penUp`、`penDown`、`originMode`（`auto`／`manual`）、`sound`。所有书写笔画统一使用基础抬落笔 Z；旧项目中的底部降笔参数会忽略并在重新保存时移除。示例抬落笔值是默认值，实际使用需按笔架校准。
+
+每页结束先升到绝对 Z=50 mm（`penUp` 更高时沿用更高值），等待抬升完成，再返回停靠点并保持三轴使能及回程高度。`auto` 返回该页启动位置，连续换页只需首次归零定位，换纸后由人工在 A1 启动下一页；`manual` 返回当前坐标系 X0/Y0。断电、释放电机或位置改变后需重新定位；固件结束任务或空闲后是否自动释放电机待实机确认。旧文件需重新导出或上传。
 
 `inspect` 默认省略图片的 base64 原始数据，`--full` 保留完整项目数据。保存时只存源数据与可编辑对象，预览结果不写回项目。宽度不足、缺字或表格／文本框越界可先保存继续修改，`check` 会逐页返回问题，导出与上传会阻止输出这些页。结构错误、无效参数或超出纸张的图片会拒绝保存。空页不生成书写文件，全部导出和上传保留原页码。
 

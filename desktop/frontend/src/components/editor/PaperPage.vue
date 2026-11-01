@@ -130,17 +130,20 @@ async function draw() {
       y += props.page.lineHeight
     ) {
       // Paper guides stop at native tables; only the table's own rules remain.
-      const covered = props.tables
-        .filter((t) => t.page === props.page.number - 1 && !isFreeTextBox(t))
-        .map((t) => {
-          const preview = props.page.tables?.find((p) => p.id === t.id)
-          return {
-            x: t.x,
-            y: t.y,
-            width: t.columnWidths.reduce((a, b) => a + b, 0),
-            height: (preview?.rowHeights ?? t.rowHeights).reduce((a, b) => a + b, 0),
-          }
-        })
+      const covered = [
+        ...props.tables
+          .filter((t) => t.page === props.page.number - 1 && !isFreeTextBox(t))
+          .map((t) => {
+            const preview = props.page.tables?.find((p) => p.id === t.id)
+            return {
+              x: t.x,
+              y: t.y,
+              width: t.columnWidths.reduce((a, b) => a + b, 0),
+              height: (preview?.rowHeights ?? t.rowHeights).reduce((a, b) => a + b, 0),
+            }
+          }),
+        ...(props.page.formulas ?? []),
+      ]
         .filter((t) => y >= t.y && y <= t.y + t.height)
         .sort((a, b) => a.x - b.x)
       let x = s.marginLeft

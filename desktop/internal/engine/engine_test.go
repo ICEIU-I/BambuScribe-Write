@@ -255,7 +255,7 @@ func TestAbsoluteStrokesTrackPreviewWithoutDrift(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Count(gcode, "G1 Z3.400") != len(d.Pages[0].Strokes) || strings.Count(gcode, "G1 Z7.000") != len(d.Pages[0].Strokes)+1 {
+	if strings.Count(gcode, "G1 Z3.400") != len(d.Pages[0].Strokes) || strings.Count(gcode, "G1 Z7.000") != len(d.Pages[0].Strokes)+1 || strings.Count(gcode, "G1 Z50.000") != 1 {
 		t.Fatal("lost pen boundaries")
 	}
 	var expected []Point
@@ -296,8 +296,8 @@ func TestAbsoluteStrokesTrackPreviewWithoutDrift(t *testing.T) {
 			index++
 		}
 	}
-	if index != len(expected) || math.Abs(x) > 1e-8 || math.Abs(y) > 1e-8 || z != 7 {
-		t.Fatal("final position should park at XY zero with pen up")
+	if index != len(expected) || math.Abs(x) > 1e-8 || math.Abs(y) > 1e-8 || z != 50 {
+		t.Fatal("final position should park at XY zero with pen raised to Z50")
 	}
 	if strings.Contains(gcode, "G91\n") || !strings.Contains(gcode, "G90\n") {
 		t.Fatal("writing must use absolute coordinates")

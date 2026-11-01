@@ -35,6 +35,7 @@ export function useTableImport(
   const payload = () =>
     projectPayload({
       text: w.preferences.text,
+      calculations: snapshot(w.preferences.calculations ?? []),
       layout: snapshot(w.preferences.layout),
       writing: snapshot(w.preferences.writing),
       images: snapshot(w.preferences.images),

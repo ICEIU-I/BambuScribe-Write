@@ -216,7 +216,7 @@ test('object-only copying includes all native objects and deleting a full final 
   await copy(page, 1, 4)
   expect((await doc(page)).pages.map(ink)).toEqual([0, 1, 1, 2].map((i) => ink(original.pages[i])))
   await page.evaluate(() => {
-    window.__tables.saved = {
+    const nextProject = {
       ...window.__tables.preferences,
       text: '一\n二\n三\n四\n最后',
       images: [],
@@ -224,6 +224,11 @@ test('object-only copying includes all native objects and deleting a full final 
       erasures: [],
       layout: { ...window.__tables.preferences.layout, lineCount: 4, pageLayouts: undefined },
     }
+    // Opening another file must not share the mutable autosave target.
+    window.go.application.App.OpenProject = async () => ({
+      path: '/tmp/next-document.ccf',
+      project: nextProject,
+    })
     window.__tables.menu['menu:action']('open')
   })
   await expect(rail(page)).toHaveCount(2)

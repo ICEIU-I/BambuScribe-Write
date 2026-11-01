@@ -69,8 +69,11 @@ func TestWritingInitialisesMotionBeforeMovingAndKeepsCalibratedZ(t *testing.T) {
 					}
 					if z, ok := values['Z']; ok {
 						zMoves++
-						if z != 3.4 && z != 7 {
+						if z != 3.4 && z != 7 && z != 50 {
 							t.Fatalf("calibrated Z changed: %s", line)
+						}
+						if z == 50 && (zMoves != 6 || xyMoves != 4) {
+							t.Fatal("high lift must occur only before the final return")
 						}
 						if math.Min(values['F']/60*feedScale, speedCaps['Z']) != 30 || math.Min(accel*accelScale, accelCaps['Z']) != 1500 {
 							t.Fatal("incorrect A1 Z motion limits")
@@ -88,7 +91,7 @@ func TestWritingInitialisesMotionBeforeMovingAndKeepsCalibratedZ(t *testing.T) {
 					seen[command] = true
 				}
 			}
-			if xyMoves != 5 || zMoves != 5 {
+			if xyMoves != 5 || zMoves != 6 {
 				t.Fatal("stroke moves or pen lifts changed")
 			}
 			for _, forbidden := range []string{"M211", "G29", "G92 Z", "M500", "M201 E", "M203 E"} {

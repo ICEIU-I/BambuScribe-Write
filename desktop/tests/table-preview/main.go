@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bambuscribe/desktop/internal/calculation"
 	"bambuscribe/desktop/internal/engine"
 	"bambuscribe/desktop/internal/project"
 	"bambuscribe/desktop/internal/tableimport"
@@ -12,7 +13,8 @@ import (
 
 func main() {
 	var input struct {
-		Import *struct {
+		Calculation *calculation.Plan `json:"calculation"`
+		Import      *struct {
 			Project    project.Project        `json:"project"`
 			Extraction tableimport.Extraction `json:"extraction"`
 			Placement  tableimport.Placement  `json:"placement"`
@@ -32,6 +34,23 @@ func main() {
 	font, err := engine.EmbeddedFont()
 	if err != nil {
 		fail(err)
+		return
+	}
+	if input.Calculation != nil {
+		result, err := input.Calculation.Calculate()
+		if err != nil {
+			fail(err)
+			return
+		}
+		doc, err := font.Layout(result.Text, input.Settings)
+		if err != nil {
+			fail(err)
+			return
+		}
+		json.NewEncoder(os.Stdout).Encode(struct {
+			calculation.Result
+			Document *engine.Document `json:"document"`
+		}{result, doc})
 		return
 	}
 	if input.Import != nil {

@@ -8,11 +8,11 @@ import (
 
 // Size by actual glyph ink bounds and advances. Some handwriting glyphs extend
 // beyond their nominal Width; advancing by Width alone overprinted neighbours.
-func handwritingTextStrokes(f *Font, box OCRBox, asset ImageAsset, _ LayoutSettings, pixelWidth, pixelHeight int) []Stroke {
-	return handwritingCharacters(f, box, asset, pixelWidth, pixelHeight, nil)
+func handwritingTextStrokes(f *Font, box OCRBox, asset ImageAsset, s LayoutSettings, pixelWidth, pixelHeight int) []Stroke {
+	return handwritingCharacters(f, box, asset, pixelWidth, pixelHeight, nil, imageTextVariation(s, asset, box))
 }
 
-func handwritingCharacters(f *Font, box OCRBox, asset ImageAsset, pixelWidth, pixelHeight int, characters []tableCharacter) []Stroke {
+func handwritingCharacters(f *Font, box OCRBox, asset ImageAsset, pixelWidth, pixelHeight int, characters []tableCharacter, variation handwritingVariation) []Stroke {
 	text := strings.TrimSpace(box.Text)
 	if text == "" || pixelWidth < 1 || pixelHeight < 1 || box.W <= 0 || box.H <= 0 {
 		return nil
@@ -83,8 +83,8 @@ func handwritingCharacters(f *Font, box OCRBox, asset ImageAsset, pixelWidth, pi
 	x := asset.X + box.X*asset.Width
 	y := asset.Y + box.Y*asset.Height + (box.H*asset.Height-(bottom-top)*scale)/2
 	out := []Stroke{}
-	for _, l := range letters {
-		for _, s := range l.glyph.Strokes {
+	for index, l := range letters {
+		for _, s := range variation.strokes(l.glyph.Strokes, index) {
 			stroke := make(Stroke, len(s))
 			for i, p := range s {
 				stroke[i] = imagePoint(asset, x+(p.X*l.scale-l.left)*scale, y+(p.Y*l.scale+l.shift-top)*scale)

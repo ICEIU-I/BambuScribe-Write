@@ -54,6 +54,7 @@ export function normalizePreferences(input: SavedPreferences | null | undefined)
       sound: writing.sound,
     },
     erasures: Array.isArray(source.erasures) ? source.erasures.filter(validPageErasure) : [],
+    calculations: Array.isArray(source.calculations) ? source.calculations : [],
     tables: Array.isArray(source.tables) ? source.tables : [],
     images: Array.isArray((source as SavedPreferences & { images?: unknown }).images)
       ? ((source as SavedPreferences & { images?: Preferences['images'] }).images ?? [])

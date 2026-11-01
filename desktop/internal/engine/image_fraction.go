@@ -14,6 +14,7 @@ type imageMathBox struct {
 }
 
 type imageMathParser struct {
+	variation      handwritingVariation
 	font           *Font
 	text           []rune
 	pos, fractions int
@@ -63,6 +64,7 @@ func (p *imageMathParser) sequence(depth int, grouped bool) (imageMathBox, bool)
 			}
 			p.pos++
 			item, ok = p.glyph(r)
+			item.strokes = p.variation.strokes(item.strokes, p.pos-1)
 			if ok && p.pos < len(p.text) && (p.text[p.pos] == '_' || p.text[p.pos] == '^') {
 				if !unicode.IsLetter(r) && !unicode.IsDigit(r) {
 					return imageMathBox{}, false
@@ -162,11 +164,14 @@ func appendMathStrokes(dst []Stroke, src []Stroke, x, y, scale float64) []Stroke
 	return dst
 }
 
-func imageFractionStrokes(f *Font, box OCRBox, asset ImageAsset) []Stroke {
+func imageFractionStrokes(f *Font, box OCRBox, asset ImageAsset, variation ...handwritingVariation) []Stroke {
 	if len([]rune(box.Text)) > 160 {
 		return nil
 	}
 	p := imageMathParser{font: f, text: []rune(box.Text)}
+	if len(variation) > 0 {
+		p.variation = variation[0]
+	}
 	layout, ok := p.sequence(0, false)
 	if !ok || p.pos != len(p.text) || p.fractions == 0 || layout.width <= 0 || layout.bottom <= layout.top {
 		return nil

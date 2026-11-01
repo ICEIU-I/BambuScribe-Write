@@ -4,6 +4,7 @@ import type { LayoutSettings } from '../../types'
 import { defaultLayout } from '../../state/defaults'
 import { fontMillimeters, fontPercent, updateLayoutSettings } from '../../state/fontSizing'
 import NumberField from '../NumberField.vue'
+import HandwritingVariation from './HandwritingVariation.vue'
 import AppIcon from '../AppIcon.vue'
 const props = defineProps<{ settings: LayoutSettings }>()
 const emit = defineEmits<{ change: [LayoutSettings]; close: [] }>()
@@ -67,6 +68,15 @@ function update(patch: Partial<LayoutSettings>) {
             @update:model-value="
               $event !== null && update({ fontSize: fontMillimeters($event, settings.lineHeight) })
             "
+          />
+          <NumberField
+            label="分式字号比例"
+            unit="%"
+            :step="1"
+            :model-value="settings.fractionScale || 85"
+            :min="50"
+            :max="100"
+            @update:model-value="$event !== null && update({ fractionScale: $event })"
           />
           <NumberField
             label="字距"
@@ -136,6 +146,7 @@ function update(patch: Partial<LayoutSettings>) {
             </div>
           </div>
         </div>
+        <HandwritingVariation :settings="settings" @change="update" />
         <div class="row-mode" role="group" aria-label="行数模式">
           <label class="checkbox-row"
             ><input

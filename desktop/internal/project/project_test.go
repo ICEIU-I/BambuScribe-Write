@@ -265,8 +265,11 @@ func TestOldHeightCorrectionsAreIgnoredOnOpenAndRemovedOnSave(t *testing.T) {
 	if strings.Count(code, "G1 Z3.400 ") != 2 || strings.Count(code, "G1 Z7.000 ") != 3 {
 		t.Fatal("base pen heights not used for all strokes")
 	}
+	if strings.Count(code, "G1 Z50.000 ") != 1 || !strings.Contains(code, "G1 Z7.000 F16000\nG1 Z50.000 F16000\nM400\nG1 X") {
+		t.Fatal("only the final return should use the higher clearance")
+	}
 	for _, line := range strings.Split(code, "\n") {
-		if strings.HasPrefix(line, "G1 Z") && !strings.HasPrefix(line, "G1 Z3.400 ") && !strings.HasPrefix(line, "G1 Z7.000 ") {
+		if strings.HasPrefix(line, "G1 Z") && !strings.HasPrefix(line, "G1 Z3.400 ") && !strings.HasPrefix(line, "G1 Z7.000 ") && !strings.HasPrefix(line, "G1 Z50.000 ") {
 			t.Fatalf("unexpected height: %s", line)
 		}
 	}

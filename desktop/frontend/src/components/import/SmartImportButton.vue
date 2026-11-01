@@ -3,13 +3,14 @@ import { ref } from 'vue'
 import AppIcon from '../AppIcon.vue'
 import PixelPopover from '../ui/PixelPopover.vue'
 defineProps<{ disabled: boolean }>()
-const emit = defineEmits<{ table: []; diagram: [] }>()
+const emit = defineEmits<{ table: []; diagram: []; calculation: [] }>()
 const open = ref(false),
   button = ref<HTMLButtonElement>()
-function choose(kind: 'table' | 'diagram') {
+function choose(kind: 'table' | 'diagram' | 'calculation') {
   open.value = false
   if (kind === 'table') emit('table')
-  else emit('diagram')
+  else if (kind === 'diagram') emit('diagram')
+  else emit('calculation')
 }
 </script>
 <template>
@@ -28,6 +29,9 @@ function choose(kind: 'table' | 'diagram') {
     <div class="import-choices">
       <button class="button" @click="choose('table')">
         <AppIcon name="table" :size="16" />导入表格
+      </button>
+      <button class="button" @click="choose('calculation')">
+        <AppIcon name="text" :size="16" />数据处理
       </button>
       <button class="button" @click="choose('diagram')">
         <AppIcon name="image" :size="16" />导入图像

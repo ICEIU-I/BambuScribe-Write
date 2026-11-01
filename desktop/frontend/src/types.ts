@@ -1,3 +1,4 @@
+import type { CalculationRecord } from './services/calculationTypes'
 import type { TableAsset, TablePlacement } from './state/tableTypes'
 import type { DiagramScene } from './services/diagramTypes'
 export type {
@@ -90,6 +91,9 @@ export interface ImagePlacement {
   textRegions?: ImageTextRegion[]
 }
 export interface LayoutSettings {
+  handwritingVariation?: number
+  handwritingSeed?: number
+  fractionScale?: number
   fontId?: 'handwriting' | 'dc'
   pageLayouts?: PageLayout[]
   templateName: string
@@ -127,7 +131,13 @@ export interface GlyphCell extends Point {
   width: number
   height: number
 }
+export interface FormulaPlacement extends RegionBounds {
+  start: number
+  end: number
+  source: string
+}
 export interface Page {
+  formulas?: FormulaPlacement[]
   ink?: InkLayer[]
   lineHeight: number
   lineCount: number
@@ -170,6 +180,7 @@ export interface MenuState {
   lang: LanguagePreference
 }
 export interface Preferences {
+  calculations?: CalculationRecord[]
   erasures: PageErasure[]
   theme: 'light' | 'dark'
   language: LanguagePreference
@@ -182,6 +193,7 @@ export interface Preferences {
 // Editable state stored in a .ccf project file. The manifest revision is
 // written by the backend, so the value sent from the editor is only a default.
 export interface Project {
+  calculations?: CalculationRecord[]
   erasures?: PageErasure[]
   version: number
   text: string

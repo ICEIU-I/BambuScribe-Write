@@ -1,0 +1,147 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "uncertain": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "value",
+          "unit",
+          "source",
+          "uncertain"
+        ]
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "symbolic": {
+                  "type": "string"
+                },
+                "expression": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "precision": {
+                  "type": "integer"
+                },
+                "format": {
+                  "type": "string",
+                  "enum": [
+                    "decimal",
+                    "significant"
+                  ]
+                },
+                "useRounded": {
+                  "type": "boolean"
+                },
+                "conversions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "factor": {
+                        "type": "string"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "precision": {
+                        "type": "integer"
+                      },
+                      "format": {
+                        "type": "string",
+                        "enum": [
+                          "decimal",
+                          "significant"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "factor",
+                      "unit",
+                      "precision",
+                      "format"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "symbolic",
+                "expression",
+                "unit",
+                "precision",
+                "format",
+                "useRounded",
+                "conversions"
+              ]
+            }
+          }
+        },
+        "required": [
+          "title",
+          "steps"
+        ]
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "variables",
+    "sections",
+    "issues"
+  ]
+}

@@ -1,0 +1,225 @@
+.calculation-dialog {
+  width: min(960px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  overflow: auto;
+}
+.calculation-dialog.has-result {
+  width: min(1200px, calc(100vw - 48px));
+}
+.calculation-heading,
+.calculation-section-heading,
+.calculation-footer,
+.calculation-scale {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.calculation-heading {
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.calculation-heading h2,
+.calculation-section-heading h3 {
+  margin: 0;
+}
+.calculation-section-heading {
+  justify-content: space-between;
+}
+.calculation-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.calculation-instruction,
+.calculation-inputs > details {
+  grid-column: 1/-1;
+}
+.calculation-instruction {
+  display: grid;
+  gap: 8px;
+}
+.calculation-images {
+  min-width: 0;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  outline-offset: 3px;
+}
+.calculation-images input[type='file'] {
+  display: none;
+}
+.calculation-drop-hint {
+  display: block;
+  text-align: center;
+  padding: 40px 4px;
+  color: var(--muted);
+}
+.calculation-thumbnails {
+  display: flex;
+  gap: 10px;
+  overflow: auto;
+  margin-top: 12px;
+}
+.calculation-thumbnail {
+  flex: 0 0 136px;
+  min-width: 0;
+}
+.calculation-thumbnail img {
+  width: 136px;
+  height: 110px;
+  object-fit: contain;
+  background: white;
+  border: 1px solid var(--border);
+}
+.calculation-thumbnail > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.calculation-thumbnail > div {
+  display: flex;
+  justify-content: space-between;
+}
+.calculation-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 1fr);
+  gap: 20px;
+}
+.calculation-preview-pane,
+.calculation-review-pane {
+  min-width: 0;
+  max-height: 65vh;
+  overflow: auto;
+}
+.calculation-scale {
+  position: sticky;
+  top: 0;
+  padding: 8px 0;
+  background: var(--surface);
+}
+.calculation-scale input {
+  width: 74px;
+}
+.calculation-paper {
+  display: block;
+  width: 100%;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+.calculation-paper-list {
+  padding-right: 6px;
+}
+.calculation-empty {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  color: var(--muted);
+}
+.calculation-values > label {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) 90px minmax(44px, 110px);
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.calculation-values input {
+  width: 100%;
+  min-width: 0;
+}
+.calculation-values small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.calculation-values .uncertain input {
+  border-color: #c77d16;
+}
+.calculation-values .uncertain button {
+  grid-column: 2/-1;
+}
+.calculation-issues > label {
+  display: block;
+  padding: 8px;
+  background: #fff4d6;
+  color: #6d4200;
+  margin: 4px 0;
+}
+.calculation-rules {
+  margin-top: 20px;
+}
+.calculation-rules details {
+  padding: 10px 0;
+}
+.calculation-rules label {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+  align-items: center;
+}
+.calculation-rules input {
+  min-width: 0;
+  flex: 1;
+}
+.calculation-rules input[type='checkbox'] {
+  flex: 0;
+}
+.calculation-rules input[type='number'] {
+  width: 60px;
+}
+.calculation-rules small {
+  display: block;
+  max-height: 90px;
+  overflow: auto;
+  color: var(--muted);
+}
+.calculation-reference-images img {
+  max-width: 100%;
+  margin: 6px 0;
+}
+.calculation-footer {
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+.calculation-footer > span {
+  margin-right: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .calculation-result,
+  .calculation-inputs {
+    grid-template-columns: 1fr;
+  }
+  .calculation-preview-pane,
+  .calculation-review-pane {
+    max-height: 45vh;
+  }
+  .calculation-footer {
+    flex-wrap: wrap;
+  }
+}
+.calculation-values > label > span:last-of-type {
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  min-width: 0;
+}
+.calculation-dialog::backdrop {
+  background: rgb(0 0 0 / 30%);
+}
+
+.calculation-image-open {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  display: block;
+}

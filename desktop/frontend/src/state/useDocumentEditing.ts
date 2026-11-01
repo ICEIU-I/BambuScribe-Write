@@ -1,3 +1,4 @@
+import type { CalculationRecord } from '../services/calculationTypes'
 import { moveImportedTable } from './importedTableGroup'
 import { targetErasure } from './erasureTargets'
 import { rebaseBodyCuts, resetChangedObjectCuts } from './inkCutHistory'
@@ -27,6 +28,7 @@ import { useObjectClipboard, type ImageClipboardPlacement } from './useObjectCli
 const bulkInsertCharacters = 8
 
 interface EditingProps {
+  calculations?: CalculationRecord[]
   pageLayouts?: PageLayout[]
   modelValue: string
   images: ImageAsset[]
@@ -46,6 +48,7 @@ export function useDocumentEditing(
     tables: TableAsset[],
     erasures: PageErasure[],
     pageLayouts?: PageLayout[],
+    calculations?: CalculationRecord[],
   ) => void,
   restoreSelection: (a: number, b: number) => void,
   notice: (message: string) => void = () => {},
@@ -64,8 +67,10 @@ export function useDocumentEditing(
         tables: TableAsset[]
         erasures: PageErasure[]
         pageLayouts?: PageLayout[]
+        calculations?: CalculationRecord[]
       }
     | undefined
+  let calculations = props.calculations ?? []
   let text = props.modelValue
   let images = props.images
   let tables = props.tables ?? []
@@ -74,6 +79,7 @@ export function useDocumentEditing(
   let selection = { start: 0, end: 0 }
 
   const current = (): EditorSnapshot => ({
+    calculations,
     pageLayouts,
     tables,
     erasures,
@@ -87,21 +93,30 @@ export function useDocumentEditing(
 
   watch(
     () =>
-      [props.modelValue, props.images, props.tables, props.erasures, props.pageLayouts] as const,
-    ([t, i, ts, es, ps]) => {
+      [
+        props.modelValue,
+        props.images,
+        props.tables,
+        props.erasures,
+        props.pageLayouts,
+        props.calculations,
+      ] as const,
+    ([t, i, ts, es, ps, cs]) => {
       if (
         pendingOutput &&
         t === pendingOutput.text &&
         sameImages(i, pendingOutput.images) &&
         (ts === undefined || toRaw(ts) === toRaw(pendingOutput.tables)) &&
         (es === undefined || toRaw(es) === toRaw(pendingOutput.erasures)) &&
-        toRaw(ps) === toRaw(pendingOutput.pageLayouts)
+        toRaw(ps) === toRaw(pendingOutput.pageLayouts) &&
+        toRaw(cs) === toRaw(pendingOutput.calculations)
       ) {
         text = t
         images = i
         tables = ts ?? []
         erasures = es ?? []
         pageLayouts = ps
+        calculations = cs ?? []
         pendingOutput = undefined
         return
       }
@@ -110,13 +125,15 @@ export function useDocumentEditing(
         toRaw(i) !== toRaw(images) ||
         (ts !== undefined && toRaw(ts) !== toRaw(tables)) ||
         (es !== undefined && toRaw(es) !== toRaw(erasures)) ||
-        toRaw(ps) !== toRaw(pageLayouts)
+        toRaw(ps) !== toRaw(pageLayouts) ||
+        toRaw(cs) !== toRaw(calculations)
       ) {
         text = t
         images = i
         tables = ts ?? []
         erasures = es ?? []
         pageLayouts = ps
+        calculations = cs ?? []
         tableId.value = ''
         history.reset()
       }
@@ -129,6 +146,8 @@ export function useDocumentEditing(
   function commit(next: Partial<EditorSnapshot>, group?: string) {
     const before = current()
     const after = { ...before, ...next }
+    if (!next.calculations && after.text !== before.text)
+      after.calculations = calculations.filter((r) => after.text.includes(r.text))
     if (!next.erasures) {
       const frozen = erasures.some((e) => !e.cuts)
         ? erasures.map((e) => targetErasure(e, props.document?.pages[e.page]))
@@ -142,6 +161,7 @@ export function useDocumentEditing(
       )
     }
     history.record(before, after, group)
+    calculations = after.calculations ?? []
     text = after.text
     images = after.images
     tables = after.tables ?? []
@@ -151,8 +171,8 @@ export function useDocumentEditing(
     imageId.value = after.imageId
     regionId.value = after.regionId
     selection = { start: after.start, end: after.end }
-    pendingOutput = { text, images: after.images, tables, erasures, pageLayouts }
-    output(text, images, tables, erasures, pageLayouts)
+    pendingOutput = { text, images: after.images, tables, erasures, pageLayouts, calculations }
+    output(text, images, tables, erasures, pageLayouts, calculations)
   }
 
   function beforeInput(e: InputEvent) {
@@ -335,6 +355,7 @@ export function useDocumentEditing(
     const state = history[direction]()
     if (!state) return
     const erasureChange = state.erasures !== erasures
+    calculations = state.calculations ?? []
     text = state.text
     images = state.images
     tables = state.tables ?? []
@@ -345,8 +366,8 @@ export function useDocumentEditing(
     imageId.value = state.imageId
     regionId.value = state.regionId
     pasteAnchor = undefined
-    pendingOutput = { text, images, tables, erasures, pageLayouts }
-    output(text, images, tables, erasures, pageLayouts)
+    pendingOutput = { text, images, tables, erasures, pageLayouts, calculations }
+    output(text, images, tables, erasures, pageLayouts, calculations)
     await nextTick()
     if (!state.imageId && !state.tableId && !erasureChange) restoreSelection(state.start, state.end)
   }
@@ -412,6 +433,24 @@ export function useDocumentEditing(
   }
 
   return {
+    replaceGenerated: (from: number, to: number, inserted: string, record: CalculationRecord) => {
+      const nextText = text.slice(0, from) + inserted + text.slice(to)
+      const retained = calculations.filter(
+        (r) => nextText.includes(r.text) && (r.id !== record.id || r.text !== record.text),
+      )
+      if (retained.some((r) => r.id === record.id)) record = { ...record, id: crypto.randomUUID() }
+      commit({
+        text: nextText,
+        calculations: [...retained, record],
+        start: from,
+        end: from,
+        tableId: '',
+        imageId: '',
+        regionId: '',
+      })
+    },
+    replaceFormula: (from: number, to: number, value: string) =>
+      commit({ text: text.slice(0, from) + value + text.slice(to), start: from, end: from }),
     changeObjects: (changedImages: ImageAsset[], changedTables: TableAsset[]) => {
       const imageMap = new Map(changedImages.map((im) => [im.id, im])),
         tableMap = new Map(changedTables.map((table) => [table.id, table]))

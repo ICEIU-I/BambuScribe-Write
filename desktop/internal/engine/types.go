@@ -66,25 +66,28 @@ type ImagePlacement struct {
 }
 
 type LayoutSettings struct {
-	FontID        string       `json:"fontId,omitempty"`
-	PageLayouts   []PageLayout `json:"pageLayouts,omitempty"`
-	TemplateName  string       `json:"templateName"`
-	LineMode      string       `json:"lineMode"`
-	LineCount     int          `json:"lineCount"`
-	PaperWidth    float64      `json:"paperWidth"`
-	PaperHeight   float64      `json:"paperHeight"`
-	MarginTop     float64      `json:"marginTop"`
-	MarginRight   float64      `json:"marginRight"`
-	MarginBottom  float64      `json:"marginBottom"`
-	MarginLeft    float64      `json:"marginLeft"`
-	FontSize      float64      `json:"fontSize"`
-	LetterGap     float64      `json:"letterGap"`
-	LetterSpacing float64      `json:"letterSpacing"`
-	LineSpacing   float64      `json:"lineSpacing"`
-	LineHeight    float64      `json:"lineHeight"`
-	ParagraphGap  float64      `json:"paragraphGap"`
-	Indent        float64      `json:"indent"`
-	Align         string       `json:"align"`
+	HandwritingVariation float64      `json:"handwritingVariation,omitempty"`
+	HandwritingSeed      uint32       `json:"handwritingSeed,omitempty"`
+	FractionScale        float64      `json:"fractionScale,omitempty"`
+	FontID               string       `json:"fontId,omitempty"`
+	PageLayouts          []PageLayout `json:"pageLayouts,omitempty"`
+	TemplateName         string       `json:"templateName"`
+	LineMode             string       `json:"lineMode"`
+	LineCount            int          `json:"lineCount"`
+	PaperWidth           float64      `json:"paperWidth"`
+	PaperHeight          float64      `json:"paperHeight"`
+	MarginTop            float64      `json:"marginTop"`
+	MarginRight          float64      `json:"marginRight"`
+	MarginBottom         float64      `json:"marginBottom"`
+	MarginLeft           float64      `json:"marginLeft"`
+	FontSize             float64      `json:"fontSize"`
+	LetterGap            float64      `json:"letterGap"`
+	LetterSpacing        float64      `json:"letterSpacing"`
+	LineSpacing          float64      `json:"lineSpacing"`
+	LineHeight           float64      `json:"lineHeight"`
+	ParagraphGap         float64      `json:"paragraphGap"`
+	Indent               float64      `json:"indent"`
+	Align                string       `json:"align"`
 }
 
 // Explicit sheets retain their grid and paragraph continuation when copied.
@@ -105,23 +108,31 @@ type MissingGlyph struct {
 	Size float64 `json:"size"`
 }
 
+type FormulaPlacement struct {
+	Start  int    `json:"start"`
+	End    int    `json:"end"`
+	Source string `json:"source"`
+	RegionBounds
+}
+
 type Page struct {
-	Ink         []InkLayer       `json:"ink,omitempty"`
-	LineHeight  float64          `json:"lineHeight"`
-	LineCount   int              `json:"lineCount"`
-	Number      int              `json:"number"`
-	Strokes     []Stroke         `json:"strokes"`
-	StrokeKinds []string         `json:"strokeKinds,omitempty"`
-	TextStrokes []Stroke         `json:"textStrokes"`
-	Images      []ImagePlacement `json:"images"`
-	Tables      []TablePlacement `json:"tables,omitempty"`
-	Issues      []string         `json:"issues,omitempty"`
-	Warnings    []string         `json:"warnings,omitempty"`
-	Missing     []MissingGlyph   `json:"missing"`
-	Text        string           `json:"text"`
-	Cells       []GlyphCell      `json:"cells"`
-	Carets      []CaretStop      `json:"carets"`
-	BlankCarets []BlankCaretStop `json:"blankCarets,omitempty"`
+	Formulas    []FormulaPlacement `json:"formulas,omitempty"`
+	Ink         []InkLayer         `json:"ink,omitempty"`
+	LineHeight  float64            `json:"lineHeight"`
+	LineCount   int                `json:"lineCount"`
+	Number      int                `json:"number"`
+	Strokes     []Stroke           `json:"strokes"`
+	StrokeKinds []string           `json:"strokeKinds,omitempty"`
+	TextStrokes []Stroke           `json:"textStrokes"`
+	Images      []ImagePlacement   `json:"images"`
+	Tables      []TablePlacement   `json:"tables,omitempty"`
+	Issues      []string           `json:"issues,omitempty"`
+	Warnings    []string           `json:"warnings,omitempty"`
+	Missing     []MissingGlyph     `json:"missing"`
+	Text        string             `json:"text"`
+	Cells       []GlyphCell        `json:"cells"`
+	Carets      []CaretStop        `json:"carets"`
+	BlankCarets []BlankCaretStop   `json:"blankCarets,omitempty"`
 }
 
 type Document struct {

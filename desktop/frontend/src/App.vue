@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch, watchEffect } from 'vue'
+import CalculationImportDialog from './components/import/CalculationImportDialog.vue'
+import { useCalculationImport } from './state/useCalculationImport'
 import TableImportDialog from './components/import/TableImportDialog.vue'
 import DiagramImportDialog from './components/import/DiagramImportDialog.vue'
 import DiagramImportStatus from './components/import/DiagramImportStatus.vue'
@@ -74,6 +76,7 @@ function menuAction(action: string) {
 }
 const editor = ref<InstanceType<typeof DocumentCanvas>>()
 const tableImport = useTableImport(w, editor)
+const calculationImport = useCalculationImport(w, editor)
 const diagramImport = useDiagramImport(w, editor)
 const imagePaste = useImagePaste(w, editor)
 function insertTable(options: TableInsertOptions) {
@@ -213,6 +216,7 @@ watch(
         @upload="w.upload"
         @export="w.exportPage($event)"
       />
+      <CalculationImportDialog :task="calculationImport" />
       <TableImportDialog
         :open="tableImport.open.value"
         :tables="preferences.tables"
@@ -287,6 +291,7 @@ watch(
           @insert-table="insertTable"
           @import-table="tableImport.open.value = true"
           @import-diagram="diagramImport.show"
+          @import-calculation="calculationImport.show()"
           @settings="settingsOpen = !settingsOpen"
           @undo="editor?.undo()"
           @redo="editor?.redo()"
@@ -311,6 +316,8 @@ watch(
             v-model:images="preferences.images"
             v-model:tables="preferences.tables"
             v-model:erasures="preferences.erasures"
+            v-model:calculations="preferences.calculations"
+            @edit-calculation="calculationImport.show($event)"
             v-model:index="pageIndex"
             :document="document"
             v-model:zoom="zoom"

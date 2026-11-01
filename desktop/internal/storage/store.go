@@ -102,6 +102,7 @@ func withoutDocument(p Preferences) Preferences {
 	p.Images = nil
 	p.Tables = nil
 	p.Erasures = nil
+	p.Calculations = nil
 	p.Layout.PageLayouts = nil
 	return p
 }

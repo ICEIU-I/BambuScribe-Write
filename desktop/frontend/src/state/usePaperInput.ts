@@ -1,3 +1,4 @@
+import { formulaKey, formulaSelection } from './formulaSelection'
 import { computed, nextTick, onMounted, ref, watch, type Ref } from 'vue'
 import type { Document } from '../types'
 import { caretAt, hitCaret, rowsFor, type LocatedCaret } from './caretGeometry'
@@ -48,8 +49,11 @@ export function usePaperInput(
   function readSelection() {
     const el = input.value
     if (!el || composing) return
-    start.value = el.selectionStart
-    end.value = el.selectionEnd
+    const normalized = formulaSelection(getText(), el.selectionStart, el.selectionEnd)
+    if (normalized.start !== el.selectionStart || normalized.end !== el.selectionEnd)
+      el.setSelectionRange(normalized.start, normalized.end, el.selectionDirection)
+    start.value = normalized.start
+    end.value = normalized.end
     backward.value = el.selectionDirection === 'backward'
   }
   function changed() {
@@ -141,6 +145,20 @@ export function usePaperInput(
   function keydown(event: KeyboardEvent) {
     if (composing || event.isComposing) return
     let key = event.key
+    const mathKey = formulaKey(getText(), start.value, end.value, key)
+    if (mathKey && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      event.preventDefault()
+      if (mathKey.remove && input.value) {
+        input.value.value = getText().slice(0, mathKey.start) + getText().slice(mathKey.end)
+        input.value.setSelectionRange(mathKey.start, mathKey.start)
+        changed()
+      } else
+        select(
+          event.shiftKey ? (backward.value ? end.value : start.value) : mathKey.start,
+          mathKey.end,
+        )
+      return
+    }
     if (
       preferred.value?.blankLines &&
       start.value === end.value &&

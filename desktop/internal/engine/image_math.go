@@ -54,11 +54,11 @@ func imageRegionTextStrokes(f *Font, box OCRBox, asset ImageAsset, s LayoutSetti
 		return nil
 	}
 	if strings.Contains(box.Text, `\frac`) {
-		return imageFractionStrokes(f, box, asset)
+		return imageFractionStrokes(f, box, asset, imageTextVariation(s, asset, box))
 	}
 	chars, ok := imageMathCharacters(box.Text)
 	if !ok {
 		return nil
 	}
-	return handwritingCharacters(f, box, asset, w, h, chars)
+	return handwritingCharacters(f, box, asset, w, h, chars, imageTextVariation(s, asset, box))
 }

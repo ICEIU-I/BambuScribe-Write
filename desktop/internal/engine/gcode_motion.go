@@ -3,6 +3,10 @@ package engine
 // F is mm/min. A1's per-axis caps still apply, notably Z's 30 mm/s cap.
 const motionFeedRate = 16000
 
+// Absolute Z for the end-of-page return and paper change, separate from the
+// calibrated per-stroke lift. This stays within the A1's 256 mm Z travel.
+const pageReturnHeight = 50.0
+
 // Slow only pen-down table borders; handwriting, travel and pen cycles retain
 // their existing feed. Keep the kind attached through cutting and sorting.
 const tableGridFeedRate = motionFeedRate * 70 / 100

@@ -13,8 +13,10 @@ type tableLetter struct {
 	width, bearing float64
 	size, shift    float64
 	missing        bool
+	overline       bool
 }
 type tableText struct {
+	variation                  handwritingVariation
 	lines                      [][]tableLetter
 	widths                     []float64
 	lineHeight, inkTop, height float64
@@ -45,10 +47,13 @@ func (f *Font) tableTextWithSpacing(text string, size, width float64, spacing *L
 			r := character.char
 			letterSize, shift := size*character.scale, size*character.shift
 			g, ok := f.Glyphs[r]
+			overline := false
 			if ok && character.overline {
+				count := len(g.Strokes)
 				g = f.tableOverline(g)
+				overline = len(g.Strokes) > count
 			}
-			l := tableLetter{glyph: g, char: r, size: letterSize, shift: shift, missing: !ok && !unicode.IsSpace(r)}
+			l := tableLetter{overline: overline, glyph: g, char: r, size: letterSize, shift: shift, missing: !ok && !unicode.IsSpace(r)}
 			if unicode.IsSpace(r) {
 				l.width = letterSize * .5
 				if r == '\t' {
@@ -119,6 +124,7 @@ func (f *Font) placeTableText(t tableText, padding, x, y, width, height float64,
 	} else if vertical == "bottom" {
 		originY += max(0, spareY)
 	}
+	occurrence := 0
 	for i, line := range t.lines {
 		originX := x + padding
 		spareX := width - 2*padding - t.widths[i]
@@ -140,7 +146,15 @@ func (f *Font) placeTableText(t tableText, padding, x, y, width, height float64,
 			if l.missing {
 				missing = append(missing, MissingGlyph{Char: string(l.char), X: originX, Y: letterY, Size: l.size})
 			}
-			for _, stroke := range l.glyph.Strokes {
+			strokes := l.glyph.Strokes
+			if l.overline {
+				strokes = strokes[:len(strokes)-1]
+			}
+			strokes = t.variation.strokes(strokes, occurrence+index-1)
+			if l.overline {
+				strokes = append(append([]Stroke(nil), strokes...), l.glyph.Strokes[len(l.glyph.Strokes)-1])
+			}
+			for _, stroke := range strokes {
 				s := make(Stroke, len(stroke))
 				for j, p := range stroke {
 					s[j] = Point{originX + l.bearing + p.X/f.Units*l.size, letterY + p.Y/f.Units*l.size}
@@ -151,6 +165,7 @@ func (f *Font) placeTableText(t tableText, padding, x, y, width, height float64,
 			}
 			originX += l.width
 		}
+		occurrence += len(line) + 1
 	}
 	return out, missing
 }

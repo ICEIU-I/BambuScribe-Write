@@ -5,6 +5,7 @@ package project
 
 import (
 	"archive/zip"
+	"bambuscribe/desktop/internal/calculation"
 	"bambuscribe/desktop/internal/engine"
 	"bytes"
 	"encoding/base64"
@@ -22,7 +23,7 @@ const (
 	// Extension is the suffix the desktop editor reads and writes.
 	Extension = ".ccf"
 	// Version is the format revision written into every manifest.
-	Version = 6
+	Version = 7
 
 	manifestName = "project.json"
 	imageDir     = "images"
@@ -35,19 +36,23 @@ const (
 // Generated strokes are not stored, because preview rebuilds them from these
 // inputs and from the embedded handwriting font.
 type Project struct {
-	Erasures []engine.PageErasure   `json:"erasures,omitempty"`
-	Version  int                    `json:"version"`
-	Text     string                 `json:"text"`
-	Layout   engine.LayoutSettings  `json:"layout"`
-	Writing  engine.WritingSettings `json:"writing"`
-	Images   []engine.ImageAsset    `json:"images"`
-	Tables   []engine.TableAsset    `json:"tables,omitempty"`
+	Calculations []calculation.Record   `json:"calculations,omitempty"`
+	Erasures     []engine.PageErasure   `json:"erasures,omitempty"`
+	Version      int                    `json:"version"`
+	Text         string                 `json:"text"`
+	Layout       engine.LayoutSettings  `json:"layout"`
+	Writing      engine.WritingSettings `json:"writing"`
+	Images       []engine.ImageAsset    `json:"images"`
+	Tables       []engine.TableAsset    `json:"tables,omitempty"`
 }
 
 // Encode writes the project as a zip archive. Each image leaves its base64
 // data URL for its own stored entry, which keeps the manifest readable and
 // avoids deflating PNG or JPEG payloads that are already compressed.
 func Encode(p Project) ([]byte, error) {
+	if err := calculation.ValidateRecords(p.Calculations); err != nil {
+		return nil, err
+	}
 	if err := engine.ValidateErasures(p.Erasures); err != nil {
 		return nil, err
 	}
@@ -134,6 +139,9 @@ func Decode(data []byte) (Project, error) {
 	}
 	if p.Version < 1 || p.Version > Version {
 		return Project{}, fmt.Errorf("不支持的项目版本 %d，请升级应用", p.Version)
+	}
+	if err = calculation.ValidateRecords(p.Calculations); err != nil {
+		return Project{}, err
 	}
 	if err = p.Layout.Validate(); err != nil {
 		return Project{}, err

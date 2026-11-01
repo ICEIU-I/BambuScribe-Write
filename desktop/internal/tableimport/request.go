@@ -14,15 +14,40 @@ import (
 // requestTableText sends one bounded model request using the selected model,
 // high image detail, strict output and redacted transport errors.
 func requestTableText(ctx context.Context, c Config, data, instructions, prompt string, schema json.RawMessage) (string, error) {
-	format := map[string]any{"name": "bambuscribe_tables", "strict": true, "schema": schema}
+	return RequestStructured(ctx, c, []ModelImage{{Data: data}}, instructions, prompt, schema, "bambuscribe_tables", 18000)
+}
+
+// ModelImage preserves source roles and ordering in one multimodal request.
+type ModelImage struct {
+	Data  string
+	Label string
+}
+
+func RequestStructured(ctx context.Context, c Config, images []ModelImage, instructions, prompt string, schema json.RawMessage, name string, maxTokens int) (string, error) {
+	format := map[string]any{"name": name, "strict": true, "schema": schema}
 	var body any
 	endpoint := "/chat/completions"
+	content := []any{}
 	if c.Protocol == "responses" {
 		endpoint = "/responses"
 		format["type"] = "json_schema"
-		body = map[string]any{"model": c.Model, "store": false, "instructions": instructions, "input": []any{map[string]any{"role": "user", "content": []any{map[string]any{"type": "input_text", "text": prompt}, map[string]any{"type": "input_image", "image_url": data, "detail": "high"}}}}, "text": map[string]any{"format": format}, "max_output_tokens": 18000}
+		content = append(content, map[string]any{"type": "input_text", "text": prompt})
+		for _, im := range images {
+			if im.Label != "" {
+				content = append(content, map[string]any{"type": "input_text", "text": im.Label})
+			}
+			content = append(content, map[string]any{"type": "input_image", "image_url": im.Data, "detail": "high"})
+		}
+		body = map[string]any{"model": c.Model, "store": false, "instructions": instructions, "input": []any{map[string]any{"role": "user", "content": content}}, "text": map[string]any{"format": format}, "max_output_tokens": maxTokens}
 	} else {
-		body = map[string]any{"model": c.Model, "messages": []any{map[string]any{"role": "system", "content": instructions}, map[string]any{"role": "user", "content": []any{map[string]any{"type": "text", "text": prompt}, map[string]any{"type": "image_url", "image_url": map[string]any{"url": data, "detail": "high"}}}}}, "response_format": map[string]any{"type": "json_schema", "json_schema": format}, "max_completion_tokens": 18000}
+		content = append(content, map[string]any{"type": "text", "text": prompt})
+		for _, im := range images {
+			if im.Label != "" {
+				content = append(content, map[string]any{"type": "text", "text": im.Label})
+			}
+			content = append(content, map[string]any{"type": "image_url", "image_url": map[string]any{"url": im.Data, "detail": "high"}})
+		}
+		body = map[string]any{"model": c.Model, "messages": []any{map[string]any{"role": "system", "content": instructions}, map[string]any{"role": "user", "content": content}}, "response_format": map[string]any{"type": "json_schema", "json_schema": format}, "max_completion_tokens": maxTokens}
 	}
 	raw, err := json.Marshal(body)
 	if err != nil {
@@ -34,7 +59,7 @@ func requestTableText(ctx context.Context, c Config, data, instructions, prompt 
 	}
 	req.Header.Set("Authorization", "Bearer "+c.APIKey)
 	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{Timeout: 180 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	client := &http.Client{Timeout: 300 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	res, err := client.Do(req)
 	if err != nil {
 		if ctx.Err() != nil {
@@ -83,7 +108,7 @@ func requestTableText(ctx context.Context, c Config, data, instructions, prompt 
 		for _, o := range response.Output {
 			for _, v := range o.Content {
 				if v.Type == "refusal" {
-					return "", fmt.Errorf("模型未识别此图片，请换一张表格截图")
+					return "", fmt.Errorf("模型未识别此图片，请检查图片后重试")
 				}
 				if v.Type == "output_text" {
 					text += v.Text
@@ -97,7 +122,7 @@ func requestTableText(ctx context.Context, c Config, data, instructions, prompt 
 		text = response.Choices[0].Message.Content
 	}
 	if text == "" {
-		return "", fmt.Errorf("模型没有返回表格，请检查图片后重试")
+		return "", fmt.Errorf("模型没有返回内容，请检查图片后重试")
 	}
 	return text, nil
 }

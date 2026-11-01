@@ -55,6 +55,14 @@ func TestExportedMotionUsesRaisedFeedWithoutSlowPenCycles(t *testing.T) {
 					t.Fatalf("unexpected modal feed %.0f mm/min in %q; expected 16000", feed, line)
 				}
 				if hasZ {
+					if nextZ == 50 {
+						if counts["pen"] != 5 || z != 7 {
+							t.Fatal("high lift must follow all writing pen cycles")
+						}
+						counts["return"]++
+						z = nextZ
+						continue
+					}
 					cycleSeconds += math.Abs(nextZ-z) / math.Min(feed/60, 30)
 					if nextZ != 7 && nextZ != 3.4 {
 						t.Fatalf("changed calibrated pen position to %.3f", nextZ)
@@ -67,7 +75,7 @@ func TestExportedMotionUsesRaisedFeedWithoutSlowPenCycles(t *testing.T) {
 					counts["travel"]++
 				}
 			}
-			if counts["pen"] != 5 || counts["writing"] != 3 || counts["travel"] != 3 || z != 7 {
+			if counts["pen"] != 5 || counts["writing"] != 3 || counts["travel"] != 3 || counts["return"] != 1 || z != 50 {
 				t.Fatalf("lost stroke boundaries or raised-pen travel: %v, final Z %.3f", counts, z)
 			}
 			// Two complete 7/3.4 mm cycles cover 14.4 mm. Even with F16000,

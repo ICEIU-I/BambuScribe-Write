@@ -31,7 +31,7 @@ func GenerateGCode(page Page, s LayoutSettings, w WritingSettings) (string, erro
 		return "", err
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "; A1 handwriting / page %d\n; Manually home and position the paper before starting.\nM400\nG21\nM104 S0\nM140 S0\nM106 S0\nM17\nG90\n", page.Number)
+	fmt.Fprintf(&b, "; A1 handwriting / page %d\n; Home and position once before the first page; replace paper between pages.\nM400\nG21\nM104 S0\nM140 S0\nM106 S0\nM17\nG90\n", page.Number)
 	b.WriteString(a1MotionSetup)
 	if w.OriginMode == "auto" {
 		fmt.Fprintf(&b, "G92 X0 Y%.3f\n", s.PaperHeight)
@@ -69,11 +69,16 @@ func GenerateGCode(page Page, s LayoutSettings, w WritingSettings) (string, erro
 		}
 		fmt.Fprintf(&b, "G1 Z%.3f F%d\n", *w.PenUp, motionFeedRate)
 	}
+	// Clear the finished sheet before the long return, then keep that height
+	// while the operator replaces the paper. Never lower a higher pen-up Z.
+	fmt.Fprintf(&b, "G1 Z%.3f F%d\nM400\n", max(*w.PenUp, pageReturnHeight), motionFeedRate)
 	move(parkX, parkY, motionFeedRate)
 	b.WriteString("M400\n")
 	if w.Sound {
 		b.WriteString(completionSoundGCode)
 	}
-	b.WriteString("M400\nM18 X Y Z\n")
+	// Preserve the parked XY position and calibrated Z for the next page.
+	// The job finishes here; the operator replaces the paper and starts it.
+	b.WriteString("M400\n")
 	return b.String(), nil
 }

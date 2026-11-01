@@ -12,13 +12,14 @@ import (
 )
 
 func preferencesWithProject(p storage.Preferences, document project.Project) storage.Preferences {
+	p.Calculations = document.Calculations
 	p.Text, p.Layout, p.Writing = document.Text, document.Layout, document.Writing
 	p.Images, p.Tables, p.Erasures = document.Images, document.Tables, document.Erasures
 	return p
 }
 
 func projectFromPreferences(p storage.Preferences) project.Project {
-	return project.Project{Version: project.Version, Text: p.Text, Layout: p.Layout, Writing: p.Writing, Images: p.Images, Tables: p.Tables, Erasures: p.Erasures}
+	return project.Project{Calculations: p.Calculations, Version: project.Version, Text: p.Text, Layout: p.Layout, Writing: p.Writing, Images: p.Images, Tables: p.Tables, Erasures: p.Erasures}
 }
 
 func (a *App) workspaceSnapshot() (storage.Data, string, string) {

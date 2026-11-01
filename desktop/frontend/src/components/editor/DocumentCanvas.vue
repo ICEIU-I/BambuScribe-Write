@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { CalculationRecord } from '../../services/calculationTypes'
+import FormulaEditDialog from './FormulaEditDialog.vue'
+import { calculationAt, formulaRanges } from '../../state/calculationText'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type {
   Document,
@@ -28,6 +31,7 @@ import { provideImportedTableDrag } from '../../state/useImportedTableDrag'
 import type { PageAction } from '../../state/documentPages'
 const props = withDefaults(
   defineProps<{
+    calculations?: CalculationRecord[]
     modelValue: string
     pageLayouts?: PageLayout[]
     tables?: TableAsset[]
@@ -44,10 +48,12 @@ const props = withDefaults(
     active: boolean
     disabled: boolean
   }>(),
-  { tables: () => [], erasures: () => [] },
+  { tables: () => [], erasures: () => [], calculations: () => [] },
 )
 const emit = defineEmits<{
   'update:modelValue': [string]
+  'update:calculations': [CalculationRecord[] | undefined]
+  editCalculation: [number]
   'update:pageLayouts': [PageLayout[] | undefined]
   'update:images': [ImageAsset[]]
   'update:tables': [TableAsset[]]
@@ -83,7 +89,8 @@ watch(
 const editing = useDocumentEditing(
   props,
   input,
-  (text, images, tables, erasures, pageLayouts) => {
+  (text, images, tables, erasures, pageLayouts, calculations) => {
+    emit('update:calculations', calculations)
     emit('update:modelValue', text)
     emit('update:images', images)
     emit('update:tables', tables)
@@ -360,7 +367,54 @@ onBeforeUnmount(() => {
   window.removeEventListener('paste', paste)
   window.removeEventListener('keydown', keydown, true)
 })
+const formulaEdit = ref<{ source: string; start: number; end: number; original: string } | null>(
+  null,
+)
+function saveFormula(source: string) {
+  const current = formulaEdit.value
+  if (current && current.original === props.modelValue) {
+    editing.replaceFormula(current.start, current.end, `\\(${source}\\)`)
+    formulaEdit.value = null
+  } else {
+    formulaEdit.value = null
+    emit('notice', '正文已修改，请重新打开公式')
+  }
+}
+function editFormula(event: MouseEvent) {
+  if (props.disabled || props.tool !== 'select' || !stack.value || !props.document) return
+  const pos = paperPosition(
+    stack.value,
+    { x: event.clientX, y: event.clientY },
+    props.document.settings.paperWidth,
+  )
+  if (!pos) return
+  const formula = props.document.pages[pos.page]?.formulas?.find(
+    (f) => pos.x >= f.x && pos.x <= f.x + f.width && pos.y >= f.y && pos.y <= f.y + f.height,
+  )
+  if (!formula) return
+  if (calculationAt(props.modelValue, props.calculations ?? [], formula.start)) {
+    input.value?.blur()
+    emit('editCalculation', formula.start)
+  } else {
+    const range = formulaRanges(props.modelValue).find(
+      (r) => formula.start >= r.start && formula.start < r.end,
+    )
+    if (range) {
+      input.value?.blur()
+      formulaEdit.value = { ...range, original: props.modelValue }
+    }
+  }
+}
 defineExpose({
+  textAnchor: () => {
+    const page = props.document?.pages[props.index]
+    const from =
+      caret.value.page === props.index
+        ? start.value
+        : (page?.carets[0]?.index ?? props.modelValue.length)
+    return { from, to: caret.value.page === props.index ? end.value : from }
+  },
+  replaceGenerated: editing.replaceGenerated,
   jump,
   changePage: (index: number, action: PageAction, destination?: number) => {
     if (!editing.changePage(index, action, destination)) return false
@@ -414,6 +468,14 @@ defineExpose({
     @scroll.passive="scroll"
     @paste="paste"
   >
+    <FormulaEditDialog
+      v-if="document"
+      :source="formulaEdit?.source ?? null"
+      :settings="document.settings"
+      :disabled="disabled"
+      @close="formulaEdit = null"
+      @save="saveFormula"
+    />
     <TableSettings
       v-if="tableSettingsOpen && selectedTable && document"
       :table="selectedTable"
@@ -429,6 +491,7 @@ defineExpose({
     <div
       ref="stack"
       class="document-stack"
+      @dblclick="editFormula"
       :style="{ width: `${width + 112}px` }"
       @pointerdown="pointerDown"
       @pointerdown.capture="capturePointerDown"

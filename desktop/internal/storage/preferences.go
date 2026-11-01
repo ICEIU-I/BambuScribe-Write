@@ -1,19 +1,21 @@
 package storage
 
 import (
+	"bambuscribe/desktop/internal/calculation"
 	"bambuscribe/desktop/internal/engine"
 	"bambuscribe/desktop/internal/printer"
 )
 
 type Preferences struct {
-	Erasures []engine.PageErasure   `json:"erasures,omitempty"`
-	Theme    string                 `json:"theme"`
-	Text     string                 `json:"text"`
-	Layout   engine.LayoutSettings  `json:"layout"`
-	Writing  engine.WritingSettings `json:"writing"`
-	Language string                 `json:"language,omitempty"`
-	Images   []engine.ImageAsset    `json:"images,omitempty"`
-	Tables   []engine.TableAsset    `json:"tables,omitempty"`
+	Calculations []calculation.Record   `json:"calculations,omitempty"`
+	Erasures     []engine.PageErasure   `json:"erasures,omitempty"`
+	Theme        string                 `json:"theme"`
+	Text         string                 `json:"text"`
+	Layout       engine.LayoutSettings  `json:"layout"`
+	Writing      engine.WritingSettings `json:"writing"`
+	Language     string                 `json:"language,omitempty"`
+	Images       []engine.ImageAsset    `json:"images,omitempty"`
+	Tables       []engine.TableAsset    `json:"tables,omitempty"`
 }
 
 func Defaults() Preferences {

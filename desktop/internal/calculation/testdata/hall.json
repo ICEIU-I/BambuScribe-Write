@@ -1,0 +1,1836 @@
+{
+  "variables": [
+    {
+      "id": "kh",
+      "label": "霍尔灵敏度",
+      "value": "242",
+      "unit": "mV/(mA·T)",
+      "source": "原始数据第1张顶部",
+      "uncertain": false
+    },
+    {
+      "id": "is",
+      "label": "工作电流",
+      "value": "5.00",
+      "unit": "mA",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v0_0_0",
+      "label": "表1第1组U1",
+      "value": "25.3",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_0_1",
+      "label": "表1第1组U2",
+      "value": "-25.5",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_0_2",
+      "label": "表1第1组U3",
+      "value": "-25.4",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_0_3",
+      "label": "表1第1组U4",
+      "value": "25.4",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_1_0",
+      "label": "表1第2组U1",
+      "value": "38.0",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_1_1",
+      "label": "表1第2组U2",
+      "value": "-38.1",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_1_2",
+      "label": "表1第2组U3",
+      "value": "-38.0",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_1_3",
+      "label": "表1第2组U4",
+      "value": "38.1",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_2_0",
+      "label": "表1第3组U1",
+      "value": "50.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_2_1",
+      "label": "表1第3组U2",
+      "value": "-50.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_2_2",
+      "label": "表1第3组U3",
+      "value": "50.8",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_2_3",
+      "label": "表1第3组U4",
+      "value": "-50.6",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_3_0",
+      "label": "表1第4组U1",
+      "value": "63.3",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_3_1",
+      "label": "表1第4组U2",
+      "value": "-63.5",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_3_2",
+      "label": "表1第4组U3",
+      "value": "63.1",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_3_3",
+      "label": "表1第4组U4",
+      "value": "-63.3",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_4_0",
+      "label": "表1第5组U1",
+      "value": "75.9",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_4_1",
+      "label": "表1第5组U2",
+      "value": "-75.5",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_4_2",
+      "label": "表1第5组U3",
+      "value": "76.2",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_4_3",
+      "label": "表1第5组U4",
+      "value": "-76.0",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_5_0",
+      "label": "表1第6组U1",
+      "value": "88.5",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_5_1",
+      "label": "表1第6组U2",
+      "value": "-88.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_5_2",
+      "label": "表1第6组U3",
+      "value": "88.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_5_3",
+      "label": "表1第6组U4",
+      "value": "-88.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_6_0",
+      "label": "表1第7组U1",
+      "value": "101.2",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_6_1",
+      "label": "表1第7组U2",
+      "value": "-101.0",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_6_2",
+      "label": "表1第7组U3",
+      "value": "100.8",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_6_3",
+      "label": "表1第7组U4",
+      "value": "-101.2",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_7_0",
+      "label": "表1第8组U1",
+      "value": "113.8",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_7_1",
+      "label": "表1第8组U2",
+      "value": "-113.8",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_7_2",
+      "label": "表1第8组U3",
+      "value": "113.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_7_3",
+      "label": "表1第8组U4",
+      "value": "-113.5",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_8_0",
+      "label": "表1第9组U1",
+      "value": "126.5",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_8_1",
+      "label": "表1第9组U2",
+      "value": "-126.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_8_2",
+      "label": "表1第9组U3",
+      "value": "126.7",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v0_8_3",
+      "label": "表1第9组U4",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表1",
+      "uncertain": false
+    },
+    {
+      "id": "v1_0_0",
+      "label": "表2第1组U1",
+      "value": "12.8",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_0_1",
+      "label": "表2第1组U2",
+      "value": "-12.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_0_2",
+      "label": "表2第1组U3",
+      "value": "-12.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_0_3",
+      "label": "表2第1组U4",
+      "value": "12.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_1_0",
+      "label": "表2第2组U1",
+      "value": "25.2",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_1_1",
+      "label": "表2第2组U2",
+      "value": "-25.2",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_1_2",
+      "label": "表2第2组U3",
+      "value": "25.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_1_3",
+      "label": "表2第2组U4",
+      "value": "-25.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_2_0",
+      "label": "表2第3组U1",
+      "value": "37.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_2_1",
+      "label": "表2第3组U2",
+      "value": "-37.5",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_2_2",
+      "label": "表2第3组U3",
+      "value": "37.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_2_3",
+      "label": "表2第3组U4",
+      "value": "-37.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_3_0",
+      "label": "表2第4组U1",
+      "value": "50.4",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_3_1",
+      "label": "表2第4组U2",
+      "value": "-50.5",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_3_2",
+      "label": "表2第4组U3",
+      "value": "50.4",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_3_3",
+      "label": "表2第4组U4",
+      "value": "-50.5",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_4_0",
+      "label": "表2第5组U1",
+      "value": "63.0",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_4_1",
+      "label": "表2第5组U2",
+      "value": "-63.0",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_4_2",
+      "label": "表2第5组U3",
+      "value": "62.8",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_4_3",
+      "label": "表2第5组U4",
+      "value": "-62.8",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_5_0",
+      "label": "表2第6组U1",
+      "value": "75.6",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_5_1",
+      "label": "表2第6组U2",
+      "value": "-75.8",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_5_2",
+      "label": "表2第6组U3",
+      "value": "75.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_5_3",
+      "label": "表2第6组U4",
+      "value": "-75.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_6_0",
+      "label": "表2第7组U1",
+      "value": "88.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_6_1",
+      "label": "表2第7组U2",
+      "value": "-88.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_6_2",
+      "label": "表2第7组U3",
+      "value": "88.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_6_3",
+      "label": "表2第7组U4",
+      "value": "-88.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_7_0",
+      "label": "表2第8组U1",
+      "value": "100.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_7_1",
+      "label": "表2第8组U2",
+      "value": "-100.7",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_7_2",
+      "label": "表2第8组U3",
+      "value": "100.9",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_7_3",
+      "label": "表2第8组U4",
+      "value": "-100.9",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_8_0",
+      "label": "表2第9组U1",
+      "value": "113.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_8_1",
+      "label": "表2第9组U2",
+      "value": "-113.1",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_8_2",
+      "label": "表2第9组U3",
+      "value": "113.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_8_3",
+      "label": "表2第9组U4",
+      "value": "-113.3",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_9_0",
+      "label": "表2第10组U1",
+      "value": "126.0",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_9_1",
+      "label": "表2第10组U2",
+      "value": "-126.2",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_9_2",
+      "label": "表2第10组U3",
+      "value": "126.2",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v1_9_3",
+      "label": "表2第10组U4",
+      "value": "-126.0",
+      "unit": "mV",
+      "source": "原始数据第1张表2",
+      "uncertain": false
+    },
+    {
+      "id": "v2_0_0",
+      "label": "表3第1组U1",
+      "value": "35.4",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_0_1",
+      "label": "表3第1组U2",
+      "value": "-35.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_0_2",
+      "label": "表3第1组U3",
+      "value": "-35.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_0_3",
+      "label": "表3第1组U4",
+      "value": "35.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_1_0",
+      "label": "表3第2组U1",
+      "value": "39.5",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_1_1",
+      "label": "表3第2组U2",
+      "value": "-39.5",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_1_2",
+      "label": "表3第2组U3",
+      "value": "39.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_1_3",
+      "label": "表3第2组U4",
+      "value": "-39.5",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_2_0",
+      "label": "表3第3组U1",
+      "value": "46.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_2_1",
+      "label": "表3第3组U2",
+      "value": "-45.8",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_2_2",
+      "label": "表3第3组U3",
+      "value": "45.8",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_2_3",
+      "label": "表3第3组U4",
+      "value": "-45.9",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_3_0",
+      "label": "表3第4组U1",
+      "value": "59.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_3_1",
+      "label": "表3第4组U2",
+      "value": "-59.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_3_2",
+      "label": "表3第4组U3",
+      "value": "58.8",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_3_3",
+      "label": "表3第4组U4",
+      "value": "-58.8",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_4_0",
+      "label": "表3第5组U1",
+      "value": "77.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_4_1",
+      "label": "表3第5组U2",
+      "value": "-76.8",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_4_2",
+      "label": "表3第5组U3",
+      "value": "77.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_4_3",
+      "label": "表3第5组U4",
+      "value": "-77.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_5_0",
+      "label": "表3第6组U1",
+      "value": "99.1",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_5_1",
+      "label": "表3第6组U2",
+      "value": "-99.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_5_2",
+      "label": "表3第6组U3",
+      "value": "99.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_5_3",
+      "label": "表3第6组U4",
+      "value": "-99.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_6_0",
+      "label": "表3第7组U1",
+      "value": "120.1",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_6_1",
+      "label": "表3第7组U2",
+      "value": "-120.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_6_2",
+      "label": "表3第7组U3",
+      "value": "120.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_6_3",
+      "label": "表3第7组U4",
+      "value": "-120.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_7_0",
+      "label": "表3第8组U1",
+      "value": "125.6",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_7_1",
+      "label": "表3第8组U2",
+      "value": "-125.6",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_7_2",
+      "label": "表3第8组U3",
+      "value": "125.4",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_7_3",
+      "label": "表3第8组U4",
+      "value": "-125.5",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_8_0",
+      "label": "表3第9组U1",
+      "value": "126.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_8_1",
+      "label": "表3第9组U2",
+      "value": "-126.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_8_2",
+      "label": "表3第9组U3",
+      "value": "126.0",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_8_3",
+      "label": "表3第9组U4",
+      "value": "-126.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_9_0",
+      "label": "表3第10组U1",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_9_1",
+      "label": "表3第10组U2",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_9_2",
+      "label": "表3第10组U3",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_9_3",
+      "label": "表3第10组U4",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_10_0",
+      "label": "表3第11组U1",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_10_1",
+      "label": "表3第11组U2",
+      "value": "-126.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_10_2",
+      "label": "表3第11组U3",
+      "value": "126.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_10_3",
+      "label": "表3第11组U4",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_11_0",
+      "label": "表3第12组U1",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_11_1",
+      "label": "表3第12组U2",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_11_2",
+      "label": "表3第12组U3",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_11_3",
+      "label": "表3第12组U4",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_12_0",
+      "label": "表3第13组U1",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_12_1",
+      "label": "表3第13组U2",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_12_2",
+      "label": "表3第13组U3",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_12_3",
+      "label": "表3第13组U4",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_13_0",
+      "label": "表3第14组U1",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_13_1",
+      "label": "表3第14组U2",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_13_2",
+      "label": "表3第14组U3",
+      "value": "126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_13_3",
+      "label": "表3第14组U4",
+      "value": "-126.3",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_14_0",
+      "label": "表3第15组U1",
+      "value": "125.4",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_14_1",
+      "label": "表3第15组U2",
+      "value": "-125.4",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_14_2",
+      "label": "表3第15组U3",
+      "value": "125.5",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_14_3",
+      "label": "表3第15组U4",
+      "value": "-125.5",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_15_0",
+      "label": "表3第16组U1",
+      "value": "112.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_15_1",
+      "label": "表3第16组U2",
+      "value": "-112.2",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_15_2",
+      "label": "表3第16组U3",
+      "value": "112.1",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    },
+    {
+      "id": "v2_15_3",
+      "label": "表3第16组U4",
+      "value": "-112.1",
+      "unit": "mV",
+      "source": "原始数据第1张表3",
+      "uncertain": false
+    }
+  ],
+  "sections": [
+    {
+      "title": "表1中：",
+      "steps": [
+        {
+          "id": "u0_0",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_0_0)+abs(v0_0_1)+abs(v0_0_2)+abs(v0_0_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_1",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_1_0)+abs(v0_1_1)+abs(v0_1_2)+abs(v0_1_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_2",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_2_0)+abs(v0_2_1)+abs(v0_2_2)+abs(v0_2_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_3",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_3_0)+abs(v0_3_1)+abs(v0_3_2)+abs(v0_3_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_4",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_4_0)+abs(v0_4_1)+abs(v0_4_2)+abs(v0_4_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_5",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_5_0)+abs(v0_5_1)+abs(v0_5_2)+abs(v0_5_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_6",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_6_0)+abs(v0_6_1)+abs(v0_6_2)+abs(v0_6_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_7",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_7_0)+abs(v0_7_1)+abs(v0_7_2)+abs(v0_7_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u0_8",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v0_8_0)+abs(v0_8_1)+abs(v0_8_2)+abs(v0_8_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        }
+      ]
+    },
+    {
+      "title": "表2中：",
+      "steps": [
+        {
+          "id": "u1_0",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_0_0)+abs(v1_0_1)+abs(v1_0_2)+abs(v1_0_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_1",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_1_0)+abs(v1_1_1)+abs(v1_1_2)+abs(v1_1_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_2",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_2_0)+abs(v1_2_1)+abs(v1_2_2)+abs(v1_2_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_3",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_3_0)+abs(v1_3_1)+abs(v1_3_2)+abs(v1_3_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_4",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_4_0)+abs(v1_4_1)+abs(v1_4_2)+abs(v1_4_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_5",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_5_0)+abs(v1_5_1)+abs(v1_5_2)+abs(v1_5_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_6",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_6_0)+abs(v1_6_1)+abs(v1_6_2)+abs(v1_6_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_7",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_7_0)+abs(v1_7_1)+abs(v1_7_2)+abs(v1_7_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_8",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_8_0)+abs(v1_8_1)+abs(v1_8_2)+abs(v1_8_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u1_9",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v1_9_0)+abs(v1_9_1)+abs(v1_9_2)+abs(v1_9_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        }
+      ]
+    },
+    {
+      "title": "表3中：",
+      "steps": [
+        {
+          "id": "u2_0",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_0_0)+abs(v2_0_1)+abs(v2_0_2)+abs(v2_0_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_1",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_1_0)+abs(v2_1_1)+abs(v2_1_2)+abs(v2_1_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_2",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_2_0)+abs(v2_2_1)+abs(v2_2_2)+abs(v2_2_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_3",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_3_0)+abs(v2_3_1)+abs(v2_3_2)+abs(v2_3_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_4",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_4_0)+abs(v2_4_1)+abs(v2_4_2)+abs(v2_4_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_5",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_5_0)+abs(v2_5_1)+abs(v2_5_2)+abs(v2_5_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_6",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_6_0)+abs(v2_6_1)+abs(v2_6_2)+abs(v2_6_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_7",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_7_0)+abs(v2_7_1)+abs(v2_7_2)+abs(v2_7_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_8",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_8_0)+abs(v2_8_1)+abs(v2_8_2)+abs(v2_8_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_9",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_9_0)+abs(v2_9_1)+abs(v2_9_2)+abs(v2_9_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_10",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_10_0)+abs(v2_10_1)+abs(v2_10_2)+abs(v2_10_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_11",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_11_0)+abs(v2_11_1)+abs(v2_11_2)+abs(v2_11_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_12",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_12_0)+abs(v2_12_1)+abs(v2_12_2)+abs(v2_12_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_13",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_13_0)+abs(v2_13_1)+abs(v2_13_2)+abs(v2_13_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_14",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_14_0)+abs(v2_14_1)+abs(v2_14_2)+abs(v2_14_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        },
+        {
+          "id": "u2_15",
+          "label": "U̅_{H}",
+          "symbolic": "\\frac{|U_{H1}|+|U_{H2}|+|U_{H3}|+|U_{H4}|}{4}",
+          "expression": "(abs(v2_15_0)+abs(v2_15_1)+abs(v2_15_2)+abs(v2_15_3))/4",
+          "unit": "mV",
+          "precision": 1,
+          "format": "decimal",
+          "useRounded": true,
+          "conversions": []
+        }
+      ]
+    },
+    {
+      "title": "表3中：",
+      "steps": [
+        {
+          "id": "b0",
+          "label": "B_{1}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_0/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b1",
+          "label": "B_{2}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_1/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b2",
+          "label": "B_{3}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_2/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b3",
+          "label": "B_{4}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_3/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b4",
+          "label": "B_{5}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_4/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b5",
+          "label": "B_{6}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_5/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b6",
+          "label": "B_{7}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_6/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b7",
+          "label": "B_{8}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_7/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b8",
+          "label": "B_{9}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_8/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b9",
+          "label": "B_{10}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_9/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b10",
+          "label": "B_{11}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_10/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b11",
+          "label": "B_{12}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_11/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b12",
+          "label": "B_{13}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_12/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b13",
+          "label": "B_{14}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_13/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b14",
+          "label": "B_{15}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_14/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        },
+        {
+          "id": "b15",
+          "label": "B_{16}",
+          "symbolic": "\\frac{U̅_{H}}{K_{H}I_{S}}",
+          "expression": "u2_15/(kh*is)",
+          "unit": "T",
+          "precision": 3,
+          "format": "significant",
+          "useRounded": false,
+          "conversions": [
+            {
+              "factor": "1000",
+              "unit": "mT",
+              "precision": 3,
+              "format": "significant"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "issues": []
+}

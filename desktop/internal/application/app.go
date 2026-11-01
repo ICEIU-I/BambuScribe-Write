@@ -30,6 +30,7 @@ type App struct {
 	persistenceMu sync.Mutex
 	editorReady   bool
 	closeAllowed  bool
+	calculations  calculationState
 	diagrams      diagramImportState
 	imports       importState
 	updates       updateState
@@ -103,6 +104,7 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) shutdown(context.Context) {
 	a.CancelUpdate()
 	a.CancelDiagramRecognition()
+	a.CancelCalculationRecognition()
 	a.CancelTableRecognition()
 	if a.imports.server != nil {
 		a.imports.server.Close()

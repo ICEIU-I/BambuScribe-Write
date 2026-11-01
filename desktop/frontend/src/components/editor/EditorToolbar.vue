@@ -20,6 +20,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   importTable: []
   importDiagram: []
+  importCalculation: []
   insertTable: [TableInsertOptions]
   settings: []
   undo: []
@@ -132,6 +133,7 @@ const tableOpen = ref(false),
       :disabled="disabled"
       @table="emit('importTable')"
       @diagram="emit('importDiagram')"
+      @calculation="emit('importCalculation')"
     />
     <div class="tool-options">
       <div v-if="tool === 'erase'" class="erase-modes" role="group" aria-label="擦除方式">

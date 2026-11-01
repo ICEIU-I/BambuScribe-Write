@@ -193,8 +193,8 @@ func TestCompletionSoundFollowsThePreservedSetting(t *testing.T) {
 		if enabled && strings.Index(gcode, "M1006 S1") < park {
 			t.Fatal("sound must wait until writing is complete")
 		}
-		if !strings.HasSuffix(gcode, "M400\nM18 X Y Z\n") {
-			t.Fatal("motors were not released after finishing")
+		if !strings.HasSuffix(gcode, "M400\n") {
+			t.Fatal("completion must wait for all queued motion and sound")
 		}
 	}
 }

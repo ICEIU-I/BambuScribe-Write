@@ -128,9 +128,10 @@ export async function open(page, update = {}) {
           SavePreferences: async (p, path) => {
             window.__tables.preferences = p
             if (path) {
-              const { text, layout, writing, images, tables, erasures } = p
+              const { text, layout, writing, images, tables, erasures, calculations } = p
               window.__tables.saved = {
-                version: 5,
+                version: 7,
+                calculations,
                 text,
                 layout,
                 writing,

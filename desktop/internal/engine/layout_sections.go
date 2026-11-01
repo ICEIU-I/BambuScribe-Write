@@ -14,7 +14,7 @@ import (
 // editable text flow, object avoidance and export geometry as ordinary typing.
 func (f *Font) layoutText(text string, s LayoutSettings, occupied map[int][]RegionBounds) (*Document, error) {
 	if !strings.ContainsRune(text, '\f') {
-		return f.layoutFlow(text, s, occupied, 0, len(s.PageLayouts) > 0 && s.PageLayouts[0].Continuation, false)
+		return f.layoutFlow(text, s, occupied, 0, len(s.PageLayouts) > 0 && s.PageLayouts[0].Continuation, false, 0)
 	}
 	if !utf8.ValidString(text) || utf8.RuneCountInString(text) > maxDocumentCharacters {
 		return nil, fmt.Errorf("文字最多 20,000 字，请拆分文档")
@@ -35,7 +35,7 @@ func (f *Font) layoutText(text string, s LayoutSettings, occupied map[int][]Regi
 			}
 		}
 		continued := pageOffset < len(s.PageLayouts) && s.PageLayouts[pageOffset].Continuation
-		part, err := f.layoutFlow(section, s, local, pageOffset, continued, i < len(sections)-1)
+		part, err := f.layoutFlow(section, s, local, pageOffset, continued, i < len(sections)-1, offset)
 		if err != nil {
 			return nil, err
 		}
@@ -43,6 +43,10 @@ func (f *Font) layoutText(text string, s LayoutSettings, occupied map[int][]Regi
 			for li := range part.Pages[pi].Ink {
 				n, _ := strconv.Atoi(part.Pages[pi].Ink[li].Part)
 				part.Pages[pi].Ink[li].Part = strconv.Itoa(n + offset)
+			}
+			for fi := range part.Pages[pi].Formulas {
+				part.Pages[pi].Formulas[fi].Start += offset
+				part.Pages[pi].Formulas[fi].End += offset
 			}
 			for ci := range part.Pages[pi].Carets {
 				part.Pages[pi].Carets[ci].Index += offset

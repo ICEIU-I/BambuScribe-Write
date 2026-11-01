@@ -1,6 +1,8 @@
+import type { CalculationRecord } from '../services/calculationTypes'
 import type { ImageAsset, TableAsset, PageErasure, PageLayout } from '../types'
 
 export interface EditorSnapshot {
+  calculations?: CalculationRecord[]
   pageLayouts?: PageLayout[]
   erasures?: PageErasure[]
   text: string
@@ -28,6 +30,7 @@ export function createEditorHistory(limit = 80) {
   return {
     record(before: EditorSnapshot, after: EditorSnapshot, group?: string, time = Date.now()) {
       if (
+        before.calculations === after.calculations &&
         before.text === after.text &&
         before.images === after.images &&
         before.tables === after.tables &&
@@ -41,6 +44,7 @@ export function createEditorHistory(limit = 80) {
         group &&
         last?.group === group &&
         time - last.time < 700 &&
+        last.after.calculations === before.calculations &&
         last.after.text === before.text &&
         last.after.images === before.images &&
         last.after.tables === before.tables &&

@@ -1,3 +1,4 @@
+import type { CalculationSources, CalculationPlan, CalculationPreview } from './calculationTypes'
 import type { AgentConfig, Extraction, ImportPlacement, ImportPlan } from './tableImportTypes'
 import type { DiagramScene } from './diagramTypes'
 import type { UpdateInfo, UpdateProgress } from './updateTypes'
@@ -21,6 +22,9 @@ import type {
 } from '../types'
 
 interface NativeAPI {
+  RecognizeCalculations(sources: CalculationSources): Promise<CalculationPlan>
+  CancelCalculationRecognition(): Promise<void>
+  PreviewCalculations(plan: CalculationPlan, settings: LayoutSettings): Promise<CalculationPreview>
   CheckUpdate(): Promise<UpdateInfo>
   InstallUpdate(): Promise<void>
   RestartUpdate(): Promise<void>

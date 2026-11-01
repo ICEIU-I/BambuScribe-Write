@@ -14,6 +14,12 @@ const maxDocumentCharacters = 20000
 
 func (s LayoutSettings) Validate() error {
 	s = s.normalized()
+	if !finite(s.HandwritingVariation) || s.HandwritingVariation < 0 || s.HandwritingVariation > 100 {
+		return fmt.Errorf("手写变化强度须为 0–100%%，请在排版设置中调整")
+	}
+	if !finite(s.FractionScale) || s.FractionScale != 0 && (s.FractionScale < 50 || s.FractionScale > 100) {
+		return fmt.Errorf("分式字号比例须为50–100%%")
+	}
 	if s.FontID != "" && s.FontID != FontHandwriting && s.FontID != FontDC {
 		return fmt.Errorf("未知字体 %q，请在排版设置中重新选择字体", s.FontID)
 	}
@@ -101,7 +107,7 @@ func (f *Font) Layout(text string, s LayoutSettings) (*Document, error) {
 	return f.layoutText(text, s, nil)
 }
 
-func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]RegionBounds, pageOffset int, continuation, followedByPage bool) (*Document, error) {
+func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]RegionBounds, pageOffset int, continuation, followedByPage bool, textOffset int) (*Document, error) {
 	s = s.normalized()
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -121,7 +127,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v17-glyph-overlap", occupied, f.ID})
+	}{text, s, "stroke-fonts-v20-visible-handwriting-variation", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {
@@ -153,6 +159,17 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		paragraphs = paragraphs[:len(paragraphs)-1]
 	}
 	for pi, paragraph := range paragraphs {
+		if source, ok := formulaSource(paragraph); ok {
+			if err := f.appendBodyFormula(doc, s, source, occupied, &ink, &y, &row, &textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+textIndex))); err != nil {
+				return nil, err
+			}
+			if pi < len(paragraphs)-1 || followedByPage && strings.HasSuffix(text, "\n") {
+				doc.Pages[len(doc.Pages)-1].Text += "\n"
+				textIndex++
+				y += s.ParagraphGap
+			}
+			continue
+		}
 		runes := []rune(paragraph)
 		if len(runes) == 0 {
 			reserveLine()
@@ -198,7 +215,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 				return nil, fmt.Errorf("行距过小，笔画会重叠，请增大行距或减小字号")
 			}
 			for _, part := range line.parts {
-				f.appendTextFragment(page, runes[part.start:part.end], part, s, y, &textIndex, missingSet, doc)
+				f.appendTextFragment(page, runes[part.start:part.end], part, s, y, &textIndex, missingSet, doc, s.variation("body").at(textOffset))
 				offset = part.end
 			}
 			y += page.LineHeight

@@ -23,6 +23,7 @@ func (f *Font) renderTable(t TableAsset, settings LayoutSettings) TablePlacement
 			sizes[i] = t.FontSize
 		}
 		plans[i] = f.objectText(t, c.Text, sizes[i], width, settings)
+		plans[i].variation = settings.variation(fmt.Sprintf("table:%s:%d:%d", t.ID, c.Row, c.Col))
 		if width <= 0 {
 			plans[i].issue = "内边距过大，请减小内边距或增大列宽"
 		}

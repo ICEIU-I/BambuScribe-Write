@@ -24,7 +24,7 @@ export function useProjectFiles(w: ProjectWorkspace) {
   const projectUnsaved = computed(() => contentVersion.value !== savedVersion.value)
   const p = w.preferences
   watch(
-    () => [p.text, p.layout, p.writing, p.images, p.tables, p.erasures],
+    () => [p.text, p.layout, p.writing, p.images, p.tables, p.erasures, p.calculations],
     () => {
       if (w.ready.value) contentVersion.value++
     },
@@ -99,7 +99,7 @@ export function useProjectFiles(w: ProjectWorkspace) {
         if (!(await canReplace())) return
         // Reset the backend path too: saving this document must never reuse the old file.
         await native().NewProject()
-        Object.assign(p, { text: '', images: [], tables: [], erasures: [] })
+        Object.assign(p, { text: '', images: [], tables: [], erasures: [], calculations: [] })
         p.layout.pageLayouts = undefined
         await replaced('')
         w.tell('', 'success')
