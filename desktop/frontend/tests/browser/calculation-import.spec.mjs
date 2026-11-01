@@ -55,6 +55,10 @@ async function setup(page, options = {}) {
 }
 async function images(page) {
   await page.getByLabel('添加原始数据', { exact: true }).setInputFiles([imagePath.pathname])
+  // File inputs can be populated by Playwright while disabled. Wait for the
+  // first FileReader to finish before starting the next group, as a user does.
+  await expect(page.getByRole('button', { name: '查看原始数据第1张', exact: true })).toBeVisible()
+  await expect(page.getByLabel('添加参考样例', { exact: true })).toBeEnabled()
   await page
     .getByLabel('添加参考样例', { exact: true })
     .setInputFiles([imagePath.pathname, imagePath.pathname])
@@ -172,6 +176,8 @@ test('cancel discards late model response without inserting', async ({ page }) =
 test('reference ordering and formula deletion preserve source integrity', async ({ page }) => {
   const errors = await setup(page)
   await page.getByLabel('添加原始数据', { exact: true }).setInputFiles(imagePath.pathname)
+  await expect(page.getByRole('button', { name: '查看原始数据第1张', exact: true })).toBeVisible()
+  await expect(page.getByLabel('添加参考样例', { exact: true })).toBeEnabled()
   const buffer = readFileSync(imagePath)
   await page.getByLabel('添加参考样例', { exact: true }).setInputFiles([
     { name: '第一页.png', mimeType: 'image/png', buffer },

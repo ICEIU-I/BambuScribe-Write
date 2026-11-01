@@ -195,7 +195,7 @@ test('project saving/opening retains editable topology, border changes, and the 
   await expect(page.locator('[data-table]')).toHaveCount(0)
   await expect.poll(() => page.evaluate(() => window.__tables.saved.tables.length)).toBe(0)
 })
-test('multiline rows grow, page overflow moves the table intact and missing glyphs block export', async ({
+test('multiline content survives page overflow and missing glyphs block export', async ({
   page,
 }) => {
   const errors = await open(page)
@@ -203,12 +203,20 @@ test('multiline rows grow, page overflow moves the table intact and missing glyp
   await (await cell(page)).dblclick()
   await page.getByLabel('单元格文字').fill('实验数据\n保持字大小')
   await page.keyboard.press('Enter')
+  // The initial row is already taller than 10 mm; its height does not prove
+  // that the edited text has finished laying out.
   await expect
-    .poll(() => page.evaluate(() => window.__tables.document.pages[0].tables[0].rowHeights[0]))
-    .toBeGreaterThan(10)
+    .poll(() => page.evaluate(() => window.__tables.document.pages[0].tables[0].cells[0].text))
+    .toBe('实验数据\n保持字大小')
+  // The backend fixture records its response before Vue applies it. Wait for
+  // the editor to finish that layout before editing the table's position.
+  await page.getByRole('button', { name: '导出', exact: true }).click()
+  await expect(page.getByRole('button', { name: /导出当前页/ })).toBeEnabled()
+  await page.keyboard.press('Escape')
   await page.getByRole('button', { name: '表格设置', exact: true }).click()
   await page.getByLabel('表格位置 Y').fill('230')
   await page.getByLabel('表格位置 Y').press('Tab')
+  await expect.poll(async () => (await table(page)).y).toBe(230)
   await expect
     .poll(() => page.evaluate(() => window.__tables.document.pages[1]?.tables?.length))
     .toBe(1)
