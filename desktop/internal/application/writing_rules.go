@@ -10,7 +10,7 @@ func (a *App) PreviewWritingRule(text, fontID string) (*engine.Document, error) 
 	}
 	s := engine.DefaultLayout()
 	s.FontID, s.FontSize = fontID, 6
-	s.PaperWidth, s.PaperHeight, s.LineCount = 160, 80, 5
+	s.PaperWidth, s.PaperHeight, s.LineCount = 160, 80, 14
 	s.MarginLeft, s.MarginRight, s.MarginTop, s.MarginBottom = 3, 3, 3, 3
 	return a.font.Layout(text, s)
 }

@@ -9,11 +9,12 @@ import (
 // Each formatted span is a single wrapping/selection cell. The original source
 // remains in page text, UTF-16 carets and saved projects.
 type bodyScript struct {
-	source  string
-	base    rune
-	advance float64
-	length  int
-	math    bool
+	source   string
+	base     rune
+	advance  float64
+	length   int
+	math     bool
+	fraction *imageMathBox
 }
 type bodySyntaxIssue struct {
 	start, end int
@@ -141,8 +142,10 @@ func (f *Font) bodyRunes(text string, s LayoutSettings, variations ...handwritin
 	out := make([]rune, 0, len(runes))
 	token := rune(0xf0000)
 	index := 0
+	fractionRuns := bodyFractionRuns(runes)
 	for i := 0; i < len(runes); {
-		if !bodyMathCandidate(runes, i) {
+		runEnd := fractionRuns[i]
+		if runEnd == 0 && !bodyMathCandidate(runes, i) {
 			out = append(out, runes[i])
 			index += utf16Width(runes[i])
 			i++
@@ -154,6 +157,12 @@ func (f *Font) bodyRunes(text string, s LayoutSettings, variations ...handwritin
 		}
 		parser := formulaParser{font: f, input: runes[i:], inline: true, settings: s, ratio: ratio / 100, variation: variation.at(index)}
 		b, err := parser.atom(0)
+		if runEnd > 0 {
+			grouped := formulaParser{font: f, input: runes[i:runEnd], inline: true, settings: bodyFractionSettings(s), ratio: ratio / 100, variation: variation.at(index)}
+			if box, problem := grouped.sequence(0, 0); problem == nil && grouped.hasFraction {
+				b, err, parser = box, nil, grouped
+			}
+		}
 		if err != nil {
 			end := bodySyntaxEnd(runes, i)
 			clone()
@@ -165,9 +174,6 @@ func (f *Font) bodyRunes(text string, s LayoutSettings, variations ...handwritin
 			continue
 		}
 		end := i + parser.pos
-		if parser.hasFraction {
-			b = fitBodyFraction(b, parser.axis(), f.Units)
-		}
 		length := bodyLength(runes[i:end])
 		source := string(runes[i:end])
 		g := Glyph{Width: b.width, Strokes: appendMathStrokes(nil, b.strokes, 0, f.Units, 1)}
@@ -187,11 +193,19 @@ func (f *Font) bodyRunes(text string, s LayoutSettings, variations ...handwritin
 			token++
 		}
 		font.Glyphs[token] = g
-		font.bodyScripts[token] = bodyScript{source: source, base: runes[i], advance: advance, length: length, math: fixed}
+		script := bodyScript{source: source, base: runes[i], advance: advance, length: length, math: fixed}
+		if parser.hasFraction {
+			script.fraction = &b
+		}
+		font.bodyScripts[token] = script
 		out = append(out, token)
 		token++
 		index += length
 		i = end
+	}
+	if font != f {
+		_, pitch := s.normalized().rows(0)
+		font.fitBodyFractions(s, pitch)
 	}
 	return font, out
 }

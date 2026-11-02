@@ -2,7 +2,7 @@
 
 面向 macOS Apple Silicon 的拓竹 A1 手写助手：在纸面编辑文字、公式、表格与图片，生成 G-code，并通过局域网上传到打印机。
 
-[下载 1.0.0](https://github.com/ICEIU-I/BambuScribe-Write/releases/tag/v1.0.0) · [操作说明](desktop/README.md) · [输入规则](desktop/docs/writing-syntax.md) · [反馈问题](https://github.com/ICEIU-I/BambuScribe-Write/issues)
+[下载 1.0.1](https://github.com/ICEIU-I/BambuScribe-Write/releases/tag/v1.0.1) · [操作说明](desktop/README.md) · [输入规则](desktop/docs/writing-syntax.md) · [反馈问题](https://github.com/ICEIU-I/BambuScribe-Write/issues)
 
 ## 安装与使用
 

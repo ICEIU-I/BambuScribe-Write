@@ -51,6 +51,10 @@ func (f *Font) letterOffset(g Glyph, size, bearing, advance float64, v handwriti
 // including its carets, only when its ink still clears preceding text/objects.
 func (f *Font) placeVariedTextLine(ink *textInk, runes []rune, line wrappedTextLine, s LayoutSettings, y, pitch float64, objects []RegionBounds, v handwritingVariation) (float64, bool) {
 	dy := v.spaceOffset(0, true, s.FontSize, y-s.MarginTop, min(pitch-line.inkBottom, s.PaperHeight-s.MarginBottom-y-max(line.inkBottom, min(s.FontSize, pitch))))
+	if line.fittedMath {
+		// This equation already fills the row; preserve its pen clearance.
+		dy = 0
+	}
 	candidate := y + dy
 	if v.amount > 0 && len(line.parts) > 0 && len(availableTextSpans(s.MarginLeft, s.PaperWidth-s.MarginRight, candidate+min(0, line.inkTop), max(line.inkBottom, min(s.FontSize, pitch))-min(0, line.inkTop), objects)) > 0 {
 		trial := textInk{active: append([]textInkGlyph(nil), ink.active...)}

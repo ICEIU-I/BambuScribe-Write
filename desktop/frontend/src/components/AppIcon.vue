@@ -1,7 +1,8 @@
 <script setup lang="ts">
 withDefaults(defineProps<{ name: string; size?: number }>(), { size: 18 })
 const paths: Record<string, string> = {
-  'input-rules': 'M15 4 11.5 14M10 19h.01',
+  'input-rules':
+    'M13.3 3.5Q13.6 2.5 14.7 2.5H15.7Q17 2.5 16.55 3.75L12.8 14.3Q12.55 15 11.8 15H11Q9.9 15 10.25 13.9L13.3 3.5ZM11.5 19a1.9 1.9 0 1 1-3.8 0 1.9 1.9 0 0 1 3.8 0Z',
   sidebar: 'M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm5 0v18',
   folder: 'M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v2M3 7h18l-3 13H2L3 7Z',
   save: 'M5 3h12l4 4v14H3V3h2Zm2 0v6h10V3M7 21v-8h10v8',
@@ -55,6 +56,10 @@ const paths: Record<string, string> = {
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path :d="paths[name] || paths.file" />
+    <path
+      :d="paths[name] || paths.file"
+      :fill="name === 'input-rules' ? 'currentColor' : undefined"
+      :stroke="name === 'input-rules' ? 'none' : undefined"
+    />
   </svg>
 </template>

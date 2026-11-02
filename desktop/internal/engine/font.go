@@ -20,13 +20,14 @@ type Glyph struct {
 }
 
 type Font struct {
-	ID              string
-	Name            string
-	Glyphs          map[rune]Glyph
-	Units           float64
-	bodyScripts     map[rune]bodyScript
-	bodyIssues      []bodySyntaxIssue
-	bodyIssueOffset int
+	ID                string
+	Name              string
+	Glyphs            map[rune]Glyph
+	Units             float64
+	bodyScripts       map[rune]bodyScript
+	bodyIssues        []bodySyntaxIssue
+	bodyIssueOffset   int
+	bodyFractionPitch float64
 }
 
 var fontOnce sync.Once

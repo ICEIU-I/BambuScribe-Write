@@ -10,6 +10,7 @@ type wrappedTextLine struct {
 	parts             []textFragment
 	inkTop, inkBottom float64
 	hasInk            bool
+	fittedMath        bool
 }
 
 // Body text uses an uninterrupted row. Objects inside its horizontal range
@@ -68,6 +69,9 @@ func (f *Font) wrapTextLine(runes []rune, offset int, indent float64, s LayoutSe
 			}
 		}
 		out.inkTop, out.inkBottom, out.hasInk = f.lineInkBounds(runes[offset:at], s.FontSize)
+		for _, r := range runes[offset:at] {
+			out.fittedMath = out.fittedMath || f.bodyScripts[r].fraction != nil
+		}
 		if out.inkTop >= top-1e-8 && out.inkBottom <= lower+1e-8 {
 			return out
 		}

@@ -140,9 +140,10 @@ export async function open(page, update = {}, compact = false) {
             const settings = {
               ...layout,
               fontId,
+              fontSize: 6,
               paperWidth: 160,
               paperHeight: 80,
-              lineCount: 5,
+              lineCount: 14,
               marginTop: 3,
               marginRight: 3,
               marginBottom: 3,

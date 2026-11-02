@@ -2,6 +2,7 @@ package engine
 
 import (
 	"math"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -65,54 +66,115 @@ func TestBodyFractionsStayOnConsecutiveWritingRows(t *testing.T) {
 	}
 }
 
-func TestBodyFractionKeepsProportionsAndItsMathAxis(t *testing.T) {
+func TestBodyFractionFillsRowAndKeepsSharedMathAxis(t *testing.T) {
 	for _, id := range []string{FontHandwriting, FontDC} {
 		f, _ := BuiltinFont(id)
 		for _, ratio := range []float64{50, 85, 100} {
 			for _, variation := range []float64{0, 100} {
 				s := DefaultLayout().normalized()
 				s.FontID, s.FontSize, s.FractionScale = id, 8.3, ratio
+				s.PaperHeight, s.LineCount, s.LineSpacing = 297, 30, 85
+				s.MarginTop, s.MarginBottom = 24, 24
+				s.LetterSpacing = 70
 				s.HandwritingVariation, s.HandwritingSeed = variation, 37
 				v := s.variation("body")
-				source := `\frac{2Πx}{λ}`
-				p := formulaParser{font: f, input: []rune(source), inline: true, settings: s, ratio: ratio / 100, variation: v}
-				raw, err := p.atom(0)
+				source := `v_{理}=\sqrt{\frac{γRT}{M}}=\sqrt{\frac{γRT_{0}}{M}\frac{T}{T_{0}}}=v_{0}\sqrt{\frac{T}{T_{0}}}`
+				p := formulaParser{font: f, input: []rune(source), inline: true, settings: bodyFractionSettings(s), ratio: ratio / 100, variation: v}
+				raw, err := p.sequence(0, 0)
 				if err != nil {
 					t.Fatal(err)
 				}
 				body, tokens := f.bodyRunes(source, s, v)
-				if len(tokens) != 1 {
-					t.Fatal("fraction was split")
+				if len(tokens) != 1 || body.bodySource(tokens[0]) != source || body.bodyRuneWidth(tokens[0]) != bodyLength([]rune(source)) {
+					t.Fatal("connected equation split or source changed")
 				}
 				g := body.Glyphs[tokens[0]]
-				scale := g.Width / raw.width
-				if scale >= 1 {
-					t.Fatal("tall fraction was not made compact")
+				_, _, rawTop, rawBottom := tableGlyphBounds(Glyph{Strokes: raw.strokes})
+				_, _, top, bottom := tableGlyphBounds(g)
+				_, pitch := s.rows(0)
+				height := (bottom - top) / f.Units * s.FontSize
+				if height < .9*pitch || height > pitch || top/f.Units*s.FontSize < bodyInkWidth/2 || bottom/f.Units*s.FontSize > pitch-bodyInkWidth/2 {
+					t.Fatalf("equation does not fill row with clearance: %s height=%g pitch=%g", id, height, pitch)
 				}
+				scale := g.Width / raw.width
+				if math.Abs((bottom-top)/(rawBottom-rawTop)-scale) > 1e-8 {
+					t.Fatal("equation proportions changed")
+				}
+				// Every operator, fraction bar and root uses the same transform, so their
+				// relative mathematical axes cannot drift when fitting the row.
+				shift := top - rawTop*scale
 				if len(g.Strokes) != len(raw.strokes) {
-					t.Fatal("fraction lost strokes")
+					t.Fatal("equation lost strokes")
 				}
 				for i, stroke := range raw.strokes {
 					for j, point := range stroke {
 						got := g.Strokes[i][j]
-						want := Point{point.X * scale, f.Units + p.axis() + (point.Y-p.axis())*scale}
+						want := Point{point.X * scale, point.Y*scale + shift}
 						if math.Hypot(got.X-want.X, got.Y-want.Y) > 1e-8 {
-							t.Fatal("fraction was stretched or moved off its math axis")
-						}
-						if got.Y < 0 || got.Y > f.Units {
-							t.Fatal("fraction still exceeds the body cell", id, got)
+							t.Fatal("connected equation lost its proportions or shared axis")
 						}
 					}
 				}
-				display, err := f.formulaBox(source, s)
-				if err != nil {
-					t.Fatal(err)
-				}
-				_, _, top, bottom := tableGlyphBounds(g)
-				if display.bottom-display.top <= (bottom-top)/f.Units*s.FontSize {
-					t.Fatal("display formula was also compressed")
+				body.fitBodyFractions(s, pitch*1.3)
+				body.fitBodyFractions(s, pitch)
+				if !reflect.DeepEqual(g, body.Glyphs[tokens[0]]) {
+					t.Fatal("refitting accumulated scale errors")
 				}
 			}
+		}
+	}
+}
+
+func TestBodyFractionsRefitWhenOneParagraphCrossesPages(t *testing.T) {
+	for _, id := range []string{FontHandwriting, FontDC} {
+		f, _ := BuiltinFont(id)
+		s := DefaultLayout()
+		s.FontID, s.FontSize = id, 6
+		s.PaperWidth, s.PaperHeight, s.LineCount = 60, 24, 3
+		s.HandwritingVariation, s.HandwritingSeed = 100, 37
+		s.PageLayouts = []PageLayout{{LineCount: 3}, {LineCount: 4}, {LineCount: 2}}
+		source := strings.TrimSpace(strings.Repeat(`x=\frac{a}{b} `, 40))
+		doc, err := f.Layout(source, s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(doc.Pages) < 3 {
+			t.Fatal("fixture did not cross three page grids")
+		}
+		joined := ""
+		for _, page := range doc.Pages {
+			joined += page.Text
+			if len(page.Issues) > 0 {
+				t.Fatal(id, page.Issues)
+			}
+			for _, layer := range page.Ink {
+				_, _, top, bottom := tableGlyphBounds(Glyph{Strokes: layer.Strokes})
+				if bottom-top < .9*page.LineHeight || bottom-top > page.LineHeight {
+					t.Fatalf("%s equation retained another page's row height: %g vs %g", id, bottom-top, page.LineHeight)
+				}
+				row := math.Floor((top + 1e-8) / page.LineHeight)
+				if top < row*page.LineHeight+bodyInkWidth/2 || bottom > (row+1)*page.LineHeight-bodyInkWidth/2 {
+					t.Fatal("equation crossed a rule")
+				}
+			}
+			for _, cell := range page.Cells {
+				if cell.End-cell.Start > 1 {
+					before, after := false, false
+					for _, caret := range page.Carets {
+						before = before || caret.Index == cell.Start
+						after = after || caret.Index == cell.End
+					}
+					if !before || !after {
+						t.Fatal("equation lost selection carets")
+					}
+				}
+			}
+		}
+		if joined != source {
+			t.Fatal("page-specific fitting changed source")
+		}
+		if _, err := ExportAll(doc, DefaultWriting()); err != nil {
+			t.Fatal(err)
 		}
 	}
 }

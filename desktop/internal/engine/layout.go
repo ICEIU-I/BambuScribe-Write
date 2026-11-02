@@ -134,7 +134,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v31-inline-fractions", occupied, f.ID})
+	}{text, s, "stroke-fonts-v32-row-fractions", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {
@@ -209,11 +209,14 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 			if offset == 0 && !(pi == 0 && continuation) {
 				indent = s.Indent * (s.FontSize*s.LetterSpacing/100 + s.LetterGap)
 			}
+			reserveLine()
+			page := &doc.Pages[len(doc.Pages)-1]
+			if bodyFont != f {
+				bodyFont.fitBodyFractions(s, page.LineHeight)
+			}
 			if bodyFont.advance(runes[offset], s)-s.LetterGap > width-indent+1e-8 {
 				return nil, fmt.Errorf("字符无法放入正文，请减小字号或页边距")
 			}
-			reserveLine()
-			page := &doc.Pages[len(doc.Pages)-1]
 			line := bodyFont.wrapTextLine(runes, offset, indent, s, y, page.LineHeight, occupied[len(doc.Pages)-1])
 			if line.inkBottom-min(0, line.inkTop) > bottom-s.MarginTop+1e-8 {
 				return nil, fmt.Errorf("笔画超过正文高度，请减小字号或页边距")
@@ -223,7 +226,11 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 				continue
 			}
 			// Tall inline structures reserve whole ruled rows before and after their ink.
-			tall := line.inkTop < -1e-8 || line.inkBottom > s.FontSize+1e-8
+			band := s.FontSize
+			if line.fittedMath {
+				band = max(band, page.LineHeight)
+			}
+			tall := line.inkTop < -1e-8 || line.inkBottom > band+1e-8
 			if tall && len(ink.active) > 0 {
 				required := y
 				for _, old := range ink.active {
