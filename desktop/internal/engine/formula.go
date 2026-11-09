@@ -115,6 +115,10 @@ func (p *formulaParser) atom(depth int) (imageMathBox, error) {
 	switch {
 	case r == '\\':
 		p.pos++
+		if p.pos < len(p.input) && strings.ContainsRune("([", p.input[p.pos]) {
+			b, err = p.delimited(depth)
+			break
+		}
 		if p.pos < len(p.input) && strings.ContainsRune(`_^{}\`, p.input[p.pos]) {
 			b, err = p.glyph(p.input[p.pos], index)
 			p.pos++

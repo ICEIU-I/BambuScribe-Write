@@ -116,7 +116,9 @@ test('new inline and display math survives preview, editing, saving and export',
   const errors = await open(page)
   const text = String.raw`电阻R=\frac{U_{1}+U_{2}}{I_{g}}。
 距离d=\sqrt{x_{i}^{2}+y^{2}}，平均值\bar{U}。
-\[z=\sqrt[3]{\frac{a+b}{c}}\]`
+\[z=\sqrt[3]{\frac{a+b}{c}}\]
+正文内保留定界符：\[Re=\frac{v_{0}dρ_{0}}{η}\]，继续正文。
+旧式定界符：\(x=\frac{1}{2}\)。`
   await page.getByLabel('书写内容').fill(text)
   await expect
     .poll(() => page.evaluate(() => window.__tables.document?.pages.map((p) => p.text).join('')))
