@@ -125,8 +125,8 @@ func TestBodyFormulasUseCompactVerticalSpacing(t *testing.T) {
 	if len(formulas) != 2 {
 		t.Fatal("equations did not fit together")
 	}
-	gap := formulas[1].Y - formulas[0].Y - formulas[0].Height
-	if gap < 0 || gap > s.FontSize*.36+s.ParagraphGap {
-		t.Fatalf("excessive formula gap: %g", gap)
+	step := formulas[1].Y - formulas[0].Y
+	if math.Abs(step-doc.Pages[0].LineHeight-s.ParagraphGap) > 1e-8 {
+		t.Fatalf("formula skipped the next writing row: %g", step)
 	}
 }

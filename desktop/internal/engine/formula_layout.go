@@ -33,6 +33,28 @@ func formulaSource(paragraph string) (string, bool) {
 
 // Split only between complete equality terms. Fractions never straddle lines.
 func (f *Font) formulaLines(source string, s LayoutSettings, width float64, variation handwritingVariation) ([]formulaLine, error) {
+	return f.splitFormulaLines(source, s, width, variation, func(b imageMathBox) imageMathBox { return b })
+}
+
+func (f *Font) formulaRowLines(source string, s LayoutSettings, width, pitch float64, variation handwritingVariation) ([]formulaLine, error) {
+	return f.splitFormulaLines(source, s, width, variation, func(b imageMathBox) imageMathBox {
+		pad := formulaRowPadding(pitch)
+		height := b.bottom - b.top
+		b = scaleFormulaBox(b, min(1, (pitch-2*pad)/height))
+		// Preserve the ordinary baseline when it fits; taller structures share
+		// one uniform transform and the available space between the rules.
+		shift := max(pad, min(s.FontSize+b.top, pitch-pad-(b.bottom-b.top))) - b.top
+		b.strokes = appendMathStrokes(nil, b.strokes, 0, shift, 1)
+		b.top, b.bottom = b.top+shift, b.bottom+shift
+		return b
+	})
+}
+
+func formulaRowPadding(pitch float64) float64 {
+	return min(pitch*.1, max(bodyInkWidth, pitch*.025))
+}
+
+func (f *Font) splitFormulaLines(source string, s LayoutSettings, width float64, variation handwritingVariation, fit func(imageMathBox) imageMathBox) ([]formulaLine, error) {
 	runes := []rune(source)
 	starts := []int{0}
 	depth := 0
@@ -62,6 +84,7 @@ func (f *Font) formulaLines(source string, s LayoutSettings, width float64, vari
 		if err != nil {
 			return nil, err
 		}
+		b = fit(b)
 		if b.width > width+1e-8 && end > start {
 			out = append(out, formulaLine{source: string(runes[start:end]), box: box})
 			start = end
@@ -69,6 +92,7 @@ func (f *Font) formulaLines(source string, s LayoutSettings, width float64, vari
 			if err != nil {
 				return nil, err
 			}
+			b = fit(b)
 		}
 		if b.width > width+1e-8 {
 			return nil, fmt.Errorf("单个分式超过正文宽度，请减小字号或拆分计算式")

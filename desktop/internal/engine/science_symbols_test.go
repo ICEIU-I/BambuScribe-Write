@@ -7,8 +7,8 @@ import (
 )
 
 func TestScienceSymbolsKeepTheirMetricsAndSmoothCurves(t *testing.T) {
-	widths := map[rune]float64{'α': 7, 'β': 7, 'γ': 7, 'Δ': 7, 'Ω': 8, 'μ': 4, 'µ': 4, '×': 4, '÷': 4, '±': 4, '−': 5, '≈': 8, '≠': 7, '≤': 7, '≥': 7, '∞': 8, '→': 8, '°': 1.4, '℃': 5.5, '′': 2, '″': 3.5}
-	curves := map[rune][]int{'α': {0}, 'γ': {0}, 'Ω': {1}, '≈': {0, 1}, '∞': {0}, '°': {0}, '℃': {1}}
+	widths := map[rune]float64{'α': 7, 'β': 7, 'γ': 7, 'η': 7, 'π': 7, 'ρ': 7, 'ϱ': 7, 'Δ': 7, 'Ω': 8, 'μ': 4, 'µ': 4, '×': 4, '÷': 4, '±': 4, '−': 5, '≈': 8, '≠': 7, '≤': 7, '≥': 7, '∞': 8, '→': 8, '°': 1.4, '℃': 5.5, '′': 2, '″': 3.5}
+	curves := map[rune][]int{'α': {0}, 'γ': {0}, 'η': {0, 1}, 'π': {0, 1, 2}, 'ρ': {0, 1}, 'Ω': {1}, '≈': {0, 1}, '∞': {0}, '°': {0}, '℃': {1}}
 	for _, id := range []string{FontHandwriting, FontDC} {
 		f, err := BuiltinFont(id)
 		if err != nil {
@@ -45,7 +45,7 @@ func TestScienceSymbolsKeepTheirMetricsAndSmoothCurves(t *testing.T) {
 				}
 			}
 		}
-		for _, pair := range [][2]rune{{'μ', 'µ'}, {'Ω', 'Ω'}, {'Δ', '∆'}} {
+		for _, pair := range [][2]rune{{'μ', 'µ'}, {'Ω', 'Ω'}, {'Δ', '∆'}, {'ρ', 'ϱ'}} {
 			if !reflect.DeepEqual(f.Glyphs[pair[0]], f.Glyphs[pair[1]]) {
 				t.Fatal("symbol aliases disagree", pair)
 			}
