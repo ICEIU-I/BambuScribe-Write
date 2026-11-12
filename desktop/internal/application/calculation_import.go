@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type calculationState struct {
@@ -43,6 +45,11 @@ func (a *App) RecognizeCalculations(s calculationimport.Sources) (calculation.Pl
 	c, err := tableimport.LoadConfig(a.agentDir())
 	if err != nil {
 		return calculation.Plan{}, fmt.Errorf("模型配置无法读取，请检查模型连接")
+	}
+	if a.ctx != nil && s.RequestID != "" {
+		ctx = tableimport.WithProgress(ctx, func(stage string) {
+			runtime.EventsEmit(a.ctx, "calculation:progress", map[string]string{"requestId": s.RequestID, "stage": stage})
+		})
 	}
 	return calculationimport.Recognize(ctx, c, s)
 }

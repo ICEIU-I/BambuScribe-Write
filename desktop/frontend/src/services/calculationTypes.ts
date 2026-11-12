@@ -34,7 +34,12 @@ export interface CalculationRecord {
   text: string
   plan: CalculationPlan
 }
+export interface CalculationProgress {
+  requestId: string
+  stage: 'processing' | 'receiving'
+}
 export interface CalculationSources {
+  requestId?: string
   data: string[]
   references: string[]
   instruction: string

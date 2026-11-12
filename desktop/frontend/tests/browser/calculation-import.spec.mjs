@@ -28,7 +28,10 @@ async function setup(page, options = {}) {
         RecognizeCalculations: async (sources) => {
           window.__calc.calls.push(sources)
           if (options.defer)
-            return new Promise((resolve) => (window.__calc.finish = () => resolve(plan)))
+            return new Promise((resolve, reject) => {
+              window.__calc.finish = () => resolve(structuredClone(plan))
+              window.__calc.fail = (message) => reject(new Error(message))
+            })
           return structuredClone(plan)
         },
         CancelCalculationRecognition: async () => {
@@ -220,5 +223,56 @@ test('reference ordering and formula deletion preserve source integrity', async 
 
   await page.getByRole('button', { name: '撤销', exact: true }).click()
   await expect(page.getByLabel('书写内容')).toHaveValue(before)
+  expect(errors).toEqual([])
+})
+
+test('recognition reports real stages and elapsed time; timeout preserves images for retry', async ({
+  page,
+}) => {
+  const errors = await setup(page, { defer: true })
+  await images(page)
+  await page.clock.install()
+  await page.getByRole('button', { name: '生成预览', exact: true }).click()
+  const footer = page
+    .getByRole('dialog', { name: '数据处理', exact: true })
+    .locator('.calculation-footer')
+  await expect(footer).toContainText('正在连接模型… · 已用时 0 秒')
+  await page.evaluate(() => {
+    window.__tables.menu['calculation:progress']({ requestId: 'old-request', stage: 'receiving' })
+  })
+  await expect(footer).toContainText('正在连接模型')
+  await page.evaluate(() => {
+    window.__tables.menu['calculation:progress']({
+      requestId: window.__calc.calls[0].requestId,
+      stage: 'processing',
+    })
+  })
+  await page.clock.runFor(5000)
+  await expect(footer).toContainText('模型正在识别图片… · 已用时 5 秒')
+  await page.evaluate(() => {
+    window.__tables.menu['calculation:progress']({
+      requestId: window.__calc.calls[0].requestId,
+      stage: 'receiving',
+    })
+  })
+  await expect(footer).toContainText('正在接收计算步骤')
+  await page.evaluate(() => window.__calc.fail('模型服务响应超时（HTTP 524），请稍后重试'))
+  await expect(page.getByRole('alert')).toContainText('响应超时（HTTP 524）')
+  await expect(page.getByRole('button', { name: '生成预览', exact: true })).toBeEnabled()
+  await expect(page.locator('.calculation-thumbnail')).toHaveCount(3)
+  await expect(page.getByLabel('书写内容')).toHaveValue('')
+  await page.getByRole('button', { name: '生成预览', exact: true }).click()
+  await expect(footer).toContainText('正在连接模型… · 已用时 0 秒')
+  await page.evaluate(() => {
+    window.__tables.menu['calculation:progress']({
+      requestId: window.__calc.calls[0].requestId,
+      stage: 'receiving',
+    })
+  })
+  await expect(footer).toContainText('正在连接模型')
+  await page.evaluate(() => window.__calc.finish())
+  await expect(page.getByRole('button', { name: '插入正文', exact: true })).toBeEnabled({
+    timeout: 30000,
+  })
   expect(errors).toEqual([])
 })

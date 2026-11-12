@@ -1,4 +1,9 @@
-import type { CalculationSources, CalculationPlan, CalculationPreview } from './calculationTypes'
+import type {
+  CalculationSources,
+  CalculationPlan,
+  CalculationPreview,
+  CalculationProgress,
+} from './calculationTypes'
 import type { AgentConfig, Extraction, ImportPlacement, ImportPlan } from './tableImportTypes'
 import type { DiagramScene } from './diagramTypes'
 import type { EditorPreview } from './editorPreview'
@@ -133,6 +138,12 @@ export function onMenuAction(callback: (action: string) => void): () => void {
 
 export function onUpdateProgress(callback: (progress: UpdateProgress) => void): () => void {
   return window.runtime?.EventsOn('update:progress', callback) ?? (() => {})
+}
+
+export function onCalculationProgress(
+  callback: (progress: CalculationProgress) => void,
+): () => void {
+  return window.runtime?.EventsOn('calculation:progress', callback) ?? (() => {})
 }
 
 export function setWindowTitle(title: string) {

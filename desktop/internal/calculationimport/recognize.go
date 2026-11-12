@@ -16,6 +16,7 @@ var schema json.RawMessage
 var instructions string
 
 type Sources struct {
+	RequestID   string   `json:"requestId,omitempty"`
 	Data        []string `json:"data"`
 	References  []string `json:"references"`
 	Instruction string   `json:"instruction"`

@@ -1,5 +1,5 @@
-import { nextTick, onBeforeUnmount, ref, watch, type Ref } from 'vue'
-import { native, snapshot, errorText } from '../services/bridge'
+import { computed, nextTick, onBeforeUnmount, ref, watch, type Ref } from 'vue'
+import { native, snapshot, errorText, onCalculationProgress } from '../services/bridge'
 import { flushEditors } from './editorCommands'
 import { calculationAt, insertCalculation } from './calculationText'
 import type {
@@ -28,6 +28,21 @@ export function useCalculationImport(
   const plan = ref<CalculationPlan>(),
     preview = ref<CalculationPreview>(),
     error = ref('')
+  const elapsed = ref(0),
+    stage = ref('正在连接模型…')
+  const workingMessage = computed(() => `${stage.value} · 已用时 ${elapsed.value} 秒`)
+  let requestId = '',
+    started = 0
+  let elapsedTimer: ReturnType<typeof setInterval> | undefined
+  function stopClock() {
+    clearInterval(elapsedTimer)
+    elapsedTimer = undefined
+  }
+  const stopProgress = onCalculationProgress((progress) => {
+    if (!working.value || !open.value || progress.requestId !== requestId) return
+    if (progress.stage === 'processing') stage.value = '模型正在识别图片…'
+    if (progress.stage === 'receiving') stage.value = '正在接收计算步骤…'
+  })
   const fractionScale = ref(85),
     editing = ref(false)
   let opened = 0,
@@ -135,31 +150,47 @@ export function useCalculationImport(
     timer = setTimeout(() => void render(), 250)
   }
   async function recognize() {
+    if (working.value || reading.value || saving.value) return
     if (!data.value.length || !references.value.length) {
       error.value = '请添加原始数据和参考样例图片'
       return
     }
     const ticket = ++generation
     working.value = true
+    requestId = crypto.randomUUID()
+    started = Date.now()
+    elapsed.value = 0
+    stage.value = '正在连接模型…'
+    stopClock()
+    elapsedTimer = setInterval(() => {
+      elapsed.value = Math.floor((Date.now() - started) / 1000)
+    }, 1000)
     error.value = ''
     invalidate()
     try {
       const result = await native().RecognizeCalculations({
+        requestId,
         data: data.value.map((i) => i.data),
         references: references.value.map((i) => i.data),
         instruction: instruction.value,
       })
       if (ticket !== generation || opened !== w.projectOpened.value || !open.value) return
       plan.value = result
+      stage.value = '正在计算并排版…'
       await render()
     } catch (e) {
       if (ticket === generation) error.value = errorText(e)
     } finally {
-      if (ticket === generation) working.value = false
+      if (ticket === generation) {
+        stopClock()
+        working.value = false
+      }
     }
   }
   async function close() {
     generation++
+    stopClock()
+    requestId = ''
     invalidate()
     open.value = false
     if (working.value) {
@@ -213,12 +244,14 @@ export function useCalculationImport(
     void close()
   })
   onBeforeUnmount(() => {
+    stopProgress()
     clearTimeout(timer)
     void close()
   })
   return {
     open,
     working,
+    workingMessage,
     reading,
     planning,
     saving,

@@ -131,7 +131,7 @@ async function run() {
     <div class="calculation-footer">
       <span>{{
         task.working.value
-          ? '正在结合图片识别计算步骤…'
+          ? task.workingMessage.value
           : task.reading.value
             ? '正在读取图片…'
             : task.plan.value
