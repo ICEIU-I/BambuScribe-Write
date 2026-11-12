@@ -3,9 +3,13 @@ import { ref } from 'vue'
 import AppIcon from '../AppIcon.vue'
 import PixelPopover from '../ui/PixelPopover.vue'
 defineProps<{ disabled: boolean }>()
-const emit = defineEmits<{ table: []; diagram: []; calculation: [] }>()
+const emit = defineEmits<{ begin: []; table: []; diagram: []; calculation: [] }>()
 const open = ref(false),
   button = ref<HTMLButtonElement>()
+function show() {
+  emit('begin')
+  open.value = true
+}
 function choose(kind: 'table' | 'diagram' | 'calculation') {
   open.value = false
   if (kind === 'table') emit('table')
@@ -21,7 +25,7 @@ function choose(kind: 'table' | 'diagram' | 'calculation') {
     :aria-expanded="open"
     aria-haspopup="dialog"
     @mousedown.prevent
-    @click="open = true"
+    @click="show"
   >
     <AppIcon name="image" :size="16" /><span>智能导入</span>
   </button>

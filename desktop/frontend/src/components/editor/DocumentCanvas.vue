@@ -2,6 +2,7 @@
 import type { CalculationRecord } from '../../services/calculationTypes'
 import FormulaEditDialog from './FormulaEditDialog.vue'
 import { calculationAt, formulaRanges } from '../../state/calculationText'
+import { textInsertionAnchor } from '../../state/textInsertion'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type {
   Document,
@@ -413,14 +414,16 @@ function editFormula(event: MouseEvent) {
   }
 }
 defineExpose({
-  textAnchor: () => {
-    const page = props.document?.pages[props.index]
-    const from =
-      caret.value.page === props.index
-        ? start.value
-        : (page?.carets[0]?.index ?? props.modelValue.length)
-    return { from, to: caret.value.page === props.index ? end.value : from }
-  },
+  textAnchor: () =>
+    textInsertionAnchor(
+      props.modelValue,
+      props.document,
+      props.index,
+      start.value,
+      end.value,
+      caret.value,
+      focused.value,
+    ),
   replaceGenerated: editing.replaceGenerated,
   jump,
   changePage: (index: number, action: PageAction, destination?: number) => {

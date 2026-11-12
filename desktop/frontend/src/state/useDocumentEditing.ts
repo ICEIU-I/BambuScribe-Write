@@ -452,15 +452,18 @@ export function useDocumentEditing(
         (r) => nextText.includes(r.text) && (r.id !== record.id || r.text !== record.text),
       )
       if (retained.some((r) => r.id === record.id)) record = { ...record, id: crypto.randomUUID() }
+      const caret = from + Math.max(0, inserted.indexOf(record.text))
+      selection = { start: from, end: to }
       commit({
         text: nextText,
         calculations: [...retained, record],
-        start: from,
-        end: from,
+        start: caret,
+        end: caret,
         tableId: '',
         imageId: '',
         regionId: '',
       })
+      void nextTick().then(() => restoreSelection(caret, caret))
     },
     replaceFormula: (from: number, to: number, value: string) =>
       commit({ text: text.slice(0, from) + value + text.slice(to), start: from, end: from }),

@@ -38,8 +38,15 @@ export function formulaRanges(text: string) {
   }
   return ranges
 }
-export function insertCalculation(text: string, from: number, to: number, generated: string) {
-  const prefix = from && !'\n\f'.includes(text[from - 1]) ? '\n' : ''
+export function insertCalculation(
+  text: string,
+  from: number,
+  to: number,
+  generated: string,
+  blankLines = 0,
+) {
+  const prefix =
+    blankLines > 0 ? '\n'.repeat(blankLines) : from && !'\n\f'.includes(text[from - 1]) ? '\n' : ''
   const suffix = to < text.length && !'\n\f'.includes(text[to]) ? '\n' : ''
   return prefix + generated + suffix
 }

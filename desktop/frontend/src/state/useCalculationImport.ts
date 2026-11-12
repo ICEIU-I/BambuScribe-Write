@@ -2,6 +2,7 @@ import { computed, nextTick, onBeforeUnmount, ref, watch, type Ref } from 'vue'
 import { native, snapshot, errorText, onCalculationProgress } from '../services/bridge'
 import { flushEditors } from './editorCommands'
 import { calculationAt, insertCalculation } from './calculationText'
+import type { TextInsertionAnchor } from './textInsertion'
 import type {
   CalculationPlan,
   CalculationRecord,
@@ -10,7 +11,7 @@ import type {
 } from '../services/calculationTypes'
 import type { useWorkspace } from './useWorkspace'
 interface CalculationEditor {
-  textAnchor(): { from: number; to: number }
+  textAnchor(): TextInsertionAnchor
   replaceGenerated(from: number, to: number, value: string, record: CalculationRecord): void
 }
 export function useCalculationImport(
@@ -49,19 +50,38 @@ export function useCalculationImport(
     version = 0,
     generation = 0,
     previewGeneration = 0
-  let anchor = { from: 0, to: 0 },
+  let anchor: TextInsertionAnchor = { from: 0, to: 0, blankLines: 0 },
     replacement: CalculationRecord | undefined
+  let prepared: { anchor: TextInsertionAnchor; text: string; opened: number } | undefined
+  function captureAnchor() {
+    const at = editor.value?.textAnchor()
+    prepared = at
+      ? { anchor: at, text: w.preferences.text, opened: w.projectOpened.value }
+      : undefined
+  }
   let timer: ReturnType<typeof setTimeout> | undefined
   async function show(index?: number) {
     if (working.value || saving.value) {
       open.value = true
       return
     }
+    // Capture before dialogs restore focus or scroll the paper to an old caret.
+    if (index === undefined && !prepared) captureAnchor()
+    const target = prepared
+    prepared = undefined
     flushEditors()
     await nextTick()
     opened = w.projectOpened.value
     version = w.contentVersion.value
-    anchor = editor.value?.textAnchor() ?? { from: 0, to: 0 }
+    const at =
+      target?.opened === opened && target.text === w.preferences.text
+        ? target.anchor
+        : editor.value?.textAnchor()
+    if (!at) {
+      w.tell('正文尚未就绪，请在纸面放置光标后重试')
+      return
+    }
+    anchor = at
     const found =
       index === undefined
         ? undefined
@@ -72,7 +92,7 @@ export function useCalculationImport(
       data.value = []
       references.value = []
       instruction.value = ''
-      anchor = { from: found.from, to: found.to }
+      anchor = { from: found.from, to: found.to, blankLines: 0 }
       plan.value = snapshot(found.record.plan)
     } else {
       plan.value = undefined
@@ -211,7 +231,13 @@ export function useCalculationImport(
       await nextTick()
       if (opened !== w.projectOpened.value || version !== w.contentVersion.value)
         throw new Error('文档已修改，请关闭后重新打开数据处理')
-      const inserted = insertCalculation(w.preferences.text, anchor.from, anchor.to, result.text)
+      const inserted = insertCalculation(
+        w.preferences.text,
+        anchor.from,
+        anchor.to,
+        result.text,
+        anchor.blankLines,
+      )
       const text =
         w.preferences.text.slice(0, anchor.from) + inserted + w.preferences.text.slice(anchor.to)
       await native().PreviewWithErasures(
@@ -263,6 +289,7 @@ export function useCalculationImport(
     error,
     fractionScale,
     editing,
+    captureAnchor,
     show,
     add,
     recognize,

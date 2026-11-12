@@ -18,6 +18,7 @@ const props = defineProps<{
   disabled: boolean
 }>()
 const emit = defineEmits<{
+  importBegin: []
   importTable: []
   importDiagram: []
   importCalculation: []
@@ -131,6 +132,7 @@ const tableOpen = ref(false),
     /></PixelPopover>
     <SmartImportButton
       :disabled="disabled"
+      @begin="emit('importBegin')"
       @table="emit('importTable')"
       @diagram="emit('importDiagram')"
       @calculation="emit('importCalculation')"

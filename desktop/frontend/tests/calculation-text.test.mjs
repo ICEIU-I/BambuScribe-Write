@@ -22,6 +22,7 @@ const { formulaSelection, formulaKey } = await import(await moduleURL('formulaSe
 const { parseFormulaFields, formulaFieldText } = await import(await moduleURL('formulaFields'))
 const { tidySpacing } = await import(await moduleURL('pasteTidy'))
 const { rulePages } = await import(await moduleURL('writingRules'))
+const { textInsertionAnchor } = await import(await moduleURL('textInsertion'))
 test('pasted math retains argument spaces while prose paragraph gaps are repaired', () => {
   const input = String.raw`说明  内容\frac{a  b}{c  d}，\sqrt[3]{x  y}与x_{长  下标}。`
   assert.deepEqual(tidySpacing(input), {
@@ -109,4 +110,22 @@ test('flowed formulas remain separately selectable and deletable with UTF-16 ind
   assert.equal(formulaRanges(String.raw`\\(literal\\)`).length, 0)
   assert.equal(formulaRanges(String.raw`\(x=1\]`).length, 0)
   assert.equal(formulaRanges(String.raw`\(x=\[1\]\)`).length, 1)
+})
+
+test('generated calculations materialize blank rows without adding a second separator', () => {
+  assert.equal(insertCalculation('前文', 2, 2, '计算', 5), '\n'.repeat(5) + '计算')
+  assert.equal(insertCalculation('前文\n', 3, 3, '计算', 0), '计算')
+  assert.equal(insertCalculation('前文\f后页', 2, 2, '计算', 2), '\n\n计算')
+  assert.equal(insertCalculation('前文后文', 2, 2, '计算'), '\n计算\n')
+  const caret = { index: 2, page: 3, x: 0, y: 75, blankLines: 5 }
+  assert.deepEqual(textInsertionAnchor('前文', null, 0, 2, 2, caret, true), {
+    from: 2,
+    to: 2,
+    blankLines: 5,
+  })
+  assert.deepEqual(textInsertionAnchor('前文', null, 0, 0, 2, caret, false), {
+    from: 0,
+    to: 2,
+    blankLines: 0,
+  })
 })
