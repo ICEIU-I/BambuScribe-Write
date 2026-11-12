@@ -54,21 +54,25 @@ func (f *Font) appendBodyFormula(doc *Document, s LayoutSettings, source, openin
 		if li == len(lines)-1 {
 			sourceText += closing
 		}
-		start := *textIndex
-		for _, r := range sourceText {
-			*textIndex += utf16Width(r)
-		}
-		strokes := appendMathStrokes(nil, b.strokes, x, *y, 1)
-		page.Strokes = append(page.Strokes, strokes...)
-		page.Ink = append(page.Ink, InkLayer{"", strconv.Itoa(start), inkSource([]string{f.ID, sourceText}), strokes})
-		page.Cells = append(page.Cells, GlyphCell{start, *textIndex, x, *y, b.width, height})
-		page.Carets = append(page.Carets, CaretStop{start, x, *y}, CaretStop{*textIndex, x + b.width, *y})
-		page.Formulas = append(page.Formulas, FormulaPlacement{Start: start, End: *textIndex, Source: line.source, RegionBounds: RegionBounds{x, *y + b.top, b.width, b.bottom - b.top}})
-		page.Text += sourceText
+		f.appendPlacedFormula(page, b, line.source, sourceText, x, *y, height, textIndex)
 		*y += height
 		*row++
 		*ink = textInk{}
 	}
 
 	return nil
+}
+
+func (f *Font) appendPlacedFormula(page *Page, b imageMathBox, source, sourceText string, x, y, height float64, textIndex *int) {
+	start := *textIndex
+	for _, r := range sourceText {
+		*textIndex += utf16Width(r)
+	}
+	strokes := appendMathStrokes(nil, b.strokes, x, y, 1)
+	page.Strokes = append(page.Strokes, strokes...)
+	page.Ink = append(page.Ink, InkLayer{"", strconv.Itoa(start), inkSource([]string{f.ID, sourceText}), strokes})
+	page.Cells = append(page.Cells, GlyphCell{start, *textIndex, x, y, b.width, height})
+	page.Carets = append(page.Carets, CaretStop{start, x, y}, CaretStop{*textIndex, x + b.width, y})
+	page.Formulas = append(page.Formulas, FormulaPlacement{Start: start, End: *textIndex, Source: source, RegionBounds: RegionBounds{x, y + b.top, b.width, b.bottom - b.top}})
+	page.Text += sourceText
 }

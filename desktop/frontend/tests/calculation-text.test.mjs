@@ -90,3 +90,23 @@ test('reopening repeated calculation text edits the occurrence under the caret',
   assert.equal(occurrence.from, text.lastIndexOf(records[0].text))
   assert.equal(calculationAt('已经删除', records, 0), undefined)
 })
+
+test('flowed formulas remain separately selectable and deletable with UTF-16 indices', () => {
+  const first = String.raw`\(x=\frac{1}{2}\)`
+  const second = String.raw`\[y=3\]`
+  const text = `😀说明\n${first}　${second}\n结尾`
+  const ranges = formulaRanges(text)
+  assert.equal(ranges.length, 2)
+  assert.equal(ranges[0].start, text.indexOf(first))
+  assert.equal(ranges[1].start, text.indexOf(second))
+  assert.equal(ranges[0].source, String.raw`x=\frac{1}{2}`)
+  assert.equal(ranges[1].source, 'y=3')
+  assert.deepEqual(formulaKey(text, ranges[0].end, ranges[0].end, 'Backspace'), {
+    start: ranges[0].start,
+    end: ranges[0].end,
+    remove: true,
+  })
+  assert.equal(formulaRanges(String.raw`\\(literal\\)`).length, 0)
+  assert.equal(formulaRanges(String.raw`\(x=1\]`).length, 0)
+  assert.equal(formulaRanges(String.raw`\(x=\[1\]\)`).length, 1)
+})

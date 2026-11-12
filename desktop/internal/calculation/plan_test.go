@@ -24,6 +24,14 @@ func TestHallCalculationsAndEditing(t *testing.T) {
 	if len(result.Values) != 51 || strings.Count(result.Text, `\(`) != 51 {
 		t.Fatal("missing calculations", len(result.Values))
 	}
+	for _, section := range p.Sections {
+		if section.Title != "" && !strings.Contains(result.Text, section.Title+"\n") {
+			t.Fatal("calculation section title was merged into formulas")
+		}
+	}
+	if !strings.Contains(result.Text, `\)　\(`) || strings.Contains(result.Text, "\\)\n\\(") {
+		t.Fatal("same-section calculations force a line break per step")
+	}
 	checks := map[string]string{"u0_1": "38.1", "u0_5": "88.7", "u2_0": "35.1", "b0": "0.0290", "b7": "0.104"}
 	for id, want := range checks {
 		if result.Values[id] != want {

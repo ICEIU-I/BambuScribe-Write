@@ -134,7 +134,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v34-inline-delimiters", occupied, f.ID})
+	}{text, s, "stroke-fonts-v35-formula-flow", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {
@@ -168,8 +168,15 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		paragraphs = paragraphs[:len(paragraphs)-1]
 	}
 	for pi, paragraph := range paragraphs {
-		if source, ok := formulaSource(paragraph); ok {
-			if err := f.appendBodyFormula(doc, s, source, paragraph[:2], paragraph[len(paragraph)-2:], occupied, &ink, &y, &row, &textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+textIndex))); err != nil {
+		if spans, ok := formulaParagraph(paragraph); ok {
+			var err error
+			if len(spans) > 1 || spans[0].gap != "" || spans[0].trailing != "" {
+				err = f.appendFormulaFlow(doc, s, spans, occupied, &ink, &y, &row, &textIndex, textOffset, newPage)
+			} else {
+				source := spans[0].source
+				err = f.appendBodyFormula(doc, s, source, paragraph[:2], paragraph[len(paragraph)-2:], occupied, &ink, &y, &row, &textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+textIndex)))
+			}
+			if err != nil {
 				return nil, err
 			}
 			if pi < len(paragraphs)-1 || followedByPage && strings.HasSuffix(text, "\n") {

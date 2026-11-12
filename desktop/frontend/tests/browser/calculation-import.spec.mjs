@@ -100,6 +100,15 @@ test('multiple references become continuous editable body formulas; reopen and r
   const before = await page.evaluate(() => window.__calc.preview)
   expect(before.values.b0).toBe('0.0290')
   expect(Object.keys(before.values)).toHaveLength(51)
+  const formulas = before.document.pages.flatMap((p) => p.formulas ?? [])
+  expect(formulas).toHaveLength(51)
+  // Short calculations share rows while keeping separate formula hit boxes.
+  expect(
+    before.document.pages.some((p) =>
+      p.formulas?.some((f, i, all) => i && Math.abs(f.y - all[i - 1].y) < 0.1),
+    ),
+  ).toBe(true)
+  for (const f of formulas) expect(before.text.slice(f.start, f.end)).toMatch(/^\\\(.+\\\)$/)
   await page.getByLabel('分式字号比例', { exact: true }).fill('75')
   await expect(page.getByRole('button', { name: '插入正文', exact: true })).toBeEnabled()
   await expect

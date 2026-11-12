@@ -24,9 +24,9 @@ func (f *Font) formulaBox(text string, s LayoutSettings, variation ...handwritin
 	return scaleFormulaBox(b, s.FontSize/f.Units), err
 }
 func formulaSource(paragraph string) (string, bool) {
-	if (strings.HasPrefix(paragraph, `\(`) && strings.HasSuffix(paragraph, `\)`)) ||
-		(strings.HasPrefix(paragraph, `\[`) && strings.HasSuffix(paragraph, `\]`)) {
-		return paragraph[2 : len(paragraph)-2], true
+	spans, ok := formulaParagraph(paragraph)
+	if ok && len(spans) == 1 && spans[0].gap == "" && spans[0].trailing == "" {
+		return spans[0].source, true
 	}
 	return "", false
 }

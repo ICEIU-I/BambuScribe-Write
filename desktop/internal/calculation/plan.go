@@ -214,6 +214,7 @@ func (p Plan) Calculate() (Result, error) {
 		if section.Title != "" {
 			lines = append(lines, section.Title)
 		}
+		formulas := []string{}
 		for _, step := range section.Steps {
 			e, _ := parse(step.Expression)
 			v, err := e.value(env)
@@ -232,7 +233,7 @@ func (p Plan) Calculate() (Result, error) {
 				converted := new(big.Rat).Mul(v, factor)
 				formula += "=" + scientific(formatValue(converted, c.Format, c.Precision)) + c.Unit
 			}
-			lines = append(lines, `\(`+formula+`\)`)
+			formulas = append(formulas, `\(`+formula+`\)`)
 			env[step.ID] = v
 			if step.UseRounded {
 				env[step.ID], err = number(text)
@@ -248,6 +249,7 @@ func (p Plan) Calculate() (Result, error) {
 				}
 			}
 		}
+		lines = append(lines, strings.Join(formulas, "　"))
 	}
 	if len(p.Issues) > 0 {
 		return result, fmt.Errorf("请先核对识别疑问：%s", p.Issues[0])
