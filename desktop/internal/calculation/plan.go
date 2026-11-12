@@ -11,6 +11,8 @@ import (
 )
 
 type Variable struct {
+	Origin    string `json:"origin,omitempty"`
+	Constant  string `json:"constant,omitempty"`
 	ID        string `json:"id"`
 	Label     string `json:"label"`
 	Value     string `json:"value"`
@@ -78,6 +80,16 @@ func (p Plan) Validate() error {
 		return nil
 	}
 	for _, v := range p.Variables {
+		switch v.Origin {
+		case "", "measurement", "user", "reference", "standard":
+		default:
+			return fmt.Errorf("参数来源无效：%s", v.Label)
+		}
+		if v.Constant != "" {
+			if _, ok := physicalConstants[v.Constant]; !ok {
+				return fmt.Errorf("未知常量：%s", v.Label)
+			}
+		}
 		if err := checkID(v.ID); err != nil {
 			return err
 		}

@@ -1,5 +1,7 @@
 import type { Document } from '../types'
 export interface CalculationVariable {
+  constant?: string
+  origin?: 'measurement' | 'user' | 'reference' | 'standard'
   id: string
   label: string
   value: string

@@ -67,3 +67,27 @@ func TestCalculationProjectRetainsRulesAndFormulaInk(t *testing.T) {
 		}
 	}
 }
+
+func TestReferenceConstantsSurviveProjectRoundTrip(t *testing.T) {
+	raw, err := os.ReadFile("../calculation/testdata/sound-reference.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	plan, err := calculation.Decode(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := plan.Calculate()
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := Project{Version: Version, Text: result.Text, Layout: engine.DefaultLayout(), Writing: engine.DefaultWriting(), Calculations: []calculation.Record{{ID: "sound", Text: result.Text, Plan: plan}}}
+	encoded, err := Encode(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	restored, err := Decode(encoded)
+	if err != nil || !reflect.DeepEqual(restored.Calculations, p.Calculations) {
+		t.Fatal("reference values or origins lost on reopen", err)
+	}
+}

@@ -64,5 +64,9 @@ func Recognize(ctx context.Context, c tableimport.Config, s Sources) (calculatio
 	if len(raw) > 256<<10 {
 		return empty, fmt.Errorf("识别内容过多，请分批导入")
 	}
-	return calculation.Decode([]byte(raw))
+	plan, err := calculation.Decode([]byte(raw))
+	if err != nil {
+		return empty, err
+	}
+	return plan.ResolveConstants()
 }

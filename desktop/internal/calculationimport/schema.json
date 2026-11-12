@@ -25,6 +25,21 @@
           },
           "uncertain": {
             "type": "boolean"
+          },
+          "constant": {
+            "type": "string",
+            "enum": [
+              "",
+              "molar_gas_constant",
+              "dry_air_molar_mass",
+              "dry_air_sound_speed_0c",
+              "zero_celsius_kelvin",
+              "dry_air_heat_capacity_ratio"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": ["measurement", "user", "reference", "standard"]
           }
         },
         "required": [
@@ -33,7 +48,9 @@
           "value",
           "unit",
           "source",
-          "uncertain"
+          "uncertain",
+          "constant",
+          "origin"
         ]
       }
     },
@@ -72,10 +89,7 @@
                 },
                 "format": {
                   "type": "string",
-                  "enum": [
-                    "decimal",
-                    "significant"
-                  ]
+                  "enum": ["decimal", "significant"]
                 },
                 "useRounded": {
                   "type": "boolean"
@@ -97,18 +111,10 @@
                       },
                       "format": {
                         "type": "string",
-                        "enum": [
-                          "decimal",
-                          "significant"
-                        ]
+                        "enum": ["decimal", "significant"]
                       }
                     },
-                    "required": [
-                      "factor",
-                      "unit",
-                      "precision",
-                      "format"
-                    ]
+                    "required": ["factor", "unit", "precision", "format"]
                   }
                 }
               },
@@ -126,10 +132,7 @@
             }
           }
         },
-        "required": [
-          "title",
-          "steps"
-        ]
+        "required": ["title", "steps"]
       }
     },
     "issues": {
@@ -139,9 +142,5 @@
       }
     }
   },
-  "required": [
-    "variables",
-    "sections",
-    "issues"
-  ]
+  "required": ["variables", "sections", "issues"]
 }

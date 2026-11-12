@@ -1,6 +1,7 @@
 package calculationimport
 
 import (
+	"bambuscribe/desktop/internal/calculation"
 	"bambuscribe/desktop/internal/tableimport"
 	"context"
 	"encoding/base64"
@@ -8,9 +9,53 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 )
+
+func TestRecognitionUsesReferenceConstantsAndPreservesTheirPrecision(t *testing.T) {
+	raw, err := os.ReadFile("../calculation/testdata/sound-reference.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want, err := calculation.Decode(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	picture, err := os.ReadFile("../engine/testdata/ocr-formula-table.png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	data := "data:image/png;base64," + base64.StdEncoding.EncodeToString(picture)
+	for _, defaults := range []bool{false, true} {
+		plan := want
+		plan.Variables = append([]calculation.Variable(nil), want.Variables...)
+		if defaults {
+			plan.Variables[0].Value = ""
+			plan.Variables[0].Origin = "standard"
+			plan.Variables[0].Uncertain = true
+		}
+		encoded, _ := json.Marshal(plan)
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			json.NewEncoder(w).Encode(map[string]any{"status": "completed", "output": []any{map[string]any{"content": []any{map[string]any{"type": "output_text", "text": string(encoded)}}}}})
+		}))
+		got, err := Recognize(context.Background(), tableimport.Config{BaseURL: server.URL, Model: "test", Protocol: "responses", APIKey: "local-test"}, Sources{Data: []string{data}, References: []string{data}})
+		server.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !defaults && !reflect.DeepEqual(got, want) {
+			t.Fatal("reference constants, precision or measurements were changed")
+		}
+		if defaults && (got.Variables[0].Value != "0.02897" || got.Variables[0].Uncertain || !reflect.DeepEqual(got.Variables[1:], want.Variables[1:])) {
+			t.Fatal("missing standard fallback or overwritten reference")
+		}
+		if _, err := got.Calculate(); err != nil {
+			t.Fatal("constants still block preview", err)
+		}
+	}
+}
 
 func TestBothProtocolsKeepImageRolesInSingleRequest(t *testing.T) {
 	raw, err := os.ReadFile("../engine/testdata/ocr-formula-table.png")

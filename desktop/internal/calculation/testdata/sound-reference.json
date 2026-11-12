@@ -1,0 +1,115 @@
+{
+  "variables": [
+    {
+      "id": "M",
+      "label": "空气摩尔质量 M",
+      "value": "0.029",
+      "unit": "kg/mol",
+      "constant": "dry_air_molar_mass",
+      "origin": "reference",
+      "source": "参考样例第1张数值代入式",
+      "uncertain": false
+    },
+    {
+      "id": "R",
+      "label": "摩尔气体常量 R",
+      "value": "8.31",
+      "unit": "J/(mol·K)",
+      "constant": "molar_gas_constant",
+      "origin": "reference",
+      "source": "参考样例第1张数值代入式",
+      "uncertain": false
+    },
+    {
+      "id": "v0",
+      "label": "基准声速 v0",
+      "value": "331.45",
+      "unit": "m/s",
+      "constant": "dry_air_sound_speed_0c",
+      "origin": "reference",
+      "source": "参考样例第1张数值代入式",
+      "uncertain": false
+    },
+    {
+      "id": "T0",
+      "label": "基准绝对温度 T0",
+      "value": "273",
+      "unit": "K",
+      "constant": "zero_celsius_kelvin",
+      "origin": "reference",
+      "source": "参考样例第1张数值代入式",
+      "uncertain": false
+    },
+    {
+      "id": "gamma_ref",
+      "label": "比热容比理论值",
+      "value": "1.40",
+      "unit": "1",
+      "constant": "dry_air_heat_capacity_ratio",
+      "origin": "reference",
+      "source": "参考样例第1张数值代入式",
+      "uncertain": false
+    },
+    {
+      "id": "T",
+      "label": "本次实验绝对温度 T",
+      "value": "289.15",
+      "unit": "K",
+      "source": "原始数据第1张：16°C",
+      "origin": "measurement",
+      "constant": "",
+      "uncertain": false
+    },
+    {
+      "id": "v",
+      "label": "实测声速",
+      "value": "340.0",
+      "unit": "m/s",
+      "source": "原始数据第1张",
+      "origin": "measurement",
+      "constant": "",
+      "uncertain": false
+    }
+  ],
+  "sections": [
+    {
+      "title": "空气声速与绝热系数",
+      "steps": [
+        {
+          "id": "gamma",
+          "label": "γ",
+          "symbolic": "",
+          "expression": "M*v^2/(R*T)",
+          "unit": "",
+          "format": "decimal",
+          "precision": 4,
+          "useRounded": false,
+          "conversions": []
+        },
+        {
+          "id": "v_theory",
+          "label": "v_{理}",
+          "symbolic": "",
+          "expression": "v0*sqrt(T/T0)",
+          "unit": "m/s",
+          "format": "decimal",
+          "precision": 2,
+          "useRounded": false,
+          "conversions": []
+        },
+        {
+          "id": "error",
+          "label": "E",
+          "symbolic": "",
+          "expression": "abs(gamma-gamma_ref)/gamma_ref*100",
+          "unit": "%",
+          "format": "decimal",
+          "precision": 2,
+          "useRounded": false,
+          "conversions": []
+        }
+      ]
+    }
+  ],
+  "issues": []
+}

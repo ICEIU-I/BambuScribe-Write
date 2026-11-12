@@ -276,3 +276,35 @@ test('recognition reports real stages and elapsed time; timeout preserves images
   })
   expect(errors).toEqual([])
 })
+
+test('reference constants preview immediately and keep their chosen precision when edited and saved', async ({
+  page,
+}) => {
+  const errors = await setup(page)
+  const plan = JSON.parse(
+    readFileSync(
+      new URL('../../../internal/calculation/testdata/sound-reference.json', import.meta.url),
+      'utf8',
+    ),
+  )
+  await page.evaluate((plan) => {
+    window.go.application.App.RecognizeCalculations = async () => structuredClone(plan)
+  }, plan)
+  await generate(page)
+  for (const v of plan.variables)
+    await expect(page.getByLabel(v.label, { exact: true })).toHaveValue(v.value)
+  await expect(page.getByRole('alert')).not.toBeVisible()
+  await expect(page.getByRole('button', { name: '确认读数', exact: true })).toHaveCount(0)
+  await page.getByLabel('空气摩尔质量 M', { exact: true }).fill('')
+  await expect(page.getByRole('alert')).toContainText('请核对空气摩尔质量')
+  await expect(page.getByRole('button', { name: '插入正文', exact: true })).toBeDisabled()
+  await page.getByLabel('空气摩尔质量 M', { exact: true }).fill('0.029')
+  await expect(page.getByRole('button', { name: '插入正文', exact: true })).toBeEnabled()
+  await page.screenshot({ path: '/tmp/bambuscribe-reference-constants.png', fullPage: true })
+  await page.getByRole('button', { name: '插入正文', exact: true }).click()
+  await page.getByRole('button', { name: '另存为', exact: true }).click()
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.saved?.calculations?.[0]?.plan.variables))
+    .toEqual(plan.variables)
+  expect(errors).toEqual([])
+})
