@@ -91,7 +91,7 @@ func (f *Font) layoutText(text string, s LayoutSettings, occupied map[int][]Regi
 		Occupied map[int][]RegionBounds
 		Version  string
 		Font     string
-	}{text, doc.Settings, occupied, "explicit-pages-v19-formula-flow", f.ID})
+	}{text, doc.Settings, occupied, "explicit-pages-v20-roman-numerals", f.ID})
 	h := sha256.Sum256(encoded)
 	doc.ID = hex.EncodeToString(h[:12])
 	return doc, nil

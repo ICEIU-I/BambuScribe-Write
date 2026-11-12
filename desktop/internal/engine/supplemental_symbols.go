@@ -32,6 +32,7 @@ func addSupplementalSymbols(f *Font) {
 	addSuperscriptSymbols(f, put)
 	addFractionSymbols(f, put, line)
 	addCircledNumberSymbols(f, put)
+	addRomanNumerals(f)
 }
 
 // Small local trigonometry helpers keep the generated symbol table free of

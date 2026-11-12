@@ -317,3 +317,56 @@ test('reference constants preview immediately and keep their chosen precision wh
     .toEqual(plan.variables)
   expect(errors).toEqual([])
 })
+
+test('Unicode Roman experiment groups preview, edit, save and export without missing glyphs', async ({
+  page,
+}) => {
+  const errors = await setup(page)
+  await page.evaluate(() => {
+    // A model can return the single Unicode numerals, not ASCII I/II/III.
+    // IDs and expressions remain unchanged: only display labels use them.
+    for (const [i, section] of window.__calc.plan.sections.entries()) {
+      const numeral = ['Ⅰ', 'Ⅱ', 'Ⅲ'][i % 3]
+      section.title += ` 第${numeral}组`
+      for (const step of section.steps) {
+        step.label = `U_{${numeral}}`
+        step.symbolic = String.raw`\frac{U_{0,Ⅰ}+U_{0,Ⅱ}+U_{0,Ⅲ}}{3}`
+      }
+    }
+  })
+  await generate(page)
+  await expect(page.getByRole('alert')).not.toBeVisible()
+  const before = await page.evaluate(() => window.__calc.preview)
+  expect(before.document.missing).toEqual([])
+  expect(before.document.pages.flatMap((p) => p.issues ?? [])).toEqual([])
+  await page.screenshot({
+    path: `/tmp/bambuscribe-roman-preview-${test.info().project.name}.png`,
+    fullPage: true,
+  })
+  await page.getByRole('button', { name: '插入正文', exact: true }).click()
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.document.pages[0]?.formulas?.length ?? 0))
+    .toBeGreaterThan(0)
+  await formulaClick(page)
+  await expect(page.getByRole('heading', { name: '编辑数据处理' })).toBeVisible()
+  await page.getByLabel('霍尔灵敏度', { exact: true }).fill('121')
+  await expect.poll(() => page.evaluate(() => window.__calc.preview.values.b0)).toBe('0.0580')
+  await page.getByRole('button', { name: '更新正文', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: '编辑数据处理', exact: true })).not.toBeVisible()
+  await expect(page.getByLabel('书写内容')).toHaveValue(/0\.0580/)
+  const source = await page.getByLabel('书写内容').inputValue()
+  expect(source).toContain('U_{0,Ⅲ}')
+  await page.getByRole('button', { name: '另存为', exact: true }).click()
+  await expect.poll(() => page.evaluate(() => window.__tables.saved?.text)).toBe(source)
+  await page.getByRole('button', { name: '打开项目', exact: true }).click()
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.document.pages.map((p) => p.text).join('')))
+    .toBe(source)
+  await page.getByRole('button', { name: '导出', exact: true }).click()
+  await expect(page.getByRole('button', { name: /^导出当前页/ })).toBeEnabled()
+  await page.getByRole('button', { name: /^导出当前页/ }).click()
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.exported?.gcode ?? ''))
+    .toContain('G1')
+  expect(errors).toEqual([])
+})
