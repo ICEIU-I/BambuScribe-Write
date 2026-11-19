@@ -67,24 +67,6 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 	width := s.PaperWidth - s.MarginLeft - s.MarginRight
 	bottom := s.PaperHeight - s.MarginBottom
 	gapWidth := max(4, s.FontSize*.75)
-	appendGap := func(text string, x, atY, width, height float64) {
-		if text == "" {
-			return
-		}
-		page := &doc.Pages[len(doc.Pages)-1]
-		start := *textIndex
-		*textIndex += bodyLength([]rune(text))
-		page.Text += text
-		page.Cells = append(page.Cells, GlyphCell{start, *textIndex, x, atY, width, height})
-		page.Carets = append(page.Carets, CaretStop{start, x, atY}, CaretStop{*textIndex, x + width, atY})
-	}
-	appendTrailing := func(span formulaSpan) {
-		if span.trailing != "" {
-			page := &doc.Pages[len(doc.Pages)-1]
-			end := page.Carets[len(page.Carets)-1]
-			appendGap(span.trailing, end.X, end.Y, 0, page.LineHeight)
-		}
-	}
 	for at := 0; at < len(spans); {
 		page := &doc.Pages[len(doc.Pages)-1]
 		if *row >= page.LineCount || *y >= bottom-1e-8 {
@@ -94,6 +76,7 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 		}
 		pitch := page.LineHeight
 		boxes := []imageMathBox{}
+		gaps := []float64{}
 		used, index := 0.0, *textIndex
 		for next := at; next < len(spans); next++ {
 			span := spans[next]
@@ -105,16 +88,17 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 			if len(lines) != 1 {
 				break
 			}
-			gap := 0.0
+			gap := f.formulaWhitespaceWidth(span.gap, s)
 			if next > at {
-				gap = gapWidth
+				gap = max(gapWidth, gap)
 			}
 			// A long summary equation gets its own row, even if a tiny item
 			// would fit beside it. Other complete equations fill the row.
-			if next > at && (used+gap+lines[0].box.width > width+1e-8 || lines[0].box.width > width*.5) {
+			if used+gap+lines[0].box.width > width+1e-8 || next > at && lines[0].box.width > width*.5 {
 				break
 			}
 			boxes = append(boxes, lines[0].box)
+			gaps = append(gaps, gap)
 			used += gap + lines[0].box.width
 			index += bodyLength([]rune(span.opening + span.source + span.closing))
 			if used > width*.5 && len(boxes) == 1 {
@@ -123,11 +107,10 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 		}
 		if len(boxes) == 0 {
 			span := spans[at]
-			appendGap(span.gap, s.MarginLeft, *y, 0, pitch)
-			if err := f.appendBodyFormula(doc, s, span.source, span.opening, span.closing, occupied, ink, y, row, textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+*textIndex))); err != nil {
+			index := *textIndex + bodyLength([]rune(span.gap))
+			if err := f.appendBodyFormula(doc, s, span, occupied, ink, y, row, textIndex, newPage, s.variation(fmt.Sprintf("formula:%d", textOffset+index))); err != nil {
 				return err
 			}
-			appendTrailing(span)
 			at++
 			continue
 		}
@@ -145,14 +128,10 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 		x := lineOrigin(s, 0, width, used)
 		for i, box := range boxes {
 			span := spans[at+i]
-			gap := 0.0
-			if i > 0 {
-				gap = gapWidth
-			}
-			appendGap(span.gap, x, *y, gap, pitch)
-			x += gap
+			f.appendFormulaWhitespace(page, span.gap, s, x, *y, gaps[i], textIndex)
+			x += gaps[i]
 			f.appendPlacedFormula(page, box, span.source, span.opening+span.source+span.closing, x, *y, pitch, textIndex)
-			appendTrailing(span)
+			f.appendFormulaTrailing(page, span.trailing, s, textIndex)
 			x += box.width
 		}
 		at += len(boxes)

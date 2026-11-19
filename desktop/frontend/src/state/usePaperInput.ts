@@ -49,7 +49,9 @@ export function usePaperInput(
   function readSelection() {
     const el = input.value
     if (!el || composing) return
-    const normalized = formulaSelection(getText(), el.selectionStart, el.selectionEnd)
+    // The input event has already changed the DOM text; the parent model may
+    // still contain the previous formula boundaries until Vue applies the emit.
+    const normalized = formulaSelection(el.value, el.selectionStart, el.selectionEnd)
     if (normalized.start !== el.selectionStart || normalized.end !== el.selectionEnd)
       el.setSelectionRange(normalized.start, normalized.end, el.selectionDirection)
     start.value = normalized.start
