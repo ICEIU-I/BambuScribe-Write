@@ -79,6 +79,10 @@ const editor = ref<InstanceType<typeof DocumentCanvas>>()
 const tableImport = useTableImport(w, editor)
 const calculationImport = useCalculationImport(w, editor)
 const diagramImport = useDiagramImport(w, editor)
+function captureImportAnchor() {
+  calculationImport.captureAnchor()
+  diagramImport.captureAnchor()
+}
 const imagePaste = useImagePaste(w, editor)
 function insertTable(options: TableInsertOptions) {
   imageTool.value = 'select'
@@ -295,7 +299,7 @@ watch(
           @import-table="tableImport.open.value = true"
           @import-diagram="diagramImport.show"
           @import-calculation="calculationImport.show()"
-          @import-begin="calculationImport.captureAnchor()"
+          @import-begin="captureImportAnchor"
           @settings="settingsOpen = !settingsOpen"
           @undo="editor?.undo()"
           @redo="editor?.redo()"

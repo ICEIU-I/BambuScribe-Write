@@ -3,6 +3,7 @@ import type { CalculationRecord } from '../../services/calculationTypes'
 import FormulaEditDialog from './FormulaEditDialog.vue'
 import { calculationAt, formulaRanges } from '../../state/calculationText'
 import { textInsertionAnchor } from '../../state/textInsertion'
+import { diagramInsertionAnchor } from '../../state/diagramInsertion'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type {
   Document,
@@ -437,6 +438,14 @@ defineExpose({
     return true
   },
   imageImportAnchor: () => ({ ...caret.value }),
+  diagramImportAnchor: () =>
+    diagramInsertionAnchor(
+      props.document,
+      props.modelValue,
+      caret.value,
+      focused.value,
+      props.index,
+    ),
   selectedImage: () => props.images.find((i) => i.id === selectedImageId.value),
   applyImages: (images: ImageAsset[]) => {
     const last = images.at(-1)

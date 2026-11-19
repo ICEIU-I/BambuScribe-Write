@@ -7,9 +7,10 @@ import type { ImageAsset } from '../types'
 import type { RecognizedDiagram } from '../services/diagramTypes'
 import { useDiagramTask } from './useDiagramTask'
 import { placeDiagram, nextDiagramAnchor } from './diagramPlacement'
+import type { DiagramAnchor } from './diagramInsertion'
 
 interface DiagramEditor {
-  imageImportAnchor(): { page: number; x: number; y: number }
+  diagramImportAnchor(): DiagramAnchor
   selectedImage(): ImageAsset | undefined
   applyImages(images: ImageAsset[]): void
 }
@@ -22,13 +23,25 @@ export function useDiagramImport(
   const task = useDiagramTask(submit, (message) => w.tell(message, 'error'))
   let opened = 0,
     anchor = { page: 0, x: 0, y: 0 }
+  let prepared: { anchor: DiagramAnchor; version: number; opened: number } | undefined
+  function captureAnchor() {
+    const at = editor.value?.diagramImportAnchor()
+    prepared = at
+      ? { anchor: at, version: w.contentVersion.value, opened: w.projectOpened.value }
+      : undefined
+  }
   function show() {
+    const target = prepared
+    prepared = undefined
     if (task.retained.value || task.busy.value) {
       task.resume()
       return
     }
     opened = w.projectOpened.value
-    anchor = editor.value?.imageImportAnchor() ?? { page: w.pageIndex.value, x: 8, y: 8 }
+    anchor =
+      target?.opened === opened && target.version === w.contentVersion.value
+        ? target.anchor
+        : (editor.value?.diagramImportAnchor() ?? { page: w.pageIndex.value, x: 8, y: 8 })
     replacement.value = snapshot(editor.value?.selectedImage() ?? null) ?? undefined
     task.prepare(replacement.value?.data ?? '')
   }
@@ -87,5 +100,5 @@ export function useDiagramImport(
   watch(w.projectOpened, () => {
     void task.cancel()
   })
-  return { task, replacement, show }
+  return { task, replacement, show, captureAnchor }
 }
