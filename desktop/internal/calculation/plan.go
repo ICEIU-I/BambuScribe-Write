@@ -211,8 +211,8 @@ func (p Plan) Calculate() (Result, error) {
 	}
 	lines := []string{}
 	for _, section := range p.Sections {
-		if section.Title != "" {
-			lines = append(lines, section.Title)
+		if title := cleanReportTitle(section.Title); title != "" {
+			lines = append(lines, title)
 		}
 		formulas := []string{}
 		for _, step := range section.Steps {

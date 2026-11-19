@@ -68,5 +68,5 @@ func Recognize(ctx context.Context, c tableimport.Config, s Sources) (calculatio
 	if err != nil {
 		return empty, err
 	}
-	return plan.ResolveConstants()
+	return plan.CleanReportTitles().ResolveConstants()
 }

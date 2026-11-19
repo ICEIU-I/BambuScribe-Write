@@ -67,6 +67,13 @@ func TestBothProtocolsKeepImageRolesInSingleRequest(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	var generated calculation.Plan
+	if err := json.Unmarshal(plan, &generated); err != nil {
+		t.Fatal(err)
+	}
+	title := generated.Sections[0].Title
+	generated.Sections[0].Title += "；按参考保留计算步骤"
+	plan, _ = json.Marshal(generated)
 	for _, protocol := range []string{"responses", "chat-completions"} {
 		t.Run(protocol, func(t *testing.T) {
 			calls := 0
@@ -81,7 +88,7 @@ func TestBothProtocolsKeepImageRolesInSingleRequest(t *testing.T) {
 				}
 				encoded, _ := json.Marshal(body)
 				text := string(encoded)
-				for _, label := range []string{"原始数据第1张", "原始数据第2张", "参考样例第1张", "参考样例第2张", "灵敏度242"} {
+				for _, label := range []string{"原始数据第1张", "原始数据第2张", "参考样例第1张", "参考样例第2张", "灵敏度242", "报告文案", "不进入正文"} {
 					if !strings.Contains(text, label) {
 						t.Errorf("missing source role: %s", label)
 					}
@@ -99,6 +106,9 @@ func TestBothProtocolsKeepImageRolesInSingleRequest(t *testing.T) {
 			p, err := Recognize(context.Background(), tableimport.Config{BaseURL: server.URL, Model: "test", Protocol: protocol, APIKey: "local-test"}, Sources{Data: []string{image, image}, References: []string{image, image}, Instruction: "灵敏度242"})
 			if err != nil || calls != 1 || len(p.Sections) != 4 {
 				t.Fatal("recognition failed", err, calls)
+			}
+			if p.Sections[0].Title != title || !reflect.DeepEqual(p.Variables, generated.Variables) {
+				t.Fatal("generation note survived recognition or provenance was changed")
 			}
 		})
 	}

@@ -281,3 +281,34 @@ test('Unicode Roman experiment groups preview, edit, save and export without mis
     .toContain('G1')
   expect(errors).toEqual([])
 })
+
+test('report headings exclude process notes through insertion, reopening and recalculation', async ({
+  page,
+}) => {
+  const errors = await setup(page)
+  await page.evaluate(() => {
+    window.__calc.plan.sections[0].title += '；按参考保留计算步骤'
+  })
+  await generate(page)
+  expect(await page.evaluate(() => window.__calc.preview.text)).not.toContain('按参考')
+  await page.getByRole('button', { name: '插入正文', exact: true }).click()
+  const input = page.getByLabel('书写内容')
+  await expect(input).not.toHaveValue(/按参考/)
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.document.pages[0]?.formulas?.length ?? 0))
+    .toBeGreaterThan(0)
+  await page.getByRole('button', { name: '另存为', exact: true }).click()
+  await expect.poll(() => page.evaluate(() => window.__tables.saved?.calculations?.length)).toBe(1)
+  await page.getByRole('button', { name: '打开项目', exact: true }).click()
+  await expect
+    .poll(() => page.evaluate(() => window.__tables.document.pages[0]?.formulas?.length ?? 0))
+    .toBeGreaterThan(0)
+  await formulaClick(page)
+  await expect(page.getByRole('heading', { name: '编辑数据处理' })).toBeVisible()
+  await page.getByLabel('霍尔灵敏度', { exact: true }).fill('121')
+  await expect.poll(() => page.evaluate(() => window.__calc.preview.values.b0)).toBe('0.0580')
+  await page.getByRole('button', { name: '更新正文', exact: true }).click()
+  await expect(input).toHaveValue(/0\.0580/)
+  await expect(input).not.toHaveValue(/按参考/)
+  expect(errors).toEqual([])
+})
