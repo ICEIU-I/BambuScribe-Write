@@ -21,9 +21,15 @@ type ModelImage struct {
 	Label string
 }
 
-func RequestStructured(ctx context.Context, c Config, images []ModelImage, instructions, prompt string, schema json.RawMessage, name string, maxTokens int) (string, error) {
+// RequestOptions preserves caller-specific generation settings. Omitted options
+// keep the existing table and calculation requests unchanged.
+type RequestOptions struct {
+	ReasoningEffort string
+}
+
+func RequestStructured(ctx context.Context, c Config, images []ModelImage, instructions, prompt string, schema json.RawMessage, name string, maxTokens int, options ...RequestOptions) (string, error) {
 	format := map[string]any{"name": name, "strict": true, "schema": schema}
-	var body any
+	var body map[string]any
 	endpoint := "/chat/completions"
 	content := []any{}
 	if c.Protocol == "responses" {
@@ -46,6 +52,13 @@ func RequestStructured(ctx context.Context, c Config, images []ModelImage, instr
 			content = append(content, map[string]any{"type": "image_url", "image_url": map[string]any{"url": im.Data, "detail": "high"}})
 		}
 		body = map[string]any{"model": c.Model, "stream": true, "messages": []any{map[string]any{"role": "system", "content": instructions}, map[string]any{"role": "user", "content": content}}, "response_format": map[string]any{"type": "json_schema", "json_schema": format}, "max_completion_tokens": maxTokens}
+	}
+	if len(options) > 0 && options[0].ReasoningEffort != "" {
+		if c.Protocol == "responses" {
+			body["reasoning"] = map[string]any{"effort": options[0].ReasoningEffort}
+		} else {
+			body["reasoning_effort"] = options[0].ReasoningEffort
+		}
 	}
 	raw, err := json.Marshal(body)
 	if err != nil {
