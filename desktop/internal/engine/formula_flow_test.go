@@ -35,7 +35,7 @@ func TestShortEquationsFlowAcrossRowsAndPagesWithoutLosingEditingRanges(t *testi
 					if string(utf16.Decode(source[item.Start:item.End])) != formula {
 						t.Fatal("formula source or UTF-16 range changed", item)
 					}
-					if item.X < s.MarginLeft-1e-8 || item.X+item.Width > s.PaperWidth-s.MarginRight+1e-8 || item.Y+item.Height > s.PaperHeight-s.MarginBottom+1e-8 || item.Height > page.LineHeight {
+					if item.X < s.MarginLeft-1e-8 || item.X+item.Width > s.PaperWidth-s.MarginRight+1e-8 || item.Y+item.Height > s.PaperHeight-s.MarginBottom+1e-8 || item.Height > 2*page.LineHeight {
 						t.Fatal("formula exceeds writing area", item)
 					}
 					if i > 0 && math.Abs(item.Y-page.Formulas[i-1].Y) < .01 {
@@ -47,7 +47,7 @@ func TestShortEquationsFlowAcrossRowsAndPagesWithoutLosingEditingRanges(t *testi
 					}
 				}
 			}
-			if joined != text || count != 100 || sharedRows == 0 || len(doc.Pages) > 3 {
+			if joined != text || count != 100 || sharedRows == 0 || len(doc.Pages) > 7 {
 				t.Fatal("formula flow lost source or failed to compact", count, sharedRows, len(doc.Pages))
 			}
 			if _, err := ExportAll(doc, DefaultWriting()); err != nil {

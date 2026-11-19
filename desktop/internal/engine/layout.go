@@ -134,7 +134,7 @@ func (f *Font) layoutFlow(text string, s LayoutSettings, occupied map[int][]Regi
 		Version  string
 		Occupied map[int][]RegionBounds
 		Font     string
-	}{text, s, "stroke-fonts-v37-formula-spacing", occupied, f.ID})
+	}{text, s, "stroke-fonts-v38-readable-formulas", occupied, f.ID})
 	h := sha256.Sum256(encoded)
 	name := f.Name
 	if name == "" {

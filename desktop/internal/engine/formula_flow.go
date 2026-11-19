@@ -76,8 +76,10 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 		}
 		pitch := page.LineHeight
 		boxes := []imageMathBox{}
+		boxRows := []int{}
 		gaps := []float64{}
 		used, index := 0.0, *textIndex
+		rows := 1
 		for next := at; next < len(spans); next++ {
 			span := spans[next]
 			index += bodyLength([]rune(span.gap))
@@ -92,18 +94,17 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 			if next > at {
 				gap = max(gapWidth, gap)
 			}
-			// A long summary equation gets its own row, even if a tiny item
-			// would fit beside it. Other complete equations fill the row.
-			if used+gap+lines[0].box.width > width+1e-8 || next > at && lines[0].box.width > width*.5 {
+			// Pack using the readable size, without reducing letters to make
+			// another equation fit beside the current one.
+			if used+gap+lines[0].box.width > width+1e-8 {
 				break
 			}
+			rows = max(rows, lines[0].rows)
+			boxRows = append(boxRows, lines[0].rows)
 			boxes = append(boxes, lines[0].box)
 			gaps = append(gaps, gap)
 			used += gap + lines[0].box.width
 			index += bodyLength([]rune(span.opening + span.source + span.closing))
-			if used > width*.5 && len(boxes) == 1 {
-				break
-			}
 		}
 		if len(boxes) == 0 {
 			span := spans[at]
@@ -114,7 +115,11 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 			at++
 			continue
 		}
-		clear := *y+pitch <= bottom+1e-8 && len(availableTextSpans(s.MarginLeft, s.MarginLeft+width, *y, pitch, occupied[len(doc.Pages)-1])) > 0
+		height := float64(rows) * pitch
+		if rows > page.LineCount || height > bottom-s.MarginTop+1e-8 {
+			return fmt.Errorf("大分式需要两行空间，请增加每页行数或拆分计算式")
+		}
+		clear := *row+rows <= page.LineCount && *y+height <= bottom+1e-8 && len(availableTextSpans(s.MarginLeft, s.MarginLeft+width, *y, height, occupied[len(doc.Pages)-1])) > 0
 		for _, b := range boxes {
 			for _, old := range ink.active {
 				clear = clear && old.Y+old.Height+bodyInkWidth/2 <= *y+b.top+1e-8
@@ -127,16 +132,21 @@ func (f *Font) appendFormulaFlow(doc *Document, s LayoutSettings, spans []formul
 		}
 		x := lineOrigin(s, 0, width, used)
 		for i, box := range boxes {
+			// Centre a short result beside a taller fraction without reserving
+			// a separate mostly-empty row for the result.
+			shift := float64(rows-boxRows[i]) * pitch / 2
+			box.strokes = appendMathStrokes(nil, box.strokes, 0, shift, 1)
+			box.top, box.bottom = box.top+shift, box.bottom+shift
 			span := spans[at+i]
 			f.appendFormulaWhitespace(page, span.gap, s, x, *y, gaps[i], textIndex)
 			x += gaps[i]
-			f.appendPlacedFormula(page, box, span.source, span.opening+span.source+span.closing, x, *y, pitch, textIndex)
+			f.appendPlacedFormula(page, box, span.source, span.opening+span.source+span.closing, x, *y, height, textIndex)
 			f.appendFormulaTrailing(page, span.trailing, s, textIndex)
 			x += box.width
 		}
 		at += len(boxes)
-		*y += pitch
-		*row++
+		*y += height
+		*row += rows
 		*ink = textInk{}
 	}
 	return nil

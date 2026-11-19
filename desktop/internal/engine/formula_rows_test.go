@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestDisplayFormulasUseOneRuledRowWithoutChangingTheirSource(t *testing.T) {
+func TestDisplayFormulasReserveReadableRuledRowsWithoutChangingTheirSource(t *testing.T) {
 	for _, id := range []string{FontHandwriting, FontDC} {
 		f, _ := BuiltinFont(id)
 		for _, ratio := range []float64{50, 85, 100} {
@@ -33,23 +33,37 @@ func TestDisplayFormulasUseOneRuledRowWithoutChangingTheirSource(t *testing.T) {
 					}
 					page := doc.Pages[0]
 					start, row := 0, 0
+					rowY := make([]float64, len(lines))
+					rowHeight := make([]float64, len(lines))
+					y := s.MarginTop
+					for i, text := range lines {
+						rows := 1
+						if source, ok := formulaSource(text); ok {
+							b, _ := f.formulaBox(source, s, s.variation("formula:0"))
+							if b.bottom-b.top > page.LineHeight-2*formulaRowPadding(page.LineHeight) {
+								rows = 2
+							}
+						}
+						rowY[i], rowHeight[i] = y, float64(rows)*page.LineHeight
+						y += rowHeight[i]
+					}
 					for _, cell := range page.Cells {
 						for cell.Start >= start+bodyLength([]rune(lines[row])) {
 							start += bodyLength([]rune(lines[row])) + 1
 							row++
 						}
-						want := s.MarginTop + float64(row)*page.LineHeight
+						want := rowY[row]
 						tolerance := 1e-8
 						if row == 0 || row == len(lines)-1 {
 							tolerance = s.FontSize * .1 // Ordinary handwriting retains its baseline variation.
 						}
-						if math.Abs(cell.Y-want) > tolerance || cell.Height > page.LineHeight+1e-8 {
+						if math.Abs(cell.Y-want) > tolerance || cell.Height > rowHeight[row]+1e-8 {
 							t.Fatalf("%s row %d occupies extra space: %+v, expected Y %g", id, row, cell, want)
 						}
 					}
 					for i, formula := range page.Formulas {
-						y := s.MarginTop + float64(i+1)*page.LineHeight
-						if formula.Y < y+bodyInkWidth/2 || formula.Y+formula.Height > y+page.LineHeight-bodyInkWidth/2 {
+						y := rowY[i+1]
+						if formula.Y < y+bodyInkWidth/2 || formula.Y+formula.Height > y+rowHeight[i+1]-bodyInkWidth/2 {
 							t.Fatal("formula ink touches the neighbouring row", id, formula)
 						}
 					}
@@ -79,7 +93,7 @@ func TestDisplayEquationRefitsAtTheNextPageGridAndKeepsProportions(t *testing.T)
 			t.Fatal("equation did not fit into the first row of the next page", id)
 		}
 		page := doc.Pages[1]
-		if doc.Pages[0].Text+page.Text != text || page.Cells[0].Y != 0 || page.Cells[1].Y != page.LineHeight {
+		if doc.Pages[0].Text+page.Text != text || page.Cells[0].Y != 0 || page.Cells[1].Y != 2*page.LineHeight {
 			t.Fatal("page transition changed source or row positions")
 		}
 		raw, err := f.formulaBox(source, s)

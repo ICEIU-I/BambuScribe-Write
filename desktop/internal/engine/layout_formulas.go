@@ -31,11 +31,15 @@ func (f *Font) appendBodyFormula(doc *Document, s LayoutSettings, span formulaSp
 			}
 			return err
 		}
-		total := float64(len(lines)) * pitch
-		if total > bottom-s.MarginTop+1e-8 {
+		totalRows := 0
+		for _, line := range lines {
+			totalRows += line.rows
+		}
+		total := float64(totalRows) * pitch
+		if total > bottom-s.MarginTop+1e-8 || totalRows > doc.Pages[len(doc.Pages)-1].LineCount {
 			return fmt.Errorf("计算式超过一页高度，请拆分计算步骤")
 		}
-		if *y+total > bottom+1e-8 {
+		if *y+total > bottom+1e-8 || *row+totalRows > doc.Pages[len(doc.Pages)-1].LineCount {
 			newPage()
 			*y = s.MarginTop
 			continue
@@ -54,7 +58,7 @@ func (f *Font) appendBodyFormula(doc *Document, s LayoutSettings, span formulaSp
 	for li, line := range lines {
 		b := line.box
 		page := &doc.Pages[len(doc.Pages)-1]
-		height := page.LineHeight
+		height := float64(line.rows) * page.LineHeight
 		x := lineOrigin(s, indent, width-indent, b.width)
 		sourceText := line.source
 		if li == 0 {
@@ -69,7 +73,7 @@ func (f *Font) appendBodyFormula(doc *Document, s LayoutSettings, span formulaSp
 			f.appendFormulaTrailing(page, span.trailing, s, textIndex)
 		}
 		*y += height
-		*row++
+		*row += line.rows
 		*ink = textInk{}
 	}
 
