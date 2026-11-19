@@ -61,10 +61,10 @@ func TestDiagramRecognitionStreamsAndValidatesCompletion(t *testing.T) {
 						t.Error("diagram request must enable streaming")
 					}
 					if protocol == "responses" {
-						if body["reasoning"].(map[string]any)["effort"] != "high" || body["max_output_tokens"] != float64(18000) {
+						if body["reasoning"].(map[string]any)["effort"] != "medium" || body["max_output_tokens"] != float64(18000) {
 							t.Error("diagram reasoning or output budget changed")
 						}
-					} else if body["reasoning_effort"] != "high" || body["max_completion_tokens"] != float64(18000) {
+					} else if body["reasoning_effort"] != "medium" || body["max_completion_tokens"] != float64(18000) {
 						t.Error("diagram reasoning or output budget changed")
 					}
 					writeSceneStream(w, protocol, tc.scene, tc.complete)

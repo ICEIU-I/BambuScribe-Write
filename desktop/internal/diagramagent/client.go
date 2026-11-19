@@ -44,7 +44,7 @@ func Recognize(ctx context.Context, c tableimport.Config, data, instruction stri
 	}
 	options := tableimport.RequestOptions{}
 	if strings.HasPrefix(c.Model, "gpt-6") {
-		options.ReasoningEffort = "high"
+		options.ReasoningEffort = "medium"
 	}
 	text, err := tableimport.RequestStructured(ctx, c, images, instructions, prompt, schema, "bambuscribe_diagram", 18000, options)
 	if err != nil {
